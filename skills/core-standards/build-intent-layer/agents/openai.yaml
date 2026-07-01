@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Intent Layer"
+  short_description: "Build nested repo intent layers"
+  default_prompt: "Use $build-intent-layer to inspect this repo and build or repair its instruction topology."
