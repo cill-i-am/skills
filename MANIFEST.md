@@ -16,6 +16,17 @@ into small work, ship those slices, and verify them before claiming done.
 - `skills/stack/`: default TypeScript application stack skills.
 - `skills/infrastructure/`: default infrastructure/deployment skills.
 
+## Install
+
+This repo stores skills under category directories, so use `--full-depth`:
+
+```sh
+npx skills add https://github.com/cill-i-am/skills --skill '*' --agent codex --full-depth --copy -y
+```
+
+After installing into a fresh project, run `linear-setup` before the first
+Linear-backed planning or execution-loop task.
+
 ## Bundle Shape
 
 ### Core Standards
