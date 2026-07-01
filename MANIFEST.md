@@ -70,9 +70,14 @@ Encoded so far:
 - `worker` and `ci-watch` depend on portable `systematic-debugging` and
   `subagent-execution` support skills in this bundle.
 
-Remaining hardening before these are considered fully portable:
+Current loop-tool assumptions:
 
-- Automation and thread instructions must match current Codex app tooling.
+- User-visible worker/reviewer threads are the default for non-trivial
+  implementation.
+- Thread lifecycle uses Codex app thread tools such as `create_thread`,
+  `send_message_to_thread`, and `set_thread_archived`.
+- Watcher and orchestration heartbeats use the Codex app `automation_update`
+  tool, not raw automation directives.
 
 ### Planning And Interrogation
 

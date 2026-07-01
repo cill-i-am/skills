@@ -34,7 +34,8 @@ or its bundled scripts when GitHub Actions checks fail.
 6. If checks or review comments are pending:
    - poll inline for a short window when useful
    - if waiting would waste the worker session, create or update a 2-3 minute
-     heartbeat automation for the worker thread and continue this loop there
+     heartbeat automation for the worker thread with `automation_update` and
+     continue this loop there
    - update Linear with the watcher status and the current pending checks or
      comments
 7. If a GitHub Actions check fails:
@@ -82,5 +83,6 @@ When creating an automation, include:
 Prefer a 2-3 minute heartbeat for an active worker PR. Use a longer or detached
 automation only when the user or environment requires it.
 
-Do not create duplicate watchers for the same PR; update or reuse an existing
-automation when possible.
+Use the Codex app `automation_update` tool for create/update/view/delete. Do not
+write raw automation directives by hand. Do not create duplicate watchers for
+the same PR; update or reuse an existing automation when possible.

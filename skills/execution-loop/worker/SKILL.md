@@ -50,11 +50,12 @@ slice, prove it, and report evidence. The orchestrator owns final acceptance.
    requires judgment.
 9. **Use a short watcher heartbeat when needed.** If checks or comments remain
    pending after a short inline watch, create or update a 2-3 minute heartbeat
-   automation for this worker thread. Include the PR URL, Linear issue key,
-   branch, head SHA, pending checks/comments, retry/fix budget, Linear update
-   requirement, and stop condition. Reuse an existing watcher for the same PR;
-   do not create duplicates. Delete or stop the watcher once the PR is green,
-   merged, closed, or blocked with evidence.
+   automation for this worker thread with the Codex app `automation_update`
+   tool. Include the PR URL, Linear issue key, branch, head SHA, pending
+   checks/comments, retry/fix budget, Linear update requirement, and stop
+   condition. Reuse an existing watcher for the same PR; do not create
+   duplicates. Delete, pause, or stop the watcher through `automation_update`
+   once the PR is green, merged, closed, or blocked with evidence.
 10. **Update Linear.** Comment with PR URL, branch, commits, verification
    evidence, CI/comment-watch status, watcher automation if active, blockers,
    and residual risks.

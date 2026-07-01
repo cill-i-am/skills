@@ -13,10 +13,16 @@ The orchestrator owns the work loop. Workers implement. Reviewers/spec agents ve
 
 - Create a user-visible worker thread for each non-trivial implementation issue.
 - Create the paired user-visible reviewer/spec thread at the same dispatch time.
+- Use Codex app thread tools for thread lifecycle: discover thread tools when
+  they are not loaded, use `list_projects` before repo-scoped `create_thread`,
+  use `send_message_to_thread` for steering, and use `set_thread_archived` only
+  after the thread is no longer needed.
 - Let the reviewer/spec thread stay mostly idle until the worker posts a plan or
   PR when there is nothing useful to inspect yet.
 - The orchestrator may waive the reviewer/spec thread only for tiny or
   mechanical changes, and should record why.
+- Use `automation_update` for heartbeat automations. Do not write raw automation
+  directives by hand.
 
 ## Worker Rules
 

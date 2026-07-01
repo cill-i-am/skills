@@ -101,10 +101,10 @@ actionable CI/comment fixes, follow-up commits, automation handoff, and Linear
 CI evidence.
 
 If CI or comments are still pending after a short inline watch, create or update
-a 2-3 minute heartbeat automation for the worker thread. The prompt must include
-the PR URL, Linear issue key, branch, head SHA, pending checks/comments,
-retry/fix budget, Linear update requirement, and stop condition. Reuse an
-existing watcher for the same PR.
+a 2-3 minute heartbeat automation for the worker thread with the Codex app
+`automation_update` tool. The prompt must include the PR URL, Linear issue key,
+branch, head SHA, pending checks/comments, retry/fix budget, Linear update
+requirement, and stop condition. Reuse an existing watcher for the same PR.
 
 Do not move Linear to its completed state until CI is green or the orchestrator
 explicitly accepts a non-CI completion path.

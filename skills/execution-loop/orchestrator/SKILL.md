@@ -13,14 +13,17 @@ When the user asks to orchestrate a Linear Project, treat that as an explicit
 request to create user-visible Codex worker threads for dispatchable Linear
 issues unless the user says to use internal subagents instead.
 
-Prefer `create_thread` for issue workers. Create one new Codex thread per
-Linear issue, with a worktree environment and explicit reasoning effort. Each
-thread should own exactly one issue and report progress through Linear and the
-thread itself.
+Prefer the Codex app thread tools for issue workers. If thread tools are not in
+the active tool list, search for them before considering a fallback. Use
+`list_projects` before `create_thread` for repo-scoped worker/reviewer threads.
+Create one new Codex thread per Linear issue, with a worktree environment and
+explicit reasoning effort. Each thread should own exactly one issue and report
+progress through Linear and the thread itself.
 
-If `create_thread` is not in the active tool list, search for the thread tool
-before considering a fallback. Do not silently substitute internal subagents for
-issue workers because the thread tool was not loaded yet.
+Use `send_message_to_thread` to steer existing worker/reviewer threads. Use
+`set_thread_archived` when a worker or reviewer thread is complete and no longer
+needed. Do not silently substitute internal subagents for issue workers because
+the thread tool was not loaded yet.
 
 For every non-trivial implementation worker, also create a user-visible
 read-only reviewer/spec thread at dispatch time. The reviewer thread may stay
@@ -30,6 +33,14 @@ adherence, simplicity, and quality review.
 
 Use internal multi-agent subagents only for bounded side investigations,
 additional review depth, or when the user explicitly asks for subagents.
+
+## Automation Tooling
+
+When creating, updating, viewing, or stopping heartbeats, use the Codex app
+`automation_update` tool. Do not write raw automation directives by hand. Prefer
+`kind=heartbeat` and `destination=thread` for follow-ups attached to a Codex
+thread. Update an existing automation for the same project, worker, or PR instead
+of creating duplicates.
 
 ## Read First
 
@@ -54,13 +65,13 @@ when available to create or steer user-visible worker threads.
 4. **Pick dispatchable issues.** Prefer unblocked AFK issues in the live Linear
    state that means "ready for agent work" and maximize downstream unblocking.
    Skip HITL issues until the human decision is captured.
-5. **Spawn workers.** Use `create_thread` by default. Create one user-visible
-   Codex thread per dispatchable Linear issue, with a worktree environment and
-   explicit reasoning effort. Include the Linear issue, parent PRD/Project,
-   blockers, relevant comments, branch naming convention, and instruction to use
-   the `worker` skill. Tell workers to refresh live Linear before planning or
-   implementing. Require explicit plan approval only for high-risk work or when
-   the issue/orchestrator says approval is required.
+5. **Spawn workers.** Use the Codex app thread tools by default. Create one
+   user-visible Codex thread per dispatchable Linear issue, with a worktree
+   environment and explicit reasoning effort. Include the Linear issue, parent
+   PRD/Project, blockers, relevant comments, branch naming convention, and
+   instruction to use the `worker` skill. Tell workers to refresh live Linear
+   before planning or implementing. Require explicit plan approval only for
+   high-risk work or when the issue/orchestrator says approval is required.
    - For every non-trivial worker, create a paired user-visible read-only
      reviewer/spec thread. Include the worker thread, Linear issue, parent
      PRD/Project, expected skills/standards, and instruction to use the
@@ -70,20 +81,21 @@ when available to create or steer user-visible worker threads.
      `ci-watch`, monitor CI plus GitHub PR comments/review threads and Linear
      comments, fix actionable in-scope failures or comments, and keep watching
      until checks are green or genuinely blocked.
-   - Tell every worker to create or update a 2-3 minute heartbeat automation for
-     its worker thread when PR checks or comments are still pending after a
-     short inline watch. The heartbeat prompt should include the PR URL, Linear
-     issue key, branch, head SHA, current blockers, comment-review requirement,
-     retry/fix budget, Linear update requirement, and stop condition.
+   - Tell every worker to create or update a 2-3 minute heartbeat automation via
+     `automation_update` for its worker thread when PR checks or comments are
+     still pending after a short inline watch. The heartbeat prompt should
+     include the PR URL, Linear issue key, branch, head SHA, current blockers,
+     comment-review requirement, retry/fix budget, Linear update requirement,
+     and stop condition.
 6. **Track status.** Move assigned issues to the live Linear in-progress state
    and comment with the worker thread, branch expectation, and dispatch time.
 7. **Set a heartbeat.** After dispatching workers, create or update one
-   current-thread heartbeat automation to continue orchestration while work is
-   active. Prefer a short interval, such as 10 minutes, for active worker
-   batches; lengthen or pause it only when the project is waiting on human input
-   or external systems. The heartbeat prompt should check Linear issue status,
-   worker threads, PRs, CI, blockers, and acceptance gates. Update an existing
-   project heartbeat instead of creating duplicates.
+   current-thread heartbeat automation via `automation_update` to continue
+   orchestration while work is active. Prefer a short interval, such as 10
+   minutes, for active worker batches; lengthen or pause it only when the project
+   is waiting on human input or external systems. The heartbeat prompt should
+   check Linear issue status, worker threads, PRs, CI, blockers, and acceptance
+   gates. Update an existing project heartbeat instead of creating duplicates.
 8. **Review returns.** For each worker report or PR, run the acceptance gates
    below before moving Linear forward.
 
