@@ -190,6 +190,10 @@ The stack imports both tags and both live layers, then provides them with `Layer
 
 `pnpm exec alchemy dev` deploys infrastructure to the cloud while Workers run locally in workerd with hot reload. Use `dev.port` for custom ports.
 
+In monorepos, keep Worker local-dev scope to the owning package with `cwd` so generated files, `.alchemy/out`, and sibling app outputs do not cause restart loops. For Vite frontends that call local Workers, pair a stable API Worker `dev.port` with frontend `dev.env`; keep deploy/build env pointed at the deployed API URL.
+
+Prove the local path in a browser before calling it working: API health on the local Worker port, frontend network traffic to that local URL, and one HMR edit that updates without a full stack restart.
+
 For tests, use `Test.make({ dev: true })` or `ALCHEMY_DEV=1` to run Workers locally within the test process.
 
 ## Logs And Observability

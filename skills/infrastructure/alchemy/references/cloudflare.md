@@ -259,6 +259,8 @@ pnpm exec alchemy logs --filter Worker --since 1h
 
 `pnpm exec alchemy dev` creates or reuses real cloud resources and runs Worker code locally in workerd.
 
+Local dev is not proven until the browser or tests confirm which API the frontend is calling. For Vite app plus API Worker stacks, set the API Worker `dev.port`, pass that local URL through the Vite `dev.env`, and keep normal build env pointing at the deployed API URL. In monorepos, use Worker `cwd` when the default watcher includes generated files or sibling packages.
+
 ## Gotchas
 
 - Do not run deploy or destroy without explicit confirmation.

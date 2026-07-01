@@ -36,6 +36,8 @@ Safety:
 - Use `--yes` only in CI or after explicit operator choice.
 - Use `plan`/`--dry-run` before risky deploys.
 - Do not destroy a production stage from automation without a hard safety check.
+- If a package script is named `deploy`, invoke it as `pnpm run deploy --stage ...`. Plain `pnpm deploy ...` is a pnpm command, not necessarily the project script.
+- Run Alchemy scripts under the repo-pinned Node runtime. If a new Node major causes Cloudflare/provider response parsing failures, confirm behavior under the pinned runtime before editing stack resources.
 
 ## Stages
 
@@ -177,12 +179,45 @@ Use `TestClock` for code that depends on `Schedule`, retry backoff, polling, or 
 - Runs Workers locally in workerd.
 - Hot-reloads app code.
 - Preserves cloud-backed resources across reloads.
+- Can expose a different compatibility-date ceiling than Cloudflare production. Prove local dev after changing `compatibility.date`.
 
 Set custom port:
 
 ```ts
 dev: { port: 3000 }
 ```
+
+For monorepos, keep the local watch surface tight:
+
+```ts
+const api = yield* Cloudflare.Worker("Api", {
+  cwd: "apps/api",
+  main: "src/worker.ts",
+  dev: { port: 1337 },
+});
+```
+
+When a Vite app should exercise the local API Worker, pass the local URL into the dev server while keeping build/deploy env pointed at the deployed API:
+
+```ts
+const localApiUrl = "http://127.0.0.1:1337";
+
+const app = yield* Cloudflare.Vite("App", {
+  rootDir: "apps/app",
+  dev: {
+    env: { VITE_API_URL: localApiUrl },
+  },
+  env: {
+    VITE_API_URL: api.url,
+  },
+});
+```
+
+Before calling local dev done, verify both surfaces:
+
+- API health or smoke endpoint returns from the local Worker port.
+- Browser network traffic from the frontend hits the local API URL.
+- A small HMR change updates without restarting the full stack.
 
 Run tests locally through workerd:
 

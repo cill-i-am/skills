@@ -24,6 +24,8 @@ Load this before finalizing any nontrivial Alchemy work.
 - Prefer source examples from `alchemy-run/alchemy-effect` when docs and package behavior differ.
 - Do not copy Alchemy v1 async/await patterns into v2 stacks.
 - Do not rely on old local skills or stale memory for provider props.
+- If provider reads/deploys start failing with invalid or garbled response parsing after a Node upgrade, verify the same Alchemy command under a known-supported Node version before changing stack code.
+- For real projects, pin the Node runtime used by Alchemy scripts with `.node-version`, `package.json#engines`, and a small preflight guard on `dev`, `deploy`, `run`/`read`, and `destroy` scripts. Keep `@types/node` aligned with that runtime.
 
 ## Stack And State
 
@@ -103,12 +105,16 @@ Do:
 - Enable `nodejs_compat` for drivers/frameworks that need Node APIs.
 - Use tagged class plus `.make(props, impl)` for circular Worker/DO/Lambda references; in beta.58 layer-form Worker/Container props live on `.make`.
 - Retry first workers.dev checks in tests; subdomain propagation can lag.
+- Prove `pnpm exec alchemy dev` before raising `compatibility.date`; local Miniflare/workerd support can lag Cloudflare production compatibility dates.
+- In monorepos, set Worker `cwd` to the owning app/package when local dev watches too much. A Worker watching repo root can restart on `.alchemy/out`, generated assets, or sibling app output.
+- For local frontend-to-API testing, set the API Worker `dev.port` deliberately and pass that local API URL into the frontend dev server. Keep production/build env pointed at the deployed API URL or domain.
 
 Don't:
 
 - Hand-roll env binding types when Alchemy can infer them.
 - Add Workers to a minimal starter if the user only asked for the first bucket stack.
 - Treat local dev as full emulation. `pnpm exec alchemy dev` uses real cloud resources and local Worker code.
+- Assume a frontend is calling the local Worker just because both resources run under `alchemy dev`; verify browser network traffic or an integration test against the local API URL.
 
 ## Hyperdrive And Databases
 
