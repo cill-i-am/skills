@@ -198,7 +198,7 @@ Do not write the tech spec inside this skill. Prepare a concise brief for `../te
 
 Then tell the user to run the tech-spec workflow on that brief.
 
-If the chosen candidate needs more product/domain/ownership decisions before a spec can be written, recommend a grilling session first. Use `../../planning/grill-with-docs/` when durable discovery artifacts are desired; otherwise use `../../planning/grill-me/`.
+If the chosen candidate needs more product/domain/ownership decisions before a spec can be written, recommend `../../planning/grilling/` first. Use Docs Mode when durable discovery artifacts are desired; otherwise use Interview Mode.
 
 Completion criterion: the chosen candidate is handed off as a focused brief, not transformed into an implementation plan or code changes.
 

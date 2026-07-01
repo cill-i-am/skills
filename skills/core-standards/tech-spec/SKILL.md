@@ -191,8 +191,8 @@ Completion criterion: the output follows the outline below and is implementation
    - State that there is not enough context for an implementation-ready tech spec.
    - Completion criterion: the agent has not invented requirements, APIs, files, or call stacks.
 2. Start a grilling interview.
-   - Use `../../planning/grill-with-docs/` when the user wants docs, ADRs, glossary/domain language, or durable design artifacts created during discovery.
-   - Otherwise use `../../planning/grill-me/`.
+   - Use `../../planning/grilling/` in Docs Mode when the user wants docs, ADRs, glossary/domain language, or durable design artifacts created during discovery.
+   - Otherwise use `../../planning/grilling/` in Interview Mode.
    - Ask one question at a time and provide the recommended answer with each question.
    - If a question can be answered by exploring the codebase, inspect the codebase instead of asking.
    - Completion criterion: the interview has enough context for Path A: problem, users/callers, constraints, affected systems, desired behavior, boundaries, likely APIs, invariants, risks, and acceptance tests.
