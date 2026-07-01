@@ -15,6 +15,11 @@ or reports a real blocker.
 - `docs/agents/triage-states.md`
 - the Linear issue, parent Project/PRD, and linked PR if one exists
 
+If `docs/agents/*` is absent because the project has not run `linear-setup` yet
+or this is a bundle simulation, read the matching templates from
+`../linear-setup/assets/docs/agents/*` when available and state that the target
+repo still needs `linear-setup`.
+
 ## Simulation Mode
 
 Use Simulation Mode when the user asks for a no-code gate, handoff rehearsal,

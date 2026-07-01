@@ -18,6 +18,11 @@ explicitly out of scope.
 - relevant Linear issue/Project/PRD/comments
 - relevant source and architecture docs for the area
 
+If `docs/agents/*` is absent because the project has not run `linear-setup` yet
+or this is a bundle simulation, read the matching templates from
+`../linear-setup/assets/docs/agents/*` when available and state that the target
+repo still needs `linear-setup`.
+
 Use the Linear skill/app for reads and writes. If Linear tools are unavailable,
 stop and ask the user to connect Linear.
 

@@ -17,6 +17,11 @@ slice, prove it, and report evidence. The orchestrator owns final acceptance.
 - the Linear issue, parent Project/PRD, blockers, and comments
 - nearest `AGENTS.md`
 
+If `docs/agents/*` is absent because the project has not run `linear-setup` yet
+or this is a bundle simulation, read the matching templates from
+`../linear-setup/assets/docs/agents/*` when available and state that the target
+repo still needs `linear-setup`.
+
 ## Workflow
 
 1. **Refresh Linear.** Read the live issue, parent Project/PRD, blockers,

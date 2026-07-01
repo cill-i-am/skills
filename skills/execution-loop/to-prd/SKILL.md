@@ -16,9 +16,14 @@ state. The repo owns code and source-backed architecture docs.
 - `docs/agents/domain.md`
 - relevant `docs/architecture/*`
 
-Use the Linear skill/app for Linear reads and writes. If Linear tools are not
-available, stop and ask the user to connect the Linear app before attempting to
-publish the PRD.
+If `docs/agents/*` is absent because the project has not run `linear-setup` yet
+or this is a bundle simulation, read the matching templates from
+`../linear-setup/assets/docs/agents/*` when available and state that the target
+repo still needs `linear-setup`.
+
+Use the Linear skill/app for Linear reads and writes when publishing. If Linear
+tools are not available and Draft Mode does not apply, stop and ask the user to
+connect the Linear app before attempting to publish the PRD.
 
 ## Process
 

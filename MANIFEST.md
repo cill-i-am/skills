@@ -78,6 +78,9 @@ Current loop-tool assumptions:
   `send_message_to_thread`, and `set_thread_archived`.
 - Watcher and orchestration heartbeats use the Codex app `automation_update`
   tool, not raw automation directives.
+- Pre-bootstrap simulations use the bundled `linear-setup/assets/docs/agents/*`
+  templates as read-only fallbacks and report that the target repo still needs
+  `linear-setup`.
 
 ### Planning And Interrogation
 

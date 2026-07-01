@@ -50,8 +50,26 @@ of creating duplicates.
 - `docs/agents/domain.md`
 - parent Linear Initiative/Project/PRD and child issues
 
+If `docs/agents/*` is absent because the project has not run `linear-setup` yet
+or this is a bundle simulation, read the matching templates from
+`../linear-setup/assets/docs/agents/*` when available and state that the target
+repo still needs `linear-setup`.
+
 Use the Linear skill/app for Linear reads and writes. Use Codex thread tools
 when available to create or steer user-visible worker threads.
+
+## Simulation Mode
+
+Use Simulation Mode when the user asks for a no-mutation rehearsal, workflow
+test, or skill-bundle validation. In Simulation Mode:
+
+- do not create Codex threads, Linear issues, automations, branches, commits, or
+  PRs;
+- use Draft Mode outputs from `to-prd` and `to-issues` as the source of truth;
+- produce the dispatch plan that would be executed, including worker/reviewer
+  thread prompts, dependency order, required skills, and stop conditions;
+- produce the expected acceptance gates from `production-ready`;
+- clearly label every live action as "not run - simulation".
 
 ## Loop
 

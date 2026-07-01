@@ -17,6 +17,11 @@ links.
 - relevant parent Linear Initiative/Project/PRD
 - relevant `docs/architecture/*`
 
+If `docs/agents/*` is absent because the project has not run `linear-setup` yet
+or this is a bundle simulation, read the matching templates from
+`../linear-setup/assets/docs/agents/*` when available and state that the target
+repo still needs `linear-setup`.
+
 Use the Linear skill/app for reads and writes when publishing real issues. If
 the user asks for read-only planning, simulation, or draft issue slices, use
 Draft Mode instead of stopping for missing Linear access.
