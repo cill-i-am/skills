@@ -15,6 +15,15 @@ or reports a real blocker.
 - `docs/agents/triage-states.md`
 - the Linear issue, parent Project/PRD, and linked PR if one exists
 
+## Simulation Mode
+
+Use Simulation Mode when the user asks for a no-code gate, handoff rehearsal,
+offline review, or expected production-ready evidence before implementation. In
+Simulation Mode, do not require a branch, PR, CI run, Linear mutation, or live
+GitHub comments. Produce the expected evidence checklist, likely verification
+commands, reviewer/spec requirements, completion blockers, and final report
+shape. Clearly label live checks as not run.
+
 ## Gate
 
 ### 1. Spec Checklist
