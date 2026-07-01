@@ -172,3 +172,7 @@ Before considering this bundle ready for broad reuse:
 4. The loop skills can bootstrap a blank repo by running `linear-setup` first.
 5. A fresh agent can run a simulated flow:
    rough idea -> PRD -> issues -> worker handoff -> production-ready checklist.
+
+Run `pnpm test` before committing bundle changes. It checks skill frontmatter,
+skill-name/path consistency, required `linear-setup` templates, and stale thread
+tool references.

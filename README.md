@@ -28,3 +28,11 @@ execution-loop skills expect.
 
 See `MANIFEST.md` for the skill groups, external skills intentionally not
 vendored here, and readiness gates.
+
+## Validate
+
+Run the bundle checks with:
+
+```sh
+pnpm test
+```

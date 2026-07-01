@@ -14,11 +14,12 @@ request to create user-visible Codex worker threads for dispatchable Linear
 issues unless the user says to use internal subagents instead.
 
 Prefer the Codex app thread tools for issue workers. If thread tools are not in
-the active tool list, search for them before considering a fallback. Use
-`list_projects` before `create_thread` for repo-scoped worker/reviewer threads.
-Create one new Codex thread per Linear issue, with a worktree environment and
-explicit reasoning effort. Each thread should own exactly one issue and report
-progress through Linear and the thread itself.
+the active tool list, search for `create_thread`, `read_thread`,
+`send_message_to_thread`, `set_thread_archived`, and `list_threads` before
+considering a fallback. Use `list_threads` when you need to avoid duplicate
+worker/reviewer threads. Create one new Codex thread per Linear issue, with a
+worktree environment and explicit reasoning effort. Each thread should own
+exactly one issue and report progress through Linear and the thread itself.
 
 Use `send_message_to_thread` to steer existing worker/reviewer threads. Use
 `set_thread_archived` when a worker or reviewer thread is complete and no longer
