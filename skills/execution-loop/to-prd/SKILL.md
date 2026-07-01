@@ -42,6 +42,13 @@ publish the PRD.
 7. **Prepare for issue slicing.** End with the recommended next step: run
    `to-issues` on the Linear Project/PRD.
 
+## Draft Mode
+
+Use Draft Mode when the user asks for a read-only PRD, a simulation, an inline
+artifact, or Linear tools are intentionally unavailable. In Draft Mode, do not
+stop for missing Linear access. Produce the PRD inline, mark it as draft or
+ready for slicing, and state what would be published to Linear later.
+
 ## PRD Shape
 
 Use this structure in Linear.

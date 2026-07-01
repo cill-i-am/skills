@@ -48,7 +48,10 @@ the response says which expected references were absent.
 
 ## Interview Rules
 
-- Ask one question at a time. Never bundle several decision questions together.
+- Ask one question at a time in live user interviews. Use a small batch only
+  when the user or orchestrator explicitly asks for asynchronous grooming,
+  simulation, or delegated review where one-at-a-time ping-pong would be the
+  bottleneck.
 - For each question, give a recommendation and briefly name the tradeoffs you
   considered.
 - If codebase or document inspection can answer the question, inspect first and
@@ -108,3 +111,8 @@ End with:
 - recommended next slice;
 - whether the result is ready for `tech-spec`, `to-prd`, `to-issues`, or direct
   implementation.
+
+Use `to-prd` when the decision ledger is stable enough to become a product
+source of truth. Use `to-issues` only after a PRD, feature brief, or equivalent
+work packet has clear goals, non-goals, user outcomes, readiness state, and
+known open questions.

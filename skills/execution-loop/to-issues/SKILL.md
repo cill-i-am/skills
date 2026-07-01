@@ -17,8 +17,21 @@ links.
 - relevant parent Linear Initiative/Project/PRD
 - relevant `docs/architecture/*`
 
-Use the Linear skill/app for reads and writes. If Linear tools are unavailable,
-stop and ask the user to connect Linear.
+Use the Linear skill/app for reads and writes when publishing real issues. If
+the user asks for read-only planning, simulation, or draft issue slices, use
+Draft Mode instead of stopping for missing Linear access.
+
+## Draft Mode
+
+Draft Mode produces issue slices without mutating Linear. Use it for simulations,
+offline planning, PRD review, or when the user wants Linear-ready markdown before
+publishing. In Draft Mode:
+
+- read the available PRD, Project brief, plan, or conversation context;
+- produce issues in the same shape as the issue body template;
+- include dependency/blocker notes in prose instead of Linear relations;
+- mark each issue `draft`, `AFK-ready`, or `HITL`;
+- state what would need to happen before publishing to Linear.
 
 ## Process
 
@@ -41,6 +54,9 @@ stop and ask the user to connect Linear.
    link to real Linear IDs.
 7. **Prepare orchestrator handoff.** Each issue should be self-contained for a
    fresh worker session and include review/verification expectations.
+
+In Draft Mode, stop after the proposed issue list, dependency summary, and
+publishing notes.
 
 ## Issue Body Template
 
