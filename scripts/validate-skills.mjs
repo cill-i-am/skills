@@ -14,6 +14,11 @@ const requiredAgentTemplates = [
   "triage-states.md",
   "worker-thread-template.md",
 ];
+const requiredAgentInterfaceFields = [
+  "display_name",
+  "short_description",
+  "default_prompt",
+];
 
 const errors = [];
 
@@ -58,6 +63,11 @@ function parseFrontmatter(filePath, content) {
   return fields;
 }
 
+function hasYamlField(content, fieldName) {
+  const pattern = new RegExp(`^\\s{2}${fieldName}:\\s*.+$`, "m");
+  return pattern.test(content);
+}
+
 for await (const filePath of walk(skillsRoot)) {
   const relativePath = path.relative(root, filePath);
   const content = await readFile(filePath, "utf8");
@@ -83,6 +93,21 @@ for await (const filePath of walk(skillsRoot)) {
 
   if (content.includes("list_projects")) {
     errors.push(`${relativePath}: stale list_projects thread-tool reference`);
+  }
+
+  if (
+    path.extname(filePath) === ".yaml" &&
+    path.basename(path.dirname(filePath)) === "agents"
+  ) {
+    if (!/^interface:\s*$/m.test(content)) {
+      errors.push(`${relativePath}: missing interface block`);
+    }
+
+    for (const fieldName of requiredAgentInterfaceFields) {
+      if (!hasYamlField(content, fieldName)) {
+        errors.push(`${relativePath}: missing interface.${fieldName}`);
+      }
+    }
   }
 }
 

@@ -174,5 +174,5 @@ Before considering this bundle ready for broad reuse:
    rough idea -> PRD -> issues -> worker handoff -> production-ready checklist.
 
 Run `pnpm test` before committing bundle changes. It checks skill frontmatter,
-skill-name/path consistency, required `linear-setup` templates, and stale thread
-tool references.
+skill-name/path consistency, `agents/openai.yaml` prompt metadata, required
+`linear-setup` templates, and stale thread tool references.

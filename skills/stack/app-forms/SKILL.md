@@ -13,7 +13,7 @@ that forms use TanStack Form with project UI primitives and Effect Schema.
 
 Before implementing or reviewing a form:
 
-1. Read `apps/AGENTS.md`.
+1. Read the nearest app-level `AGENTS.md` when present.
 2. Read the project's UI system docs or external UI skill, such as shadcn, when
    changing UI primitives or form markup.
 3. Read `references/tanstack-form-effect-schema.md` for the implementation pattern.
