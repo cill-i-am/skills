@@ -1,0 +1,4 @@
+interface:
+  display_name: "TanStack Routing"
+  short_description: "Route work through bundled TanStack Start and Router skills."
+  default_prompt: "Use TanStack Routing to update app routes, loaders, server functions, server routes, middleware, SSR, and routing-related data flow."
