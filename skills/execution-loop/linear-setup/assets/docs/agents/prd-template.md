@@ -1,47 +1,49 @@
 # PRD Template
 
-## Problem
+## Problem Statement
 
-What user, business, or system problem are we solving?
+What user, business, or system problem are we solving, from the user's
+perspective?
 
-## Outcome
-
-What should be true when this is done?
-
-## Scope
-
-In scope:
+## Goals
 
 - 
 
-Out of scope:
+## Non-Goals
 
 - 
 
-## Users And Actors
+## Users And Stories
 
-- 
+1. As a <actor>, I want <capability>, so that <benefit>.
 
-## Behavior
+## Solution / Behavior
 
-Describe the intended behavior in product terms.
+Describe the intended product behavior and workflow.
 
-## Constraints
+## Implementation Decisions
 
-Include technical, security, data, performance, deployment, or provider constraints.
+Record stable module, interface, data, API, route, persistence, workflow, or
+rollout decisions. Avoid volatile file paths unless the path is itself a
+contract.
 
-## Decisions
+## Testing And Verification
 
-Record stable decisions and tradeoffs that future agents should preserve.
+- Public interfaces or workflows to verify.
+- Similar tests or verification commands in this repo.
+- Browser, migration, auth, API, or CI expectations when relevant.
 
-## Acceptance Criteria
+## Risks And Rollout
 
-- 
+- Product, migration, data, auth, infrastructure, operational, or rollout risks.
+- Backout notes where relevant.
 
-## Risks
+## Open Questions / HITL Decisions
 
-- 
+- Question, recommended answer, and what is blocked by it.
 
-## Open Questions
+## References
 
-- 
+- Linear Initiative/Project/issues
+- Architecture docs
+- Relevant source-backed notes

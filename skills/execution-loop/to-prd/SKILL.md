@@ -54,60 +54,16 @@ artifact, or Linear tools are intentionally unavailable. In Draft Mode, do not
 stop for missing Linear access. Produce the PRD inline, mark it as draft or
 ready for slicing, and state what would be published to Linear later.
 
-## PRD Shape
+## PRD Template
 
-Use this structure in Linear.
+Use `docs/agents/prd-template.md` as the source of truth for PRD shape. If the
+target repo has not run `linear-setup`, use the bundled template at
+`../linear-setup/assets/docs/agents/prd-template.md` and state that the target
+repo still needs setup.
 
-```markdown
-# <Project / PRD title>
-
-## Problem Statement
-
-What user or business problem this solves, from the user's perspective.
-
-## Goals
-
-- Goal 1
-- Goal 2
-
-## Non-Goals
-
-- Explicitly out-of-scope item
-
-## User Stories
-
-1. As a <actor>, I want <capability>, so that <benefit>.
-
-## Solution
-
-The intended product behavior and workflow.
-
-## Implementation Decisions
-
-- Stable module, interface, data, API, route, persistence, or workflow decisions.
-- Avoid volatile file paths unless the path is itself a contract.
-
-## Testing And Verification
-
-- Public interfaces or workflows to verify.
-- Similar tests or verification commands in this repo.
-- Browser, migration, auth, or CI expectations when relevant.
-
-## Risks And Rollout
-
-- Product, migration, data, auth, infrastructure, or operational risks.
-- Rollout or backout notes where relevant.
-
-## Open Questions / HITL Decisions
-
-- Question, recommended answer, and what is blocked by it.
-
-## References
-
-- Linear Initiative/Project/issues
-- Architecture docs
-- Relevant source-backed notes
-```
+Completion criterion: the PRD has enough goals, non-goals, user outcomes,
+implementation decisions, verification expectations, risks, references, and
+HITL/open questions for `to-issues` to slice without inventing product intent.
 
 ## Publishing Rules
 

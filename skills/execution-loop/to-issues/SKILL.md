@@ -63,47 +63,12 @@ publishing. In Draft Mode:
 In Draft Mode, stop after the proposed issue list, dependency summary, and
 publishing notes.
 
-## Issue Body Template
+## Issue Template
 
-```markdown
-## Parent
-
-Linear Project/PRD: <link>
-Initiative: <link or omit>
-
-## What to build
-
-Describe the end-to-end behavior this vertical slice delivers. Use stable
-domain, interface, and workflow language. Avoid step-by-step implementation
-unless a specific implementation decision is part of the PRD.
-
-## Acceptance criteria
-
-- [ ] Criterion 1
-- [ ] Criterion 2
-- [ ] Criterion 3
-
-## Verification expectations
-
-- Tests or checks expected for this slice.
-- Browser, migration, auth, API, or CI evidence required if relevant.
-
-## Risk and review
-
-- Risk: low | medium | high
-- Expected review stack: production-ready, code-review, review-swarm for broad
-  risk, simplify before wrap-up, and any stack-specific skills relevant to the
-  changed surfaces.
-
-## Blockers
-
-- None - can start immediately
-- Or: blocked by <Linear issue>
-
-## Out of scope
-
-- Adjacent work that should not be touched by this issue.
-```
+Use `docs/agents/issue-template.md` as the source of truth for issue body
+shape. If the target repo has not run `linear-setup`, use the bundled template
+at `../linear-setup/assets/docs/agents/issue-template.md` and state that the
+target repo still needs setup.
 
 ## Slicing Rules
 
@@ -113,6 +78,9 @@ unless a specific implementation decision is part of the PRD.
 - Do not close or modify the parent PRD/Project except to link the new issues
   and summarize the issue graph.
 - Do not assign work to a worker until all blockers are represented in Linear.
+- Each published issue must include a goal, parent context, in/out of scope,
+  acceptance criteria, verification expectations, risk/review level, blockers,
+  and handoff notes sufficient for a fresh worker and reviewer thread.
 
 ## Linear Updates
 

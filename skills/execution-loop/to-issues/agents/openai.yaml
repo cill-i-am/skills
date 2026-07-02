@@ -1,0 +1,4 @@
+interface:
+  display_name: "To Issues"
+  short_description: "Slice PRDs into Linear issues."
+  default_prompt: "Use $to-issues to break a PRD, Project, feature brief, or implementation plan into dependency-aware Linear issues with AFK-ready vertical slices."

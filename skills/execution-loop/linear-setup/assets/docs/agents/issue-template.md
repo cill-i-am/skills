@@ -1,5 +1,10 @@
 # Issue Template
 
+## Parent
+
+Linear Project/PRD: <link>
+Initiative: <link or omit>
+
 ## Goal
 
 One concise outcome for this vertical slice.
@@ -22,13 +27,26 @@ Out of scope:
 
 - 
 
+## Verification Expectations
+
+- Tests or checks expected for this slice.
+- Browser, migration, auth, API, or CI evidence required if relevant.
+
+## Risk And Review
+
+- Risk: low | medium | high
+- Expected review stack: production-ready, code-review, simplify, and any
+  stack-specific skills relevant to the changed surfaces. Add review-swarm for
+  broad or high-risk changes.
+
+## Blockers
+
+- None - can start immediately
+- Or: blocked by <Linear issue>
+
 ## Implementation Notes
 
 Name required skills, constraints, or likely files. Do not over-prescribe the implementation.
-
-## Verification
-
-- 
 
 ## Handoff Notes
 
