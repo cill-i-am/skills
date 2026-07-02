@@ -132,7 +132,8 @@ them when present:
 - `writing-great-skills` from Matt Pocock's skills repo for skill-authoring
   review and pruning
 - shadcn/UI, UI composition, and web design skills for frontend-heavy projects
-- Postgres/database provider skills when the project needs database operations
+- Drizzle ORM, PlanetScale Postgres, Postgres/database, email delivery, Resend,
+  and React Email skills from the registry when a project needs those operations
 - Provider-specific platform skills that are not part of the default Alchemy
   project architecture
 
@@ -141,11 +142,6 @@ them when present:
 Old project-specific skills can be useful source material, but do not copy them
 into this bundle unchanged. Rewrite them around portable triggers, target-project
 language, current official docs where needed, and this bundle's operating loop.
-
-Candidate future areas:
-
-- Drizzle/database modeling
-- email delivery and React Email
 
 Folded in:
 
