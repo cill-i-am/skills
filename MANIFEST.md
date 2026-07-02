@@ -69,6 +69,7 @@ as standalone skills.
 - `subagent-execution`
 - `review-swarm`
 - `simplify`
+- `worktree-isolation`
 
 Encoded so far:
 
@@ -80,6 +81,8 @@ Encoded so far:
   stack-specific skills that are present in the target project.
 - `worker` and `ci-watch` depend on portable `systematic-debugging` and
   `subagent-execution` support skills in this bundle.
+- `worker` and `orchestrator` use `worktree-isolation` to keep parallel agent
+  work out of the caller's current workspace.
 
 Current loop-tool assumptions:
 
@@ -143,7 +146,10 @@ Candidate future areas:
 
 - Drizzle/database modeling
 - email delivery and React Email
-- worktree ergonomics if they prove useful outside the worker loop
+
+Folded in:
+
+- worktree ergonomics via `execution-loop/worktree-isolation`
 
 ## Packaging Notes
 

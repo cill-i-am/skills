@@ -28,7 +28,8 @@ The orchestrator owns the work loop. Workers implement. Reviewers/spec agents ve
 ## Worker Rules
 
 - Use a user-visible Codex worker thread for non-trivial implementation.
-- Use an isolated worktree by default.
+- Use an isolated worktree by default, and use `worktree-isolation` to verify or
+  create that workspace before editing.
 - Read the live Linear issue, parent Project/PRD, blockers, and comments before
   planning. Handoff context is orientation only.
 - Post a short plan before implementation.

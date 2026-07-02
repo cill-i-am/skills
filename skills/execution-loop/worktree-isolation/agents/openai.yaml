@@ -1,0 +1,4 @@
+interface:
+  display_name: "Worktree Isolation"
+  short_description: "Create safe git worktrees for agent work."
+  default_prompt: "Use $worktree-isolation to create or validate an isolated git worktree for a worker, reviewer, branch, or parallel implementation task."

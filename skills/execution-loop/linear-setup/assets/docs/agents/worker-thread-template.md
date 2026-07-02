@@ -11,7 +11,7 @@ Implement Linear issue: `{ISSUE_ID}`.
 - Project or PRD: `{PROJECT_OR_PRD}`
 - Issue: `{ISSUE_LINK}`
 - Branch/worktree expectation: isolated worktree by default
-- Required skills: `{SKILLS}`
+- Required skills: worker, worktree-isolation, `{SKILLS}`
 
 ## Scope
 
@@ -28,6 +28,8 @@ Out of scope:
 - Follow repo `AGENTS.md` and nested instructions.
 - Read the live Linear issue, parent Project/PRD, blockers, and comments before
   planning. Treat this handoff as orientation only.
+- Use `worktree-isolation` to verify or create the isolated workspace before
+  editing.
 - Keep changes surgical and simple.
 - Post a short plan before implementation.
 - Proceed after posting the plan unless the issue or orchestrator explicitly

@@ -26,6 +26,10 @@ Use `send_message_to_thread` to steer existing worker/reviewer threads. Use
 needed. Do not silently substitute internal subagents for issue workers because
 the thread tool was not loaded yet.
 
+Tell workers to use `worktree-isolation` to verify or create their isolated
+workspace before editing unless the Codex thread environment already guarantees
+that isolation and the worker verifies it.
+
 For every non-trivial implementation worker, also create a user-visible
 read-only reviewer/spec thread at dispatch time. The reviewer thread may stay
 mostly idle until the worker posts a plan or PR, but it should exist from the
@@ -88,9 +92,10 @@ test, or skill-bundle validation. In Simulation Mode:
    user-visible Codex thread per dispatchable Linear issue, with a worktree
    environment and explicit reasoning effort. Include the Linear issue, parent
    PRD/Project, blockers, relevant comments, branch naming convention, and
-   instruction to use the `worker` skill. Tell workers to refresh live Linear
-   before planning or implementing. Require explicit plan approval only for
-   high-risk work or when the issue/orchestrator says approval is required.
+   instruction to use the `worker` and `worktree-isolation` skills. Tell
+   workers to refresh live Linear before planning or implementing. Require
+   explicit plan approval only for high-risk work or when the issue/orchestrator
+   says approval is required.
    - For every non-trivial worker, create a paired user-visible read-only
      reviewer/spec thread. Include the worker thread, Linear issue, parent
      PRD/Project, expected skills/standards, and instruction to use the

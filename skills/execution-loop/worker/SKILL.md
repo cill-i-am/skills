@@ -29,7 +29,8 @@ repo still needs `linear-setup`.
    orientation, not the operative source of truth.
 2. **Confirm assignment.** Ensure the issue is unblocked and in an implementable
    state. If it is HITL, blocked, or under-specified, stop and update Linear.
-3. **Create a branch.** Use `codex/<linear-key>-<slug>` unless instructed
+3. **Create or verify isolation.** Use `worktree-isolation` for the worker
+   worktree and branch setup. Use `codex/<linear-key>-<slug>` unless instructed
    otherwise. Never start provider-mutating Alchemy work without confirming
    stage and credentials.
 4. **Plan the narrow slice.** Re-state the acceptance criteria, out-of-scope
