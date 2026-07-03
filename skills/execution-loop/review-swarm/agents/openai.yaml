@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review Swarm"
+  short_description: "Run broad read-only risk review."
+  default_prompt: "Use $review-swarm to run a multi-perspective read-only review of a risky, broad, cross-boundary, or user-requested diff, PR, or file scope."

@@ -8,6 +8,10 @@ description: Watch GitHub PR checks and comments. Use after production-ready ope
 Own PR checks and PR feedback until they are green/resolved or genuinely
 blocked.
 
+This skill starts only after a PR exists. `production-ready` decides whether a
+change is ready for PR handoff; `ci-watch` decides whether the PR remains green
+and comment-resolved after handoff.
+
 ## Inputs
 
 - PR URL or current branch PR
@@ -86,3 +90,17 @@ automation only when the user or environment requires it.
 Use the Codex app `automation_update` tool for create/update/view/delete. Do not
 write raw automation directives by hand. Do not create duplicate watchers for
 the same PR; update or reuse an existing automation when possible.
+
+## Completion States
+
+- **Green:** required checks pass and actionable PR/Linear comments are resolved.
+- **Pending:** checks, review threads, or comments are still waiting; an inline
+  watch or heartbeat owns the next poll.
+- **Fixed and pushed:** an in-scope CI/comment fix was committed and pushed; the
+  loop continues against the new head SHA.
+- **Blocked:** the next move needs credentials, provider state, human judgment,
+  out-of-scope changes, or a base-branch/external fix.
+
+Final output must include the completion state, PR URL, head SHA, check status,
+comment/review-thread status, Linear update status, fixes pushed, and blockers
+or residual risk.

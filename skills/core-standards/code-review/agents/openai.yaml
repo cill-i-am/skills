@@ -1,0 +1,4 @@
+interface:
+  display_name: "Code Review"
+  short_description: "Review changed code against standards."
+  default_prompt: "Use $code-review to perform a read-only standards-backed review of a diff, branch, PR, staged work, or unstaged work."

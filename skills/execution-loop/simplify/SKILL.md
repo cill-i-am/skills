@@ -13,6 +13,7 @@ satisfies the spec.
 
 Review the current diff, staged changes, or explicitly named files. Stay close
 to the changed behavior and directly adjacent helpers.
+Do not refactor untouched areas to satisfy a taste preference.
 
 ## Passes
 
@@ -39,3 +40,4 @@ to the changed behavior and directly adjacent helpers.
 ## Finish
 
 Summarize what was simplified or say the diff was already appropriately simple.
+Include the validation command run after edits, or state why no edit was made.

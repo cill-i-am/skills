@@ -6,6 +6,8 @@ description: Read-only multi-perspective review. Use for broad, risky, cross-bou
 # Review Swarm
 
 Run a high-signal, read-only review. Do not edit files as part of this skill.
+This skill finds broad risk; it has no merge authority and does not replace
+`code-review` for standards-backed changed-code review.
 
 ## Scope
 
@@ -46,3 +48,7 @@ The main agent owns the verdict:
 
 If there are no material issues, say so plainly and name any residual test or
 verification risk.
+
+Completion criterion: every lens has either a concrete finding, a stated
+no-material-issue result, or a stated reason it did not apply; speculative
+findings are dropped or downgraded to questions before output.

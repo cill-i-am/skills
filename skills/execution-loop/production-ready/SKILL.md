@@ -8,6 +8,15 @@ description: Final evidence gate for Linear work or PRs. Use before worker compl
 Evidence before completion. A worker may not claim done until this gate passes
 or reports a real blocker.
 
+This skill is the coordinator for readiness. It invokes review, simplification,
+verification, PR, and CI-watch steps, but it does not replace them:
+
+- `code-review` proves standards-backed findings on changed code.
+- `review-swarm` adds broad read-only review for risky or cross-boundary diffs.
+- `simplify` removes unnecessary complexity before handoff.
+- `ci-watch` owns PR checks and PR/comment follow-up after a PR exists.
+- The orchestrator owns final acceptance and merge authority.
+
 ## Read First
 
 - `docs/agents/execution-policy.md`
@@ -57,10 +66,12 @@ Inspect the actual product diff:
 
 ### 3. Run Required Review Stack
 
-Load the relevant skill bodies before finalizing:
+Load the relevant skill bodies before finalizing. Use the smallest review stack
+that covers the changed surfaces:
 
 - all changed code: `code-review`
-- broad or risky diffs: `review-swarm`
+- broad, risky, security-sensitive, data-affecting, or cross-boundary diffs:
+  `review-swarm`
 - cleanup before wrap-up: `simplify`
 - Effect code: `effect-ts`
 - persistence/database changes: external database skills when installed,
@@ -78,7 +89,9 @@ repo instructions and say what was unavailable. Do not invent old repo-only
 review skills.
 
 Fix material issues unless the user or orchestrator requested review-only mode.
-Discard false positives with a short technical reason.
+Discard false positives with a short technical reason. Do not run
+`review-swarm` as a substitute for `code-review`; use it for additional breadth
+when the risk justifies it.
 
 ### 4. Fresh Verification
 
@@ -109,10 +122,11 @@ title when it includes the issue key. Comment in Linear with:
 
 ### 6. CI Watch
 
-After PR creation, run `ci-watch` before the worker final report. It owns
-pending checks, GitHub PR comments/review threads, new Linear comments,
-actionable CI/comment fixes, follow-up commits, automation handoff, and Linear
-CI evidence.
+After PR creation, run `ci-watch` before the worker final report. It owns PR
+checks, GitHub PR comments/review threads, new Linear comments, actionable
+CI/comment fixes, follow-up commits, automation handoff, and Linear CI
+evidence. Production-ready should not duplicate CI-watch polling logic; it only
+starts or resumes that loop and records the result.
 
 If CI or comments are still pending after a short inline watch, create or update
 a 2-3 minute heartbeat automation for the worker thread with the Codex app
@@ -123,10 +137,22 @@ requirement, and stop condition. Reuse an existing watcher for the same PR.
 Do not move Linear to its completed state until CI is green or the orchestrator
 explicitly accepts a non-CI completion path.
 
+## Completion States
+
+- **Ready:** spec gate passed, review stack resolved, verification passed, PR is
+  linked, CI/comments are green or accepted by the orchestrator, and Linear has
+  evidence.
+- **Pending watch:** code/review/verification are ready, but CI or comments are
+  still pending and `ci-watch` or its heartbeat owns the next check.
+- **Blocked:** missing credentials, provider state, failing baseline,
+  out-of-scope reviewer feedback, unresolved HITL, or external CI/provider
+  failure prevents completion.
+
 ## Completion Report
 
 Final output must include:
 
+- completion state: Ready, Pending watch, or Blocked
 - spec gate result
 - review stack used
 - verification evidence

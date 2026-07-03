@@ -1,0 +1,4 @@
+interface:
+  display_name: "Production Ready"
+  short_description: "Gate PR readiness with evidence."
+  default_prompt: "Use $production-ready to run the final evidence gate for a Linear issue, worker handoff, PR, merge decision, or done-state update."

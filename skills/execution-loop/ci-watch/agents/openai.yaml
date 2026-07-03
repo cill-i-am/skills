@@ -1,0 +1,4 @@
+interface:
+  display_name: "CI Watch"
+  short_description: "Watch PR checks and comments."
+  default_prompt: "Use $ci-watch to monitor a GitHub PR's checks, review threads, comments, and Linear updates until the PR is green, resolved, or blocked."
