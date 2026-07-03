@@ -1,6 +1,8 @@
 # Error Handling Guide
 
-This guide is based on the vendored Effect source in `./.repos/effect`.
+This guide is based on Effect source patterns. Resolve historical
+`./.repos/effect` paths through `source-lookup.md`; do not create a local Effect
+checkout in the target project.
 
 Key source files:
 
@@ -93,7 +95,7 @@ Repo references:
 - `./.repos/effect/packages/effect/src/Schema.ts`
 - examples across `./.repos/effect/packages/effect/src/unstable/*`
 
-Example shape from the vendored repo:
+Example shape from the Effect source:
 
 - `./.repos/effect/packages/effect/src/unstable/httpapi/HttpApiError.ts`
 - `./.repos/effect/packages/effect/src/unstable/workers/WorkerError.ts`
@@ -208,7 +210,7 @@ Why:
 
 ### Use schema-backed errors for protocol errors
 
-The vendored repo uses schema-backed errors in places like SQL, RPC, sockets, and HTTP APIs.
+The Effect source uses schema-backed errors in places like SQL, RPC, sockets, and HTTP APIs.
 
 Strong examples:
 
@@ -222,7 +224,7 @@ These are good reference points when the error contract matters externally.
 
 When an error comes from a library, runtime API, or generic `Error`, prefer wrapping it in a typed error instead of leaking the foreign error directly through your domain or protocol boundary.
 
-This is a very common pattern in the vendored repo.
+This is a very common pattern in the Effect source.
 
 Good examples:
 

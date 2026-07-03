@@ -1,6 +1,8 @@
 # Schedule Guide
 
-This guide is based on the vendored `Schedule` module and its usage across `./.repos/effect`.
+This guide is based on Effect `Schedule` source patterns. Resolve historical
+`./.repos/effect` paths through `source-lookup.md`; do not create a local Effect
+checkout in the target project.
 
 Key source files:
 
@@ -53,7 +55,7 @@ Over:
 
 ## Common Repo Patterns
 
-The most common patterns in the vendored repo are:
+The most common patterns in the Effect source are:
 
 1. `Schedule.recurs(n)` for bounded retries or repeats
 2. `Schedule.spaced(...)` for simple fixed spacing

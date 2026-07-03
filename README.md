@@ -24,6 +24,22 @@ Then ask Codex to run `linear-setup` in the target project. It installs the
 repo-local `docs/agents/*` workflow docs and root `AGENTS.md` pointers that the
 execution-loop skills expect.
 
+## Fresh Project Flow
+
+After install, the intended operating path is:
+
+```txt
+linear-setup
+  -> grilling / to-prd
+  -> to-issues
+  -> orchestrator
+  -> worker + reviewer
+  -> production-ready
+  -> ci-watch
+```
+
+Use stack and infrastructure skills as needed inside that loop.
+
 ## Bundle
 
 See `MANIFEST.md` for the skill groups, external skills intentionally not

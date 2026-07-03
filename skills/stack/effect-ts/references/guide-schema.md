@@ -1,6 +1,8 @@
 # Schema Guide
 
-This guide is based on the vendored Schema module and common repo usage in `./.repos/effect`.
+This guide is based on Effect Schema source patterns. Resolve historical
+`./.repos/effect` paths through `source-lookup.md`; do not create a local Effect
+checkout in the target project.
 
 Key source files:
 
@@ -289,7 +291,7 @@ class NotFound extends Schema.TaggedErrorClass<NotFound>()("NotFound", {
 
 Be precise about optionality.
 
-Important rule from the vendored docs:
+Important rule from the Effect docs:
 
 - `Schema.optional(schema)` means `T | undefined`
 - `Schema.optionalKey(schema)` means an exact optional property in a struct
@@ -379,7 +381,7 @@ const TrimmedString = Schema.String.pipe(
 )
 ```
 
-The vendored docs explicitly note that `decodeTo` is curried and should be used with `pipe`.
+The Effect docs explicitly note that `decodeTo` is curried and should be used with `pipe`.
 
 ### `Schema.encodeTo`
 
@@ -450,7 +452,7 @@ Still prefer a single logical schema plus a transformation pipeline over maintai
 
 Schema supports key renaming through struct transformations.
 
-The vendored `Schema.ts` implements key renaming by mapping fields and using decode/encode transformations with renamed key maps.
+The Effect `Schema.ts` source implements key renaming by mapping fields and using decode/encode transformations with renamed key maps.
 
 Use key renaming when:
 
@@ -581,7 +583,7 @@ Use annotations when the schema participates in:
 
 ## Common Repo Patterns
 
-Patterns visible in the vendored repo:
+Patterns visible in the Effect source:
 
 - `Schema.Class` for named reusable contract types
 - `Schema.Struct` for inline shapes and anonymous fragments

@@ -1,6 +1,8 @@
 # Testing Guide
 
-This guide is based on the vendored `@effect/vitest` package in `./.repos/effect`.
+This guide is based on `@effect/vitest` source patterns. Resolve historical
+`./.repos/effect` paths through `source-lookup.md`; do not create a local Effect
+checkout in the target project.
 
 Key source files:
 
@@ -130,7 +132,7 @@ Avoid:
 
 Use `assert` for Effect tests.
 
-The vendored repo also uses `expect` in some tests, but for skill guidance prefer `assert` in Effect-based tests because it keeps tests more uniform and explicit inside Effect programs.
+The Effect source also uses `expect` in some tests, but for skill guidance prefer `assert` in Effect-based tests because it keeps tests more uniform and explicit inside Effect programs.
 
 Examples:
 
@@ -174,7 +176,7 @@ The Effect testers support the standard test variants:
 - `it.effect.only(...)`
 - `it.live.fails(...)`
 
-Examples from the vendored tests show these are first-class parts of the API.
+Examples from the Effect source tests show these are first-class parts of the API.
 
 Use them exactly as you would with Vitest, but return `Effect` from the test body.
 
@@ -395,7 +397,7 @@ Most tests should let `@effect/vitest` manage it.
 
 `@effect/vitest` is designed to work correctly with scoped effects and layered resources.
 
-The vendored tests explicitly verify resource release through `afterAll`.
+The Effect source tests explicitly verify resource release through `afterAll`.
 
 Use this normally:
 

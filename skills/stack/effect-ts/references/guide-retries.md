@@ -1,6 +1,8 @@
 # Retries Guide
 
-This guide is based on retry patterns and `ExecutionPlan` usage in the vendored Effect repo.
+This guide is based on Effect retry and `ExecutionPlan` source patterns. Resolve
+historical `./.repos/effect` paths through `source-lookup.md`; do not create a
+local Effect checkout in the target project.
 
 Key source files:
 
@@ -50,7 +52,7 @@ Avoid:
 
 `Effect.retry` is the main retry operator.
 
-The vendored tests show several important supported forms.
+The Effect source tests show several important supported forms.
 
 ## Retry On Success vs Failure
 
@@ -170,7 +172,7 @@ Prefer a schedule when:
 
 ## Common Retry Schedules In The Repo
 
-The vendored repo repeatedly uses these patterns:
+The Effect source repeatedly uses these patterns:
 
 ### Fixed retry count
 
@@ -322,7 +324,7 @@ Use:
 - `Effect.withExecutionPlan` for effects
 - `Stream.withExecutionPlan` for streams
 
-The vendored tests focus on `Stream.withExecutionPlan` and demonstrate:
+The Effect source tests focus on `Stream.withExecutionPlan` and demonstrate:
 
 - fallback from one provider to another
 - fallback after partial stream failure

@@ -1,6 +1,8 @@
 # Observability Guide
 
-This guide is based on the vendored Effect source in `./.repos/effect`.
+This guide is based on Effect source patterns. Resolve historical
+`./.repos/effect` paths through `source-lookup.md`; do not create a local Effect
+checkout in the target project.
 
 Key source files:
 
@@ -137,7 +139,7 @@ Use this for:
 
 Use `Effect.fnUntraced` only for edge cases.
 
-The vendored Effect repo itself uses `fnUntraced` in a number of low-level internals and integration helpers. That does not make it the default recommendation for downstream application or business code.
+The Effect source uses `fnUntraced` in a number of low-level internals and integration helpers. That does not make it the default recommendation for downstream application or business code.
 
 If you do not want an explicit named span, prefer `Effect.fn` without a span name so you still keep stack traces and the normal traced-function behavior.
 
@@ -381,7 +383,7 @@ Avoid putting a metric on every tiny internal helper.
 
 For real application observability, compose telemetry at the layer level.
 
-The vendored repo provides `@effect/opentelemetry` layers such as:
+The Effect source provides `@effect/opentelemetry` layers such as:
 
 - `NodeSdk.layer`
 - `Tracer.layer`
@@ -414,7 +416,7 @@ Why:
 
 ## OpenTelemetry JS Framework Integration
 
-The vendored repo includes a real integration layer for the OpenTelemetry JavaScript ecosystem in `@effect/opentelemetry`.
+The Effect source includes a real integration layer for the OpenTelemetry JavaScript ecosystem in `@effect/opentelemetry`.
 
 This is the preferred integration path when the application needs to participate in the standard OpenTelemetry JS framework, exporters, and SDKs.
 
@@ -448,7 +450,7 @@ This means:
 
 `NodeSdk.layer(...)` is the main Node.js integration entrypoint.
 
-From the vendored source, it accepts a configuration that can include:
+From the Effect source, it accepts a configuration that can include:
 
 - span processors
 - tracer config
@@ -490,7 +492,7 @@ Best practice:
 
 The `Tracer` module bridges Effect spans into OpenTelemetry spans.
 
-Important integration points from the vendored source:
+Important integration points from the Effect source:
 
 - `Tracer.layer`
 - `Tracer.layerGlobal`
@@ -514,7 +516,7 @@ Best practice:
 
 The `Metrics` module connects Effect metrics to OpenTelemetry JS metric readers.
 
-Important details from the vendored implementation:
+Important details from the Effect implementation:
 
 - `Metrics.layer(...)` registers a producer against one or more metric readers
 - it supports temporality preferences:
@@ -532,7 +534,7 @@ Best practice:
 
 The `Logger` module connects Effect logging to OpenTelemetry JS logs.
 
-Important details from the vendored implementation:
+Important details from the Effect implementation:
 
 - it maps Effect log levels to OpenTelemetry severity numbers
 - it includes fiber ID, span context, log annotations, and log span timing in emitted attributes
@@ -545,7 +547,7 @@ Best practice:
 
 ### Shutdown And Lifecycle
 
-The vendored layers use scoped acquisition and release for tracer providers, metric readers, and logger providers.
+The Effect layers use scoped acquisition and release for tracer providers, metric readers, and logger providers.
 
 This is the correct lifecycle model.
 
@@ -561,7 +563,7 @@ Instead:
 
 When integrating with frameworks or inbound protocols that already carry trace context, prefer using the OpenTelemetry integration helpers rather than hand-rolling context propagation.
 
-The vendored tracer module provides:
+The Effect tracer module provides:
 
 - `makeExternalSpan`
 - `currentOtelSpan`

@@ -77,6 +77,11 @@ for await (const filePath of walk(skillsRoot)) {
     const skillDirectoryName = path.basename(path.dirname(filePath));
     const name = frontmatter?.get("name");
     const description = frontmatter?.get("description");
+    const agentMetadataPath = path.join(
+      path.dirname(filePath),
+      "agents",
+      "openai.yaml",
+    );
 
     if (name === undefined || name.length === 0) {
       errors.push(`${relativePath}: missing name`);
@@ -89,6 +94,14 @@ for await (const filePath of walk(skillsRoot)) {
     if (description === undefined || description.length === 0) {
       errors.push(`${relativePath}: missing description`);
     }
+
+    try {
+      await readFile(agentMetadataPath, "utf8");
+    } catch {
+      errors.push(
+        `${relativePath}: missing agents/openai.yaml metadata`,
+      );
+    }
   }
 
   if (content.includes("list_projects")) {
@@ -99,6 +112,8 @@ for await (const filePath of walk(skillsRoot)) {
     path.extname(filePath) === ".yaml" &&
     path.basename(path.dirname(filePath)) === "agents"
   ) {
+    const skillName = path.basename(path.dirname(path.dirname(filePath)));
+
     if (!/^interface:\s*$/m.test(content)) {
       errors.push(`${relativePath}: missing interface block`);
     }
@@ -107,6 +122,12 @@ for await (const filePath of walk(skillsRoot)) {
       if (!hasYamlField(content, fieldName)) {
         errors.push(`${relativePath}: missing interface.${fieldName}`);
       }
+    }
+
+    if (!content.includes(`$${skillName}`)) {
+      errors.push(
+        `${relativePath}: interface.default_prompt must mention $${skillName}`,
+      );
     }
   }
 }

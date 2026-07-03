@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tech Spec"
+  short_description: "Write typed call-stack handoffs."
+  default_prompt: "Use $tech-spec to turn a PRD, issue, architecture candidate, or design discussion into an implementation-ready typed call-stack spec."

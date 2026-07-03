@@ -1,6 +1,8 @@
 # Effect Guide
 
-This guide is based on common usage patterns in the vendored repo at `./.repos/effect`.
+This guide is based on Effect source patterns. Resolve historical
+`./.repos/effect` paths through `source-lookup.md`; do not create a local Effect
+checkout in the target project.
 
 Key source areas:
 

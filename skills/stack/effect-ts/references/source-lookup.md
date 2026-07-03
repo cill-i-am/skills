@@ -22,7 +22,7 @@ In a fresh worktree or cloud environment, run `pnpm install` first so the local 
 
 ## Path Mapping
 
-Many local guides were originally written against a vendored checkout at `./.repos/effect`.
+Many local guides were originally written against a local Effect checkout at `./.repos/effect`.
 
 When a guide says:
 

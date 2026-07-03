@@ -1,6 +1,6 @@
 # Features
 
-Public package and module surface area to be aware of when researching or implementing a solution. Each module entry includes its vendored repo path so it can be located quickly.
+Public package and module surface area to be aware of when researching or implementing a solution. Each module entry includes its Effect source path so it can be located quickly.
 
 ## `effect` Package
 
@@ -484,7 +484,7 @@ Package path: `packages/platform-node`
 
 Package path: `packages/platform-node-shared`
 
-- No public `src/index.ts` barrel is present in this vendored repo, so there are no barrel exports to inventory here.
+- No public `src/index.ts` barrel is present in this Effect source, so there are no barrel exports to inventory here.
 
 ## `@effect/vitest` Package
 

@@ -1,6 +1,8 @@
 # SQL Guide
 
-This guide is based on the vendored Effect SQL modules in `./.repos/effect`.
+This guide is based on Effect SQL source patterns. Resolve historical
+`./.repos/effect` paths through `source-lookup.md`; do not create a local Effect
+checkout in the target project.
 
 Key source files:
 
@@ -134,7 +136,7 @@ Then keep the query and decoding together in one SQL-aware operation.
 
 ### `SqlResolver` + Schema
 
-`SqlResolver` is one of the clearest examples of SQL and Schema integration in the vendored repo.
+`SqlResolver` is one of the clearest examples of SQL and Schema integration in the Effect source.
 
 It uses:
 
@@ -335,7 +337,7 @@ The repo shows these best practices:
 - keep migration execution observable with logs and spans
 - use SQL client transaction and locking semantics handled by the migrator
 
-Important behavior in the vendored repo:
+Important behavior in the Effect source:
 
 - migrations table creation is dialect-aware
 - duplicate migration IDs are detected
@@ -370,7 +372,7 @@ const migrations = SqliteMigrator.fromRecord({
 })
 ```
 
-This matches the model used by the vendored migrator implementation:
+This matches the model used by the Effect migrator implementation:
 
 - each migration has a numeric prefix and descriptive name
 - each migration resolves to an `Effect`
@@ -412,7 +414,7 @@ const MigrationLayer = SqliteMigrator.layer({
 })
 ```
 
-From the vendored packages, this is implemented as `Layer.effectDiscard(run(options))`.
+From the Effect packages, this is implemented as `Layer.effectDiscard(run(options))`.
 
 That means:
 
@@ -490,7 +492,7 @@ Avoid:
 
 ## Observability
 
-The vendored SQL modules already integrate with spans and transaction context.
+The Effect SQL modules already integrate with spans and transaction context.
 
 This is another reason to prefer them over raw driver usage.
 

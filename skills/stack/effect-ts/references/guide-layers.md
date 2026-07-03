@@ -1,6 +1,8 @@
 # Layers Guide
 
-This guide is based on the vendored Effect source in `./.repos/effect`.
+This guide is based on Effect source patterns. Resolve historical
+`./.repos/effect` paths through `source-lookup.md`; do not create a local Effect
+checkout in the target project.
 
 Key source files:
 
@@ -52,7 +54,7 @@ This gives you:
 
 Prefer the class syntax with `Context.Service`.
 
-This matches the vendored repo's current style.
+This matches the Effect source's current style.
 
 There are two good definition styles:
 

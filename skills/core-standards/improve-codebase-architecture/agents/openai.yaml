@@ -1,0 +1,4 @@
+interface:
+  display_name: "Architecture Scan"
+  short_description: "Find standards-backed refactor candidates."
+  default_prompt: "Use $improve-codebase-architecture to scan a codebase for evidence-backed architecture refactor opportunities without editing code."
