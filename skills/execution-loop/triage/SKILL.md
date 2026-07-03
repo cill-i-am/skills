@@ -10,6 +10,10 @@ Move Linear work through the state machine defined in
 ready for an AFK worker, waiting for information, blocked, ready for a human, or
 explicitly out of scope.
 
+Triage prepares work. It does not implement code, dispatch workers, or create
+speculative backlog items. When an issue is ready, hand it to the orchestrator
+or leave it in the live ready-for-agent state.
+
 ## Read First
 
 - `docs/agents/linear-workflow.md`
@@ -100,3 +104,7 @@ Every triage comment should include:
 - evidence or code/docs checked
 - open questions or blockers
 - next state and why
+
+Completion criterion: the issue has one clear next state, the durable Linear
+comment explains why, and any blocker or follow-up is represented as Linear
+state rather than hidden in prose.

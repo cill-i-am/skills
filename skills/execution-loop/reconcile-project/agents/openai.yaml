@@ -1,0 +1,4 @@
+interface:
+  display_name: "Reconcile Project"
+  short_description: "Make Linear project state truthful."
+  default_prompt: "Use $reconcile-project to refresh Linear issues, blockers, PRs, CI state, worker evidence, and PRD drift before dispatch or acceptance."

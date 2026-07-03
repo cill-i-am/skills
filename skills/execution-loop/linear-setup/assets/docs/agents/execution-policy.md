@@ -18,6 +18,9 @@ The orchestrator owns the work loop. Workers implement. Reviewers/spec agents ve
   reviewer threads, use `create_thread` for new user-visible threads, use
   `send_message_to_thread` for steering, and use `set_thread_archived` only
   after the thread is no longer needed.
+- Before dispatching, check Linear comments/status, linked PRs, existing
+  worker/reviewer threads, and active heartbeats. Reuse or steer an active owner
+  instead of creating a duplicate worker for the same issue.
 - Let the reviewer/spec thread stay mostly idle until the worker posts a plan or
   PR when there is nothing useful to inspect yet.
 - The orchestrator may waive the reviewer/spec thread only for tiny or
@@ -30,6 +33,8 @@ The orchestrator owns the work loop. Workers implement. Reviewers/spec agents ve
 - Use a user-visible Codex worker thread for non-trivial implementation.
 - Use an isolated worktree by default, and use `worktree-isolation` to verify or
   create that workspace before editing.
+- Do not implement until the worker can report the isolated path, branch, base
+  commit, install result, and baseline check result or blocker.
 - Read the live Linear issue, parent Project/PRD, blockers, and comments before
   planning. Handoff context is orientation only.
 - Post a short plan before implementation.

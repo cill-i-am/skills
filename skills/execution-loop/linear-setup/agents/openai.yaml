@@ -1,0 +1,4 @@
+interface:
+  display_name: "Linear Setup"
+  short_description: "Install agent workflow docs."
+  default_prompt: "Use $linear-setup to set up or refresh this repo's Linear-native agent workflow docs and AGENTS.md pointers."

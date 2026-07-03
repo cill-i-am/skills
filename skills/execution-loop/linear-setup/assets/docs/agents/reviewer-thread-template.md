@@ -31,6 +31,8 @@ Check:
 
 - worker plan when available, especially for overcomplication, scope drift, or
   missed constraints
+- whether the worker proved worktree isolation and baseline status before
+  implementation
 - spec adherence
 - simplicity and architecture
 - standards and skills

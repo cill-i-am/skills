@@ -21,6 +21,13 @@ worker/reviewer threads. Create one new Codex thread per Linear issue, with a
 worktree environment and explicit reasoning effort. Each thread should own
 exactly one issue and report progress through Linear and the thread itself.
 
+Before spawning a worker, check live Linear comments/status, linked PRs,
+existing worker/reviewer threads, and the current project heartbeat. If an
+active worker already owns the issue, steer that thread with
+`send_message_to_thread` instead of creating another worker. If a reviewer
+already exists for the issue, reuse it unless it is archived or explicitly
+obsolete.
+
 Use `send_message_to_thread` to steer existing worker/reviewer threads. Use
 `set_thread_archived` when a worker or reviewer thread is complete and no longer
 needed. Do not silently substitute internal subagents for issue workers because
@@ -96,6 +103,8 @@ test, or skill-bundle validation. In Simulation Mode:
    workers to refresh live Linear before planning or implementing. Require
    explicit plan approval only for high-risk work or when the issue/orchestrator
    says approval is required.
+   - First prove the issue is not already owned by an active worker, reviewer,
+     branch, PR, or heartbeat. Reuse or steer the existing owner when found.
    - For every non-trivial worker, create a paired user-visible read-only
      reviewer/spec thread. Include the worker thread, Linear issue, parent
      PRD/Project, expected skills/standards, and instruction to use the
@@ -122,6 +131,10 @@ test, or skill-bundle validation. In Simulation Mode:
    gates. Update an existing project heartbeat instead of creating duplicates.
 8. **Review returns.** For each worker report or PR, run the acceptance gates
    below before moving Linear forward.
+
+Dispatch is complete only when every selected issue is either assigned to one
+active worker with a paired reviewer when required, skipped with a durable
+reason, or blocked in Linear.
 
 ## Acceptance Gates
 

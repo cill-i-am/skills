@@ -1,0 +1,4 @@
+interface:
+  display_name: "Triage"
+  short_description: "Prepare Linear work for execution."
+  default_prompt: "Use $triage to classify, clarify, unblock, close, or prepare Linear issues and Projects for human or agent execution."

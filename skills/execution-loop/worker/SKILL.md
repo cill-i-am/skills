@@ -32,7 +32,9 @@ repo still needs `linear-setup`.
 3. **Create or verify isolation.** Use `worktree-isolation` for the worker
    worktree and branch setup. Use `codex/<linear-key>-<slug>` unless instructed
    otherwise. Never start provider-mutating Alchemy work without confirming
-   stage and credentials.
+   stage and credentials. Do not implement until you can report the isolated
+   path, branch, base commit, install result, and baseline check result or
+   blocker.
 4. **Plan the narrow slice.** Re-state the acceptance criteria, out-of-scope
    boundaries, expected files or modules, and verification commands. Keep this
    brief. Proceed after posting unless Linear, the orchestrator, or a clear

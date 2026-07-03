@@ -30,6 +30,8 @@ Out of scope:
   planning. Treat this handoff as orientation only.
 - Use `worktree-isolation` to verify or create the isolated workspace before
   editing.
+- Do not implement until you can report the isolated path, branch, base commit,
+  install result, and baseline check result or blocker.
 - Keep changes surgical and simple.
 - Post a short plan before implementation.
 - Proceed after posting the plan unless the issue or orchestrator explicitly

@@ -67,3 +67,7 @@ Keep the report short:
 - files created or updated
 - Linear access status and any live workspace assumptions used
 - any missing Linear access or follow-up needed
+
+Completion criterion: the repo has the expected `docs/agents/*` files, the
+agent instructions point at them, and no repo-local copy of Linear teams,
+statuses, labels, or Initiatives was introduced as a second source of truth.
