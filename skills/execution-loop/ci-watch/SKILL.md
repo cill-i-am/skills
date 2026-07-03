@@ -26,23 +26,25 @@ or its bundled scripts when GitHub Actions checks fail.
 
 1. Resolve the PR from URL or current branch.
 2. Run `gh auth status`; stop if GitHub auth is unavailable.
-3. Refresh the live Linear issue and parent Project when available. Treat the
+3. Record the current PR head SHA. Re-read it after every push or rerun so check
+   status is never reported for a stale commit.
+4. Refresh the live Linear issue and parent Project when available. Treat the
    automation prompt or handoff as orientation, not the operative source of
    truth.
-4. Check GitHub PR comments, review threads, review decisions, and new Linear
+5. Check GitHub PR comments, review threads, review decisions, and new Linear
    comments. Address actionable in-scope reviewer comments before claiming the
    PR is ready; reply or update Linear when a comment is out of scope or
    blocked. Stop for orchestrator input when feedback changes scope, product
    behavior, architecture, data shape, or requires judgment.
-5. Check PR status with `gh pr checks`.
-6. If checks or review comments are pending:
+6. Check PR status with `gh pr checks`.
+7. If checks or review comments are pending:
    - poll inline for a short window when useful
    - if waiting would waste the worker session, create or update a 2-3 minute
      heartbeat automation for the worker thread with `automation_update` and
      continue this loop there
    - update Linear with the watcher status and the current pending checks or
      comments
-7. If a GitHub Actions check fails:
+8. If a GitHub Actions check fails:
    - inspect logs
    - identify root cause using `systematic-debugging`
    - fix only if the change stays inside the Linear issue/PR scope
@@ -50,7 +52,7 @@ or its bundled scripts when GitHub Actions checks fail.
    - commit and push
    - update Linear with failure, fix, and verification evidence
    - continue watching
-8. If all required checks pass and actionable comments are resolved:
+9. If all required checks pass and actionable comments are resolved:
    - update Linear with green/comment-resolved status and evidence
    - report ready for orchestrator acceptance
 
@@ -104,3 +106,7 @@ the same PR; update or reuse an existing automation when possible.
 Final output must include the completion state, PR URL, head SHA, check status,
 comment/review-thread status, Linear update status, fixes pushed, and blockers
 or residual risk.
+
+Completion criterion: the reported state is for the current PR head SHA, all
+required checks and actionable comments have an owner, and Linear has the same
+status/evidence as the final report.

@@ -36,12 +36,21 @@ Subagents do not inherit your context. Point to exact files or include the
 minimal raw artifacts they must inspect. Avoid giving them your intended answer
 when the goal is independent review.
 
+## Batch Contract
+
+Before spawning a batch, define each subagent's role, file or artifact scope,
+authority, stop condition, and expected output. Do not assign two edit-capable
+subagents to the same files at the same time. If work overlaps, serialize it or
+make one subagent read-only.
+
 ## Defaults
 
 - Review/spec subagents are read-only.
 - Investigation subagents should return evidence, not opinions.
 - Edit subagents must own a narrow file set and report their diff plus checks.
 - The controller verifies results before acting on them.
+- Subagent output is advisory until the controller checks it against source,
+  tests, Linear/spec context, or the current diff.
 
 ## Stop Conditions
 
@@ -52,3 +61,7 @@ Stop delegating and escalate to the worker/orchestrator when:
 - tests fail repeatedly without root cause
 - the Linear issue, PRD, or architecture direction appears stale
 - a decision affects product behavior, data shape, cost, security, or provider state
+
+Completion criterion: every subagent result is either accepted with local
+verification, rejected with a reason, or converted into a blocker/follow-up that
+the worker or orchestrator owns.

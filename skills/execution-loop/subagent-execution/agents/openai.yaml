@@ -1,0 +1,4 @@
+interface:
+  display_name: "Subagent Execution"
+  short_description: "Delegate bounded support work."
+  default_prompt: "Use $subagent-execution to delegate bounded investigations, reviews, or subtasks while keeping the worker or orchestrator in control."

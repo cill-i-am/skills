@@ -37,6 +37,10 @@ lenses yourself.
 Every reviewer is read-only. Findings should include file/line or symbol, issue,
 why it matters, recommended fix, severity, and confidence.
 
+Assign each subagent one lens or one clearly bounded scope. Do not run several
+agents with the same broad prompt unless you explicitly want independent
+confirmation of a high-risk area.
+
 ## Synthesis
 
 The main agent owns the verdict:

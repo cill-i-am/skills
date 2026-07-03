@@ -35,9 +35,17 @@ Do not refactor untouched areas to satisfy a taste preference.
 - Prefer deleting complexity over moving it elsewhere.
 - Keep fixes in scope; create a concrete follow-up only for separate work found
   during the pass.
+- Do not hide a real product decision, failure mode, or boundary invariant
+  behind a generic helper just to reduce lines.
+- If a simplification could change behavior, add or keep a focused test before
+  making it.
 - Run the smallest relevant validation after changes.
 
 ## Finish
 
 Summarize what was simplified or say the diff was already appropriately simple.
 Include the validation command run after edits, or state why no edit was made.
+
+Completion criterion: no remaining local complexity has a clear in-scope delete,
+inline, reuse, or type-safety fix; anything separate is recorded as a concrete
+follow-up instead of folded into the current diff.

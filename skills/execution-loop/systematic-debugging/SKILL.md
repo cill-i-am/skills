@@ -8,6 +8,13 @@ description: Root-cause debugging loop for bugs, failing tests, flakes, CI failu
 No fixes without a red-capable feedback loop and a root-cause investigation.
 Skip steps only when you explicitly justify why they do not apply.
 
+## Red Loop Contract
+
+Before editing, name the loop you will trust and run it once. If it does not go
+red for the reported symptom, either tighten the loop or state why this bug
+cannot currently be reproduced. Do not claim a fix from a loop that never proved
+it could fail.
+
 ## Feedback Loop
 
 Find the tightest pass/fail signal for the reported symptom:
@@ -30,9 +37,10 @@ iterate, and runnable by the agent.
 2. Minimize the reproduction until every remaining input, step, or dependency is load-bearing.
 3. List 3-5 ranked, falsifiable hypotheses.
 4. Add targeted probes that distinguish the hypotheses. Avoid broad "log everything" debugging.
-5. Write or identify the regression test before the fix when a correct seam exists.
-6. Apply the root-cause fix, then rerun the minimized repro and the original loop.
-7. Remove temporary diagnostics, harnesses, and debug code before finishing.
+5. Change one causal variable at a time until the failing path is understood.
+6. Write or identify the regression test before the fix when a correct seam exists.
+7. Apply the root-cause fix, then rerun the minimized repro and the original loop.
+8. Remove temporary diagnostics, harnesses, and debug code before finishing.
 
 Use a unique marker such as `[DEBUG-a4f2]` for temporary diagnostics so cleanup is
 a single search.
@@ -56,3 +64,7 @@ Report:
 - fix summary
 - verification command/results
 - any missing test seam or follow-up issue
+
+Completion criterion: the trusted loop was red or the lack of red was explained,
+the root cause connects the symptom to a specific path or invariant, the fixed
+loop is green, and a search for the debug marker finds no leftover diagnostics.
