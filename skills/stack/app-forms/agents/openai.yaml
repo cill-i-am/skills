@@ -1,4 +1,4 @@
 interface:
   display_name: "App Forms"
-  short_description: "TanStack Form patterns"
+  short_description: "Build TanStack Form flows."
   default_prompt: "Use $app-forms to build or review a clientside TanStack Form flow with Effect Schema validation."

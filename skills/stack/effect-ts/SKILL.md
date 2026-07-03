@@ -9,13 +9,37 @@ Expert guidance for programming with the Effect library, covering error handling
 
 ## Prerequisite
 
-Before doing any other Effect-related work, verify that the target project can resolve Effect source through opensrc:
+Before doing Effect implementation or review work in a project that already uses
+Effect, verify that the target project can resolve Effect source through
+opensrc:
 
 ```sh
 pnpm exec opensrc path --cwd . effect
 ```
 
 If the command fails, read `./references/source-lookup.md` and run the documented setup. Do not require or create `./.repos/effect` in the target project.
+
+When the task is to install Effect in a fresh project, install the needed
+package set first, then configure and verify opensrc before writing Effect code.
+
+## Stack Boundary Contract
+
+Use Effect deliberately:
+
+- Use Effect for TypeScript backend services, infrastructure adapters, shared
+  packages, API clients, typed workflows, retries, schedules, resource
+  management, observability, SQL, and testable async logic.
+- Use Effect Schema at external boundaries and form boundaries even when the
+  surrounding UI code is ordinary React.
+- Do not wrap React component state, simple event handlers, or plain rendering
+  logic in Effect only for consistency.
+- Keep Effect runtime provision at application edges, worker entrypoints,
+  server functions/routes, tests, or package adapters. Domain functions should
+  declare requirements and errors rather than constructing live dependencies.
+- Prefer small feature-local services and layers. Extract shared packages only
+  when more than one app, worker, or feature needs the contract.
+- Treat casts and unparsed primitives at boundaries as design problems. Earn
+  brands through Schema decoders or typed constructors.
 
 ## Research Strategy
 
@@ -127,6 +151,9 @@ Install additional `@effect/*` packages only when the user task actually needs t
 - add `@effect/*` packages as needed by runtime and features
 - keep the full installed Effect package set version-aligned
 
+For existing projects, follow the repository's established Effect version unless
+the user asks to upgrade.
+
 ### Error Handling
 
 - Use Effect's typed error system instead of throwing exceptions.
@@ -179,6 +206,13 @@ Install additional `@effect/*` packages only when the user task actually needs t
 ### Explaining Solutions
 
 When providing solutions, explain the Effect concepts being used and why they fit the specific use case. If you encounter patterns not covered in local references, prefer consistency with the codebase when possible and otherwise rely on the opensrc Effect source.
+
+## Completion Criterion
+
+Effect work is complete only when boundary inputs are parsed, typed errors or
+defects are intentional, dependencies are provided at an edge, relevant guide or
+source checks were consulted for non-trivial patterns, and tests or focused
+runtime checks prove the Effect path.
 
 ## References
 

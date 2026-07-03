@@ -1,0 +1,4 @@
+interface:
+  display_name: "Effect TS"
+  short_description: "Use Effect for typed TypeScript backends."
+  default_prompt: "Use $effect-ts to implement or review Effect services, Layers, schemas, typed errors, retries, observability, SQL, or tests."

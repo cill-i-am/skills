@@ -30,6 +30,15 @@ Before implementing or reviewing a form:
   equivalents when available; put `data-invalid` on the field wrapper and
   `aria-invalid` on the control.
 - Keep submit behavior route-local until reuse is real. Share schemas, parsers, and boundary adapters through feature slices; avoid broad reusable form components that hide page behavior.
+- Prefer feature slices such as `features/<feature>/shared/*` for schemas,
+  parsers, error normalization, and client adapters that are used by more than
+  one route. Keep page layout, copy, navigation, and one-off mutation behavior
+  in the route.
+- Use TanStack Query mutations or the relevant typed client for clientside
+  commands. Invalidate or refetch the exact affected queries on success; do not
+  introduce a second state store for mutation fallout.
+- Convert structured client errors into honest UI messages, but keep unexpected
+  errors as failures rather than rendering success or silent fallback states.
 
 ## Avoid
 
@@ -38,3 +47,10 @@ Before implementing or reviewing a form:
 - `useState` for submitted values, dirty state, pending state, or error state already owned by TanStack Form or a mutation client.
 - Treating Standard Schema validation as enough when the submitted value needs branded or transformed Effect Schema output.
 - Duplicating schema definitions for form validation and mutation inputs when they are the same logical shape.
+- Extracting a generic form shell before at least two routes prove the same
+  behavior, not just similar markup.
+
+Completion criterion: form inputs decode through the schema before mutation,
+form state comes from TanStack Form or the mutation client, shared pieces live in
+a feature slice only when reuse is real, and the UI exposes validation,
+pending/success/error states without `useEffect` mirrors.

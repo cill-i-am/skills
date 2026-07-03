@@ -13,11 +13,26 @@ This skill adapts the Vercel React performance rule catalog to the target stack:
 - Use `createServerFn`, `createMiddleware`, and route `server.handlers` for server boundaries.
 - Remember that route loaders and most modules are isomorphic by default. Use server functions/routes for server-only work.
 - Use TanStack Query or TanStack Router loader caching for client-visible data fetching. Do not add a second client data cache unless the user asks.
+- Prefer TanStack Query for server state that is visible to components: create a stable query options factory, preload critical queries in loaders with `ensureQueryData`, and read the same query in components. Do not return duplicate loader data when Query owns it.
 - Use Vite/Rollup-compatible dynamic imports, `React.lazy`, TanStack Router route code splitting, and explicit import maps for bundle work.
 - Treat server functions and server routes as public HTTP endpoints. Validate input at the boundary and authorize inside the handler or middleware.
 - For background work on Cloudflare, prefer platform-supported `waitUntil`, queues, workflows, or a durable async pipeline over fire-and-forget promises.
 - Keep cross-request caches explicit, bounded, and non-user-specific unless keyed by a parsed principal. Prefer Effect cache utilities for server-side source caching when Effect is part of the project.
 - Avoid request-scoped module state. Module scope may hold immutable config, static assets, or intentionally bounded caches.
+- Avoid `useEffect` and `useState` for data derivation, server state, form state, or URL state when TanStack Router, TanStack Query, TanStack Form, render-time derivation, or event handlers own the lifecycle.
+
+## Data Flow Defaults
+
+- Parse route params, search params, server function inputs, server route bodies,
+  headers, cookies, env/config, and localStorage before carrying values inward.
+- Keep route and server-function payloads plain and serializable. Carry branded
+  values inside the app, but serialize plain decoded data across client/server
+  boundaries.
+- Use narrow projections at external boundaries and shared API contracts. Avoid
+  route-local bespoke DTOs unless the route would otherwise leak sensitive data
+  or large unused payloads.
+- Put reusable query/client/schema logic in feature slices or packages when
+  multiple routes need it. Keep one-off route behavior route-local.
 
 ## Rule Categories
 
@@ -133,3 +148,8 @@ This skill adapts the Vercel React performance rule catalog to the target stack:
 Read the smallest relevant rule files from `rules/` before acting. When a rule touches TanStack Start behavior, also read the corresponding TanStack skill under `node_modules/@tanstack/*/skills` if available.
 
 The compiled guide in `AGENTS.md` is a sanitized index for target projects. The individual rule files remain the source of detailed examples.
+
+Completion criterion: every touched server/client boundary is parsed and
+authorized where needed, data fetching has one cache owner, avoidable effects or
+local state are removed, and any performance rule applied has a focused
+verification or clear rationale.

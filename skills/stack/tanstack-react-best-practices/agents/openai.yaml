@@ -1,0 +1,4 @@
+interface:
+  display_name: "TanStack React"
+  short_description: "Review React data and performance patterns."
+  default_prompt: "Use $tanstack-react-best-practices to review React, TanStack Start, TanStack Query, hydration, rendering, bundle size, or server/client data flow."
