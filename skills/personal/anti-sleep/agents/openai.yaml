@@ -1,0 +1,4 @@
+interface:
+  display_name: "Anti Sleep"
+  short_description: "Keep macOS awake temporarily."
+  default_prompt: "Use $anti-sleep to start, verify, or stop a macOS caffeinate session for long-running work."

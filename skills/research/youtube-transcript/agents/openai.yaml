@@ -1,0 +1,4 @@
+interface:
+  display_name: "YouTube Transcript"
+  short_description: "Save video captions as text."
+  default_prompt: "Use $youtube-transcript to fetch, clean, and save the transcript or captions for a YouTube video before summarizing or analyzing it."

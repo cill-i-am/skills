@@ -42,6 +42,7 @@ or its bundled scripts when GitHub Actions checks fail.
    - if waiting would waste the worker session, create or update a 2-3 minute
      heartbeat automation for the worker thread with `automation_update` and
      continue this loop there
+   - verify the automation exists after creating or updating it
    - update Linear with the watcher status and the current pending checks or
      comments
 8. If a GitHub Actions check fails:
@@ -91,7 +92,9 @@ automation only when the user or environment requires it.
 
 Use the Codex app `automation_update` tool for create/update/view/delete. Do not
 write raw automation directives by hand. Do not create duplicate watchers for
-the same PR; update or reuse an existing automation when possible.
+the same PR; update or reuse an existing automation when possible. The watcher
+should stay silent when no state changed, report only meaningful status changes,
+and stop when the PR is green, merged, closed, or blocked with evidence.
 
 ## Completion States
 

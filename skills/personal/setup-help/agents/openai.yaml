@@ -1,0 +1,4 @@
+interface:
+  display_name: "Setup Help"
+  short_description: "Guide manual setup step by step."
+  default_prompt: "Use $setup-help to walk through an installation, sign-in, configuration, or other manual setup one atomic user step at a time."

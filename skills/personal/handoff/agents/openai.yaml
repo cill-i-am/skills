@@ -1,0 +1,4 @@
+interface:
+  display_name: "Handoff"
+  short_description: "Create continuation context."
+  default_prompt: "Use $handoff to summarize the current session, decisions, files, blockers, and continuation prompt for a fresh agent or future session."

@@ -52,7 +52,10 @@ When creating, updating, viewing, or stopping heartbeats, use the Codex app
 `automation_update` tool. Do not write raw automation directives by hand. Prefer
 `kind=heartbeat` and `destination=thread` for follow-ups attached to a Codex
 thread. Update an existing automation for the same project, worker, or PR instead
-of creating duplicates.
+of creating duplicates. Every heartbeat needs a concrete stop condition, a
+short status/evidence update when something changes, and no empty noise when
+nothing is due. After creating or updating a heartbeat, verify the tool reports
+the expected active automation or next run before claiming it is scheduled.
 
 ## Read First
 
@@ -128,7 +131,10 @@ test, or skill-bundle validation. In Simulation Mode:
    minutes, for active worker batches; lengthen or pause it only when the project
    is waiting on human input or external systems. The heartbeat prompt should
    check Linear issue status, worker threads, PRs, CI, blockers, and acceptance
-   gates. Update an existing project heartbeat instead of creating duplicates.
+   gates. It should stay silent when no state changed and stop when all active
+   work is accepted, blocked, or waiting on human input. Update an existing
+   project heartbeat instead of creating duplicates, and verify the automation
+   exists after creating or updating it.
 8. **Review returns.** For each worker report or PR, run the acceptance gates
    below before moving Linear forward.
 

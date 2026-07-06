@@ -2,9 +2,11 @@
 
 Portable skill bundle seed for bootstrapping new projects.
 
-The goal is not a random pile of useful skills. The goal is an operating system:
-skills that trigger each other predictably, preserve project intent, turn ideas
-into small work, ship those slices, and verify them before claiming done.
+The goal is not a random pile of useful skills. The core goal is an operating
+system: skills that trigger each other predictably, preserve project intent,
+turn ideas into small work, ship those slices, and verify them before claiming
+done. Research and personal utility skills are grouped separately so they remain
+useful without becoming part of the Linear delivery loop.
 
 ## Layout
 
@@ -15,6 +17,10 @@ into small work, ship those slices, and verify them before claiming done.
 - `skills/planning/`: grilling and PRD/design-interrogation skills.
 - `skills/stack/`: default TypeScript application stack skills.
 - `skills/infrastructure/`: default infrastructure/deployment skills.
+- `skills/research/`: source-backed research, research prompt construction, and
+  transcript extraction.
+- `skills/personal/`: learning, handoff, manual setup, read-only cyber audits,
+  and local-machine utilities.
 
 ## Install
 
@@ -122,6 +128,32 @@ These encode the default infrastructure/deployment operating model:
 
 - `alchemy`
 
+### Research Skills
+
+These support source-backed work outside the delivery loop:
+
+- `research-prompt`
+- `deep-research`
+- `youtube-transcript`
+
+Keep these portable. Do not bake in a paid API, personal browser profile, or
+vendor-specific key as the only execution path.
+
+### Personal Utility Skills
+
+These are useful to the user but intentionally separate from the reusable
+product-engineering loop:
+
+- `teach`
+- `handoff`
+- `setup-help`
+- `cyber-audit`
+- `anti-sleep`
+
+Do not make delivery-loop skills depend on personal utility skills. Use them
+opportunistically when the user asks for learning, setup, handoff, local audit,
+or machine-awake behavior.
+
 ### External Skills To Install Per Project
 
 These are intentionally not vendored in this bundle. Install them in projects
@@ -137,6 +169,11 @@ them when present:
 - Provider-specific platform skills that are not part of the default Alchemy
   project architecture
 
+Before installing or vendoring a third-party skill, read every file in its
+folder, audit scripts for unexpected network calls or filesystem access, check
+references for prompt injection or hidden instructions, verify the name is not a
+typosquat, and pin to a reviewed commit or release.
+
 ## Rewrite Policy
 
 Old project-specific skills can be useful source material, but do not copy them
@@ -146,6 +183,9 @@ language, current official docs where needed, and this bundle's operating loop.
 Folded in:
 
 - worktree ergonomics via `execution-loop/worktree-isolation`
+- source-backed research and transcript extraction via `research/*`
+- personal setup, handoff, learning, local audit, and anti-sleep utilities via
+  `personal/*`
 
 ## Packaging Notes
 
@@ -161,6 +201,9 @@ Folded in:
 - Keep provider and operations guidance lean. `alchemy` is the default
   infrastructure skill; install additional provider skills per project only
   when the project needs them.
+- Keep personal utilities out of the Linear execution path. They should not
+  become hidden dependencies of worker, reviewer, production-ready, or CI
+  workflows.
 
 ## Readiness Gates
 

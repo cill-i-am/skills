@@ -99,6 +99,20 @@ Possible artifacts:
 Write files only when the user asks for files or the target workflow requires
 durable artifacts. Otherwise, keep the artifacts inline.
 
+When Docs Mode is writing or updating a structured artifact:
+
+- create only the minimal skeleton needed to hold the conversation;
+- ask one question, wait for the answer, update the artifact, then ask the next
+  question;
+- preserve the user's words where they carry product, domain, or preference
+  meaning;
+- do not infer ranking, priority, or sequence from the order of an unordered
+  list the user typed;
+- do not fill empty sections with speculative agent-authored content;
+- patch existing files by section instead of overwriting the whole artifact;
+- re-read user edits before continuing and flag contradictions or missing
+  decisions.
+
 Completion criterion: every settled durable decision appears exactly once in the
 chosen artifact, and unresolved decisions remain explicit open questions.
 

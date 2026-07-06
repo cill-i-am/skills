@@ -1,0 +1,4 @@
+interface:
+  display_name: "Research Prompt"
+  short_description: "Write precise research briefs."
+  default_prompt: "Use $research-prompt to turn a vague research need into one self-contained, source-aware prompt for a human researcher or deep-research agent."

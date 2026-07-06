@@ -1,11 +1,12 @@
 # Ceird Skill Seed
 
 Portable Codex skills for building TypeScript product projects with a repeatable
-planning, execution, review, and deployment loop.
+planning, execution, review, and deployment loop, plus a small set of research
+and personal utility workflows.
 
 This repo is meant to be installed into new projects as a starting operating
-system for agents. It is not a random grab bag of skills. The bundle encodes a
-way of working:
+system for agents. It is not a random grab bag of skills. The core bundle
+encodes a way of working:
 
 - turn rough ideas into durable product context;
 - slice that context into small Linear issues;
@@ -13,6 +14,9 @@ way of working:
 - keep implementation narrow, typed, and testable;
 - verify PRs before calling work done;
 - use stack-specific guidance without burying the project in abstractions.
+
+Research and personal utilities are kept in separate groups so they can be used
+without weakening the product-engineering loop.
 
 ## What It Assumes
 
@@ -85,6 +89,15 @@ Use stack and infrastructure skills inside that loop as needed:
 - `simplify`, `systematic-debugging`, `review-swarm`, and
   `subagent-execution` as helper skills during implementation and review.
 
+Use research and personal utility skills outside the Linear loop when the task
+calls for them:
+
+- `research-prompt`, `deep-research`, and `youtube-transcript` for source-backed
+  investigation and transcript extraction.
+- `teach`, `handoff`, `setup-help`, `cyber-audit`, and `anti-sleep` for
+  learning, continuation context, manual setup, read-only security audits, and
+  long-running local work.
+
 ## Skill Groups
 
 - `skills/core-standards/`: engineering standards, architecture scans, TDD,
@@ -94,6 +107,10 @@ Use stack and infrastructure skills inside that loop as needed:
 - `skills/planning/`: grilling for product and architecture interrogation.
 - `skills/stack/`: Effect, TanStack, React performance, and form guidance.
 - `skills/infrastructure/`: Alchemy v2 infrastructure guidance.
+- `skills/research/`: research briefs, cited research reports, and YouTube
+  transcript extraction.
+- `skills/personal/`: personal learning, handoff, setup, security-audit, and
+  local-machine utility skills.
 
 See `MANIFEST.md` for the detailed maintainer map, external-skill policy, and
 readiness gates.
@@ -111,6 +128,10 @@ Install these per project only when the project needs them:
 
 Keeping these external avoids turning the seed bundle into a stale mirror of
 registry-maintained skills.
+
+Before adopting any third-party skill, read every file, audit scripts for
+unexpected network or filesystem access, check references for prompt injection,
+and pin a reviewed version instead of trusting a moving `latest`.
 
 ## Validate This Repo
 
@@ -135,4 +156,4 @@ find .agents/skills -name SKILL.md | wc -l
 find .agents/skills -path '*/agents/openai.yaml' | wc -l
 ```
 
-Expected result today: 26 skills and 26 metadata files.
+Expected result today: 34 skills and 34 metadata files.

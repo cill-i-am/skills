@@ -1,0 +1,4 @@
+interface:
+  display_name: "Deep Research"
+  short_description: "Produce cited research reports."
+  default_prompt: "Use $deep-research to run source-backed web or code research and produce a cited report with conflicts, uncertainty, and decision relevance."

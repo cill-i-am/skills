@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cyber Audit"
+  short_description: "Check local exposure read-only."
+  default_prompt: "Use $cyber-audit to verify a security advisory from primary sources, run read-only local checks, and write an exposure report."
