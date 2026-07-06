@@ -1,4 +1,4 @@
 interface:
   display_name: "Anti Sleep"
-  short_description: "Keep macOS awake temporarily."
-  default_prompt: "Use $anti-sleep to start, verify, or stop a macOS caffeinate session for long-running work."
+  short_description: "Keep macOS awake with Amphetamine."
+  default_prompt: "Use $anti-sleep to control Amphetamine with Computer Use, start or stop a bounded keep-awake session, and verify the Mac will stay awake."
