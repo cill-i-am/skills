@@ -15,6 +15,7 @@ steer them directly.
 - bounded codebase investigation
 - isolated reproduction or debugging help
 - read-only spec, security, architecture, or simplicity review
+- cheap read-only Browser or runtime smoke checks for UI-facing PRs
 - independent implementation subtask with a clear file owner
 - CI failure triage where multiple checks can be inspected in parallel
 
@@ -30,6 +31,8 @@ Give each subagent only the context it needs:
 - constraints and out-of-scope boundaries
 - whether it is read-only or may edit
 - required verification commands for edit agents
+- local URL, preview URL, dev command, target flows, viewports, or focused test
+  subset for runtime verification agents
 - expected output format
 
 Subagents do not inherit your context. Point to exact files or include the
@@ -47,6 +50,8 @@ make one subagent read-only.
 
 - Review/spec subagents are read-only.
 - Investigation subagents should return evidence, not opinions.
+- Runtime verification subagents may click, type, refresh, and inspect local or
+  preview targets, but must not edit files or mutate production/provider state.
 - Edit subagents must own a narrow file set and report their diff plus checks.
 - The controller verifies results before acting on them.
 - Subagent output is advisory until the controller checks it against source,

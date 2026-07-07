@@ -100,12 +100,19 @@ packages or contracts:
 
 - focused package tests
 - package typecheck
-- browser/Playwright verification for UI workflows
+- browser/Playwright verification for UI workflows, including console/network
+  errors, loading states, FOUC, layout shift, interaction jank, duplicate
+  requests, and double-submit prevention when relevant
 - Drizzle migration generation/inspection for schema changes
 - `pnpm check-types`, `pnpm test`, `pnpm lint`, `pnpm format` for
   cross-package or handoff-ready changes
 
 Do not claim success without fresh command output.
+For user-visible changes, include concrete Browser, preview, or focused runtime
+test evidence, or explain why it could not be run. Treat blank screens, visible
+FOUC, incoherent layout shift, stuck loading states, console errors, failed
+critical requests, and duplicate submissions as material verification failures
+unless the orchestrator explicitly accepts the risk.
 
 ### 5. PR And Linear Evidence
 

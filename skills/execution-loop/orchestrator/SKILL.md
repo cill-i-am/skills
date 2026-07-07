@@ -111,8 +111,11 @@ test, or skill-bundle validation. In Simulation Mode:
    - For every non-trivial worker, create a paired user-visible read-only
      reviewer/spec thread. Include the worker thread, Linear issue, parent
      PRD/Project, expected skills/standards, and instruction to use the
-     reviewer thread template. Tell the reviewer to stay idle until the worker
-     posts a plan or PR if there is nothing useful to inspect yet.
+     reviewer thread template. For user-visible changes, include the expectation
+     that the reviewer should gather independent runtime evidence with Browser
+     or a narrow test subset, or explicitly say why it was not practical. Tell
+     the reviewer to stay idle until the worker posts a plan or PR if there is
+     nothing useful to inspect yet.
    - Tell every worker that after opening or updating a PR it must run
      `ci-watch`, monitor CI plus GitHub PR comments/review threads and Linear
      comments, fix actionable in-scope failures or comments, and keep watching
@@ -159,6 +162,11 @@ Use the paired reviewer/spec thread for non-trivial implementation review. It
 should refresh live Linear before finding mismatches, omissions, or scope drift.
 It may leave GitHub PR review comments for concrete line-level findings, but
 the orchestrator should use the reviewer thread verdict as the acceptance input.
+For user-visible changes, the reviewer verdict should include independent
+runtime evidence or a concrete not-run reason. Useful evidence includes
+Browser/preview smoke results, focused test output, console or network error
+checks, FOUC or layout-shift observations, jank during key interactions, and
+double-submit or duplicate-request checks when relevant.
 For tiny or mechanical changes, the orchestrator may explicitly waive the
 reviewer thread and record why.
 
@@ -168,6 +176,8 @@ Require worker evidence from `production-ready`:
 
 - relevant review stack completed
 - verification commands and results recorded
+- Browser, preview, or focused runtime evidence recorded for user-visible
+  changes, or explicitly waived by the orchestrator
 - PR linked
 - CI and PR/Linear comments watched until green/resolved or blocked with
   evidence

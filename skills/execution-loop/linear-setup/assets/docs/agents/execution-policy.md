@@ -58,6 +58,14 @@ worker's plan when possible and the final diff before approval. Plan review
 should catch overcomplication, scope drift, or missed constraints; it should not
 block normal AFK work unless approval was explicitly required.
 
+For user-visible changes, the reviewer should gather independent runtime
+evidence with the in-app Browser, preview target, or a focused test subset when
+practical. Use a cheap read-only subagent for this probe when useful. Check the
+changed route or flow for console errors, failed critical requests, loading
+state gaps, visible FOUC, layout shift, interaction jank, duplicate requests,
+and double submissions. If runtime verification is not practical, state the
+specific blocker or waiver.
+
 Reviewer output must include:
 
 - verdict: approve, approve with notes, changes requested, or blocked
@@ -65,6 +73,7 @@ Reviewer output must include:
 - simplicity and architecture
 - standards and skills
 - tests and verification
+- runtime verification for user-visible changes, or not-run reason
 - required fixes
 - residual risks
 
@@ -81,6 +90,7 @@ Required gates:
 - acceptance criteria satisfied
 - reviewer approved or explicitly waived by orchestrator
 - CI green or failures explained and accepted
-- Browser/preview evidence for user-visible changes
+- Browser/preview or focused runtime evidence for user-visible changes,
+  including obvious FOUC, jank, or double-submit risks when relevant
 - no unresolved blockers or required PR comments
 - no unapproved scope creep, destructive action, or provider mutation
