@@ -1,56 +1,102 @@
-# Effect Source Lookup
+# Source Lookup
 
-Use opensrc for Effect source code. This skill intentionally does not require a project-local `./.repos/effect` checkout.
+Use live source for API spelling. Do not create or commit `.repos/effect`.
 
 ## Commands
 
-Resolve the installed `effect` package source:
+Resolve the target project's installed Effect source:
 
-```sh
+```bash
 pnpm exec opensrc path --cwd . effect
 ```
 
-The returned path may live under `Effect-TS/effect-smol/.../packages/effect` because that is the npm package's source repository metadata. Do not fetch `Effect-TS/effect-smol` separately for the target project; treat the `effect` package path as the single source reference.
+Resolve exemplar repositories when source-backed patterns are needed:
 
-Fetch it if missing:
-
-```sh
-pnpm run opensrc:effect
+```bash
+pnpm exec opensrc path --cwd . anomalyco/opencode
+pnpm exec opensrc path --cwd . UsefulSoftwareCo/executor
+pnpm exec opensrc path --cwd . Effect-TS/effect-smol
 ```
 
-In a fresh worktree or cloud environment, run `pnpm install` first so the local `opensrc` binary exists, then run `pnpm run opensrc:effect` if the source path is still missing. Missing `opensrc` is a setup failure and should not be ignored.
+If a target repo has no opensrc mapping for an exemplar, clone read-only to `/tmp` and do not vendor it into the project.
 
-## Path Mapping
+## Resolved Root Shape
 
-Many local guides were originally written against a local Effect checkout at `./.repos/effect`.
+`opensrc` returns machine-local cache paths. Treat these as examples of the
+shape, not stable paths:
 
-When a guide says:
+- `effect`: `$HOME/.opensrc/repos/github.com/Effect-TS/effect/<version>/packages/effect`
+- `opencode`: `$HOME/.opensrc/repos/github.com/anomalyco/opencode/<ref>`
+- `executor`: `$HOME/.opensrc/repos/github.com/UsefulSoftwareCo/executor/<ref>`
+- `effect-smol`: `$HOME/.opensrc/repos/github.com/Effect-TS/effect-smol/<ref>`
 
-```txt
-./.repos/effect/packages/effect/src/Effect.ts
+Resolve them live before relying on exact line numbers or API names.
+
+## opencode Routes
+
+Use opencode for production app runtime patterns:
+
+- `.opencode/skills/effect/SKILL.md`
+- `AGENTS.md`
+- `CONTEXT.md`
+- `packages/opencode/src/effect/app-runtime.ts`
+- `packages/opencode/src/effect/runner.ts`
+- `packages/opencode/src/effect/instance-state.ts`
+- `packages/opencode/test/lib/effect.ts`
+- `packages/core/src/effect/layer-node.ts`
+- `packages/core/src/effect/service-use.ts`
+- `packages/core/src/effect/keyed-mutex.ts`
+- `packages/protocol/src/api.ts`
+- `packages/protocol/src/groups/event.ts`
+- `packages/opencode/src/server/routes/instance/httpapi/handlers/session.ts`
+- `packages/client/src/effect.ts`
+- `packages/opencode/src/mcp/index.ts`
+- `packages/core/src/git.ts`
+
+## executor Routes
+
+Use executor for SDK, host boundary, Cloudflare, and resumable workflow patterns:
+
+- `.agents/skills/wrdn-effect-schema-boundaries/SKILL.md`
+- `.agents/skills/wrdn-effect-typed-errors/SKILL.md`
+- `.agents/skills/wrdn-effect-raw-fetch-boundary/SKILL.md`
+- `.agents/skills/wrdn-effect-vitest-tests/SKILL.md`
+- `.skills/effect-use-pattern/SKILL.md`
+- `.skills/effect-http-testing/SKILL.md`
+- `packages/core/sdk/src/client.ts`
+- `packages/core/sdk/src/errors.ts`
+- `packages/core/execution/src/engine.ts`
+- `packages/hosts/cloudflare/src/mcp/agent-session-durable-object.ts`
+- `packages/hosts/mcp/src/tool-server.ts`
+- `e2e/src/services.ts`
+- `e2e/src/surfaces/telemetry.ts`
+
+## effect-smol Routes
+
+Use effect-smol for current API spelling and tests:
+
+- `AGENTS.md`
+- `.patterns/effect.md`
+- `.patterns/testing.md`
+- `packages/effect/src/Effect.ts`
+- `packages/effect/src/Layer.ts`
+- `packages/effect/src/Scope.ts`
+- `packages/effect/src/Schema.ts`
+- `packages/effect/src/Stream.ts`
+- `packages/effect/src/Schedule.ts`
+- `packages/effect/src/unstable/sql/SqlClient.ts`
+- `packages/effect/src/unstable/sql/SqlResolver.ts`
+- nearby `packages/effect/test/**` files for the API under review
+
+## Inventory Command
+
+For a broad source pass:
+
+```bash
+root="$(pnpm exec opensrc path --cwd . anomalyco/opencode)"
+rg --files "$root" \
+  -g '*.{ts,tsx,mts,cts,js,jsx,mjs,cjs,md,mdx,json}' \
+  -g '!**/{node_modules,dist,build,out,coverage,.turbo,.next,.svelte-kit,.astro,vendor,.wrangler,.cache,.git,generated,generated-effect,__generated__,.output}/**'
 ```
 
-Use:
-
-```sh
-EFFECT_PACKAGE_ROOT="$(pnpm exec opensrc path --cwd . effect)"
-EFFECT_REPO_ROOT="$(cd "$(dirname "$(dirname "$EFFECT_PACKAGE_ROOT")")" && pwd)"
-"$EFFECT_REPO_ROOT/packages/effect/src/Effect.ts"
-```
-
-For core package files, prefer the installed package source:
-
-```sh
-EFFECT_PACKAGE_ROOT="$(pnpm exec opensrc path --cwd . effect)"
-"$EFFECT_PACKAGE_ROOT/src/Effect.ts"
-```
-
-## Guidance
-
-- Use local guide files first.
-- Use opensrc source only when the guides do not answer the question, exact API signatures matter, or a type/runtime behavior must be confirmed.
-- Use `pnpm exec opensrc path --cwd . effect` as the single Effect source reference.
-- Prefer the package root for core APIs.
-- Derive the repository root from the package root for examples, tests, tools, platform packages, vitest, opentelemetry, and cross-package usage.
-- Treat opensrc as required agent tooling: worktrees and cloud environments should install dev dependencies before using this skill, and missing `opensrc` should hard fail.
-- Do not create, require, or commit `./.repos/effect` in the target project.
+Record include/exclude rules before claiming exhaustive coverage.

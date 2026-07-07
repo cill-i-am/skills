@@ -1,230 +1,67 @@
 ---
 name: effect-ts
-description: Effect for TypeScript backends and shared packages. Use when implementing or reviewing Effect services, Layers, schemas, typed errors, retries, schedules, observability, SQL, tests, or when a project using Effect needs source-backed guidance.
+description: Source-backed Effect guidance for TypeScript backends, workers, CLIs, SDKs, shared packages, and tests. Use when implementing or reviewing Effect services, Layers, Schema boundaries, typed errors, retries, schedules, observability, SQL, HttpApi/RPC clients, scoped resources, concurrency, or runtime boundaries.
 ---
 
 # Effect Expert
 
-Expert guidance for programming with the Effect library, covering error handling, dependency injection, composability, and testing patterns.
+Lead with the boundary. Effect earns its place when code needs typed failure, explicit dependencies, resource lifetime, cancellation, retries, observability, protocol decoding, or testable concurrency.
 
-## Prerequisite
+## Reference Map
 
-Before doing Effect implementation or review work in a project that already uses
-Effect, verify that the target project can resolve Effect source through
-opensrc:
+Read the smallest file that answers the current question:
 
-```sh
-pnpm exec opensrc path --cwd . effect
-```
+- `references/principles.md`: first-principles model for deciding whether Effect belongs in a design and which primitive fits.
+- `references/patterns.md`: implementation recipes, examples, and anti-patterns for services, Layers, Schema, errors, clients, resources, concurrency, observability, SQL, and tests.
+- `references/source-lookup.md`: live `opensrc` commands and routed source files for opencode, executor, effect-smol, and Effect itself.
+- `references/source-study.md`: coverage metrics and evidence from the source and sentence audit behind this rewrite.
 
-If the command fails, read `./references/source-lookup.md` and run the documented setup. Do not require or create `./.repos/effect` in the target project.
+## First Pass
 
-When the task is to install Effect in a fresh project, install the needed
-package set first, then configure and verify opensrc before writing Effect code.
+1. Inspect the target project before giving advice:
+   - `git status --short`
+   - package manager and scripts
+   - installed `effect` / `@effect/*` versions
+   - existing Effect imports, services, layers, schemas, errors, tests, and runtime entrypoints
+2. Resolve current source:
+   - run `pnpm exec opensrc path --cwd . effect`
+   - use `references/source-lookup.md` when the task needs opencode, executor, or effect-smol examples
+3. Classify the boundary:
+   - unknown input or encoding -> Schema
+   - expected failure -> typed error
+   - dependency -> service and Layer
+   - owned resource -> Scope, Layer, acquire/release
+   - parallel or resumable work -> Fiber, Deferred, Queue, Exit
+   - outbound protocol -> Effect platform client, usually `HttpClient`
+   - host callback or process edge -> one `run*` boundary
+4. Use the reference map above before loading detailed guidance.
 
-## Stack Boundary Contract
+## Defaults
 
-Use Effect deliberately:
+- Keep pure synchronous transforms as plain TypeScript.
+- Use `Effect.gen` for inline multi-step composition.
+- Use named `Effect.fn("Domain.operation")` for reusable operations that deserve a stack frame, span, or stable runtime identity.
+- Use unnamed `Effect.fn` for reusable operations that need stack-frame behavior but no named span.
+- Use `Effect.fnUntraced` for library internals, hot paths, and tiny wrappers where traces would add noise or cost.
+- Prefer `Context.Service` class syntax in current v4-style code. Follow local `Context.Tag` style only when the project is pinned to it.
+- Use `Schema.TaggedErrorClass` for schema-backed or wire-visible errors. Use `Data.TaggedError` for lightweight internal errors.
+- Provide layers at entrypoints, adapters, tests, workers, CLIs, routes, or runtimes. Keep domain functions dependency-declarative.
+- Decode boundary data once, then pass typed values through the domain.
+- Run Effect only at host edges: handler, worker callback, CLI command, test, SDK callback bridge, or runtime adapter.
 
-- Use Effect for TypeScript backend services, infrastructure adapters, shared
-  packages, API clients, typed workflows, retries, schedules, resource
-  management, observability, SQL, and testable async logic.
-- Use Effect Schema at external boundaries and form boundaries even when the
-  surrounding UI code is ordinary React.
-- Do not wrap React component state, simple event handlers, or plain rendering
-  logic in Effect only for consistency.
-- Keep Effect runtime provision at application edges, worker entrypoints,
-  server functions/routes, tests, or package adapters. Domain functions should
-  declare requirements and errors rather than constructing live dependencies.
-- Prefer small feature-local services and layers. Extract shared packages only
-  when more than one app, worker, or feature needs the contract.
-- Treat casts and unparsed primitives at boundaries as design problems. Earn
-  brands through Schema decoders or typed constructors.
+## No-op Detection
 
-## Research Strategy
+If the task only touches pure formatting, static UI render code, copy, or packaging metadata without Effect boundaries, do not force Effect patterns into it. Say the Effect skill does not add guidance for that change and follow the local project conventions.
 
-Effect has many ways to accomplish the same task. Proactively research best practices when working with Effect patterns, especially for moderate to high complexity tasks.
+## Completion Criteria
 
-Use the local guides in `./references/` first. They are the preferred source for best practices, conventions, and common implementation patterns.
+Effect work is complete only when:
 
-Only go directly to the opensrc Effect source when:
-
-- the guides do not cover the question
-- you need exact API details or signatures
-- you need deeper implementation details
-- you need to verify a behavior against the source
-
-### Research Sources
-
-1. Local skill guides first. Start with the relevant files in `./references/` before doing deeper research.
-2. Codebase patterns second. Examine similar patterns in the current project before implementing. If Effect patterns already exist, follow them for consistency. If no patterns exist, skip this step.
-3. Effect source code last. For gaps in the guides, complex type errors, unclear behavior, or implementation details, resolve the opensrc Effect source paths with `./references/source-lookup.md`, then inspect the returned source tree.
-
-### When To Research
-
-- Always research for services, layers, or complex dependency injection.
-- Always research for error handling with multiple error types or complex error hierarchies.
-- Always research for stream-based operations and reactive patterns.
-- Always research for resource management with scoped effects and cleanup.
-- Always research for concurrent or performance-critical code.
-- Always research for unfamiliar testing patterns.
-- Research when needed for complex refactors from promises or try/catch into Effect.
-- Research when needed for new service dependencies or layer restructuring.
-- Research when needed for custom error types or extensions of existing error hierarchies.
-- Research when needed for integrations with external systems such as databases, APIs, or third-party services.
-
-### Research Approach
-
-- Focus on canonical, readable, and maintainable solutions rather than clever optimizations.
-- Verify suggested approaches against existing codebase patterns when those patterns exist.
-- When multiple approaches are possible, prefer the most idiomatic Effect solution supported by the codebase and the opensrc Effect source.
-
-### Codebase Pattern Discovery
-
-When working in a project that uses Effect, check for existing patterns before implementing new code:
-
-1. Search for Effect imports and existing module usage to understand current conventions.
-2. Identify how services and layers are structured in the project.
-3. Note how errors are defined and propagated.
-4. Examine how Effect code is tested in the project.
-
-If no Effect patterns exist in the codebase, proceed using canonical patterns from the opensrc Effect source and examples. Do not block on missing codebase patterns.
-
-### Feature Discovery
-
-When you need to discover available Effect modules, packages, or capabilities, search `./references/features.md` first.
-
-- Use it to identify the right package or module for a task.
-- Use `./references/source-lookup.md` to translate listed repo paths to opensrc source paths.
-- Use it before inventing custom abstractions when Effect may already provide the functionality.
-
-### Guide Discovery
-
-When the task touches one of these areas, consult the matching guide before implementing:
-
-- `./references/guide-effect.md` for core `Effect` usage patterns, common constructors, composition, provisioning, and runtime boundaries
-- `./references/guide-error-handling.md` for defining errors, schema-based errors, failure handling, defects, and interrupts
-- `./references/guide-layers.md` for services, layer construction, composition, and provisioning patterns
-- `./references/guide-observability.md` for `Effect.fn`, spans, logging, metrics, and telemetry wiring
-- `./references/guide-retries.md` for retry policies, retry conditions, fallback strategies, and `ExecutionPlan`
-- `./references/guide-schedule.md` for retries, repeats, backoff, polling, cron, and schedule composition
-- `./references/guide-schema.md` for schema design, transformations, unions, recursion, opaque/branded types, and schema best practices
-- `./references/guide-sql.md` for Effect SQL usage, transactions, resolvers, schema-aware SQL, and migrations
-- `./references/guide-testing.md` for detailed `@effect/vitest` usage, layered test setup, property tests, and test services
-
-These guides should be treated as the default implementation guidance. Do not skip them and jump straight to opensrc source unless you need source-level confirmation or the guides do not answer the question.
-
-## Effect Principles
-
-Apply these core principles when writing Effect code.
-
-## Installation
-
-When installing Effect packages in a user repository:
-
-- use `effect@beta`
-- keep all `@effect/*` packages on aligned versions
-- install only the packages needed for the user's runtime and actual task
-
-### Version Rules
-
-- `effect` should be installed as `effect@beta`
-- if you install any `@effect/*` package, make sure all `@effect/*` packages use matching versions
-- do not mix unrelated `@effect/*` versions in the same project
-
-### Package Selection
-
-Choose packages based on the runtime and the work being done.
-
-- core library: `effect@beta`
-- Node.js runtime needs: install the matching `@effect/platform-node`
-- browser runtime needs: install the matching `@effect/platform-browser`
-- Bun runtime needs: install the matching `@effect/platform-bun`
-- Vitest integration needs: install the matching `@effect/vitest`
-- OpenTelemetry integration needs: install the matching `@effect/opentelemetry`
-
-Install additional `@effect/*` packages only when the user task actually needs them.
-
-### Practical Rule
-
-- start with `effect@beta`
-- add `@effect/*` packages as needed by runtime and features
-- keep the full installed Effect package set version-aligned
-
-For existing projects, follow the repository's established Effect version unless
-the user asks to upgrade.
-
-### Error Handling
-
-- Use Effect's typed error system instead of throwing exceptions.
-- Define descriptive error types with proper error propagation.
-- Prefer `Schema.TaggedErrorClass` when the error can be schema-defined.
-- Use `Effect.fail`, `Effect.catchTag`, and `Effect.catch` for error control flow.
-
-### Dependency Injection
-
-- Implement dependency injection using services and layers.
-- Define services with `Context.Tag`.
-- Compose layers with `Layer.merge` and `Layer.provide`.
-- Use `Effect.provide` to inject dependencies at the edge, avoid providing locally.
-- Keep services encapsulated; avoid exporting trivial accessor wrappers that only forward to one service method.
-
-### Composability
-
-- Leverage Effect composability for complex operations.
-- Use appropriate constructors such as `Effect.succeed`, `Effect.fail`, `Effect.tryPromise`, `Effect.try`, and `Effect.sync`.
-- Apply proper resource management with scoped effects.
-- Chain operations with `Effect.flatMap`, `Effect.map`, and `Effect.tap`.
-
-### Business Logic Functions
-
-- Prefer `Effect.fn` for reusable business-logic functions that return `Effect`.
-- Prefer `Effect.fn` over raw `Effect.gen` definitions even when the function takes no arguments.
-- If you do not want an explicit named span, use `Effect.fn` without a span name.
-- Do not use `Effect.fnUntraced` as the default.
-- Use `Effect.fnUntraced` only for edge cases with a concrete low-level reason, such as measured hot-path overhead.
-
-### TypeScript Preferences
-
-- Never use `any`.
-- Never use `as` casts.
-- Never use unsafe type assertions or escape hatches.
-- Never use `namespace`.
-- Prefer correct typing, schema-driven decoding, narrowing, and proper generic constraints instead of forcing types.
-- If a value comes from an external boundary, validate or decode it instead of asserting its type.
-- If a type is hard to express, simplify the design or introduce a properly typed helper instead of using unsafe TypeScript.
-- For layers, do not hide them inside `namespace` blocks. Prefer either `static` members on the service class or plain exported layer constants.
-
-### Code Quality
-
-- Write type-safe code that leverages Effect's type system.
-- Use `Effect.gen` for readable sequential code.
-- Implement proper testing patterns using Effect testing utilities.
-- Prefer existing Effect primitives before introducing custom helpers.
-- Prefer `Schema.Class` / `Schema.TaggedClass` variants over plain `Schema.Struct` for named reusable schemas when possible.
-
-### Explaining Solutions
-
-When providing solutions, explain the Effect concepts being used and why they fit the specific use case. If you encounter patterns not covered in local references, prefer consistency with the codebase when possible and otherwise rely on the opensrc Effect source.
-
-## Completion Criterion
-
-Effect work is complete only when boundary inputs are parsed, typed errors or
-defects are intentional, dependencies are provided at an edge, relevant guide or
-source checks were consulted for non-trivial patterns, and tests or focused
-runtime checks prove the Effect path.
-
-## References
-
-- `./references/features.md`
-- `./references/guide-effect.md`
-- `./references/guide-error-handling.md`
-- `./references/guide-layers.md`
-- `./references/guide-observability.md`
-- `./references/guide-retries.md`
-- `./references/guide-schedule.md`
-- `./references/guide-schema.md`
-- `./references/guide-sql.md`
-- `./references/guide-testing.md`
-- `./references/source-lookup.md`
-- `./references/setup.md`
+- The current Effect version and local conventions were checked.
+- Nontrivial APIs were verified against source or a routed reference.
+- Boundary inputs are decoded or explicitly trusted at a named boundary.
+- Expected failures stay typed; defects are intentional.
+- Public errors have stable display and redaction behavior.
+- Dependencies are visible through the effect type or a Layer supplied at an edge.
+- Owned resources, fibers, queues, streams, schedules, and timers have cleanup or interruption behavior.
+- Tests or focused runtime checks cover the success path and at least one failure, retry, interruption, or cleanup path.
