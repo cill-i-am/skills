@@ -1,8 +1,8 @@
-# Ceird Skill Seed
+# Personal Codex Skills
 
-Portable Codex skills for building TypeScript product projects with a repeatable
-planning, execution, review, and deployment loop, plus a small set of research
-and personal utility workflows.
+A personal, reusable collection of Codex skills for building TypeScript
+applications with a repeatable planning, execution, review, and deployment loop,
+plus a small set of research and personal utility workflows.
 
 This repo is meant to be installed into new projects as a starting operating
 system for agents. It is not a random grab bag of skills. The core bundle
