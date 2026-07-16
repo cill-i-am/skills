@@ -1,259 +1,155 @@
-# Strict Best Practices, Do/Don't, Gotchas
+# Gotchas And Hard Rules
 
-Load this before finalizing any nontrivial Alchemy work.
+Load this before finalizing nontrivial Alchemy work.
 
-## Hard Safety
+## Safety
 
-- Do not run `pnpm exec alchemy deploy` or `pnpm exec alchemy destroy` without explicit user confirmation.
-- Do not use `--yes` locally unless the user explicitly asked for it.
-- Do not destroy `prod` from CI or scripts without a hard guard.
-- Do not ask users to export Cloudflare env vars for normal local auth; use `pnpm exec alchemy login` profiles. CI may use env secrets.
-- Do not commit `.alchemy/`.
-- Do not commit raw secrets, generated credentials, or unredacted connection strings.
+- Do not run deploy, destroy, mutating dev, bootstrap, token creation, adoption, state/profile clearing, or real-cloud tests without explicit confirmation.
+- Treat `alchemy unsafe nuke` as catastrophic. Never run it from a broad or inferred approval.
+- Do not pass `--yes` locally unless the user explicitly requested the exact operation.
+- CI cleanup must hard-refuse `prod` and shared long-lived stages.
+- Never commit `.alchemy/`, credential stores, raw secrets, generated tokens, or unredacted connection strings.
 
-## Package Manager
+## Sources And Versions
 
-- Use pnpm for new projects, commands, examples, CI, and local scripts.
-- Prefer `pnpm exec alchemy ...` when invoking the Alchemy CLI from docs or automation.
-- Prefer Vitest for test examples in pnpm projects.
-- Do not introduce Bun, `bun install`, `bun alchemy`, or `alchemy/Test/Bun` unless the existing repo already uses Bun.
+- Use `https://alchemy.run/llms.txt`, current guide pages, generated provider APIs, and `alchemy-run/alchemy` source.
+- Inspect the resolved package before using version-sensitive APIs.
+- Use canonical current names in new code, even when source preserves aliases for migration.
+- Do not use historical blog posts as API reference.
+- Do not copy v1 async infrastructure declarations into v2 stacks.
+- Pin the runtime and package manager used by infrastructure scripts in real projects.
 
-## Docs And Versions
+## Identity And State
 
-- Alchemy v2 is beta and changes quickly. Check live official docs for exact props, CLI flags, and generated provider pages.
-- Prefer source examples from `alchemy-run/alchemy-effect` when docs and package behavior differ.
-- Do not copy Alchemy v1 async/await patterns into v2 stacks.
-- Do not rely on old local skills or stale memory for provider props.
-- If provider reads/deploys start failing with invalid or garbled response parsing after a Node upgrade, verify the same Alchemy command under a known-supported Node version before changing stack code.
-- For real projects, pin the Node runtime used by Alchemy scripts with `.node-version`, `package.json#engines`, and a small preflight guard on `dev`, `deploy`, `run`/`read`, and `destroy` scripts. Keep `@types/node` aligned with that runtime.
+- Resource type, logical ID, stack, and stage participate in identity.
+- A logical-ID edit can replace or orphan infrastructure even if the TypeScript variable rename looks harmless.
+- One physical resource must have one authoritative stack/state owner.
+- An empty or switched state store can make existing resources look new.
+- Inspect state before clearing it; `state clear` removes records, not cloud objects.
+- Recovery of owned resources is normal; takeover of unowned resources requires explicit adoption.
+- References read existing state and do not deploy upstream resources.
+- Deploy upstream before downstream; destroy downstream before upstream.
 
-## Stack And State
+## Stages And Profiles
 
-Do:
+- Stage selects infrastructure; profile selects credentials.
+- CI must not rely on `dev_$USER` defaults.
+- A profile name does not prove the account/project currently resolved by its auth provider.
+- Shared development stages create shared data and destroy risk; use them intentionally.
+- Do not pin references to production merely to make local development convenient.
 
-- Export one default `Alchemy.Stack` per stack entrypoint.
-- In monorepos, prefer one root stack until independent package lifecycles justify multi-stack references.
-- Use `Cloudflare.state()` for team/CI Cloudflare projects.
-- Keep `State.localState()`/`Alchemy.localState()` limited to examples, local experiments, and tests unless the user explicitly wants local state.
-- Return operator/test-friendly outputs.
+## Outputs
 
-Don't:
+- Outputs are lazy graph expressions, not values available during declaration.
+- Do not interpolate with JavaScript strings, serialize, log, compare, or branch on unresolved Outputs.
+- Use Output combinators and pass Outputs directly through props.
+- Keep `Redacted` wrappers intact through Outputs and state.
+- Custom provider diff/read code must account for unresolved Inputs.
 
-- Split stacks prematurely.
-- Split monorepo stacks just because packages live in separate directories.
-- Use ad hoc environment variables as a second environment model.
-- Change logical IDs casually.
-- Force outputs into strings at declaration time.
+## Resources And Actions
 
-## Monorepos
+- Use Resources for identity, drift, read, adoption, replacement, and delete.
+- Use Actions only for idempotent deploy-time side effects keyed by all semantic inputs.
+- Time, randomness, machine paths, or undeclared files can make Action/Command memoization dishonest.
+- Do not hide lifecycle work in shell scripts when it belongs in the graph.
+- Reconcile from observed cloud state; old state is evidence, not truth.
+- Delete is idempotent and treats not-found as success.
+- List scope must be safe because it can feed broad deletion.
 
-Do:
+## Phases And Runtime
 
-- Use `references/monorepos.md` before changing workspace layout, package exports, stack boundaries, or CI filters.
-- Use `Cloudflare.Vite.rootDir` when a root stack builds a frontend package.
-- Keep browser imports on client subpaths such as `@acme/api/Client`.
-- Use `pnpm --filter <pkg> exec alchemy ...` for package-owned stacks.
-- Deploy upstream stacks first and destroy downstream stacks first in multi-stack setups.
+- Function initialization runs during planning and cold start. It must be safe in both contexts.
+- Request-, message-, and event-dependent effects belong in returned handlers.
+- Resolve `Config` during initialization so bindings/secrets can be discovered.
+- `RuntimeContext` is runtime-only.
+- Keep clients that need deterministic cleanup in request/event scope when the host has no instance teardown hook.
+- Do not manually reproduce internal runtime guards; provide the binding Layer.
+- Build reusable service Layers once and provide them at platform/application boundaries.
 
-Don't:
+## Bindings And APIs
 
-- Let frontend bundles import Worker, Stack, provider, or database modules.
-- Hide stage-pinning decisions. Use `yield* Backend` for same-stage references and `Backend.stage.prod` only when intentionally pinned.
-- Expect cross-stack references to create upstream resources.
-
-## Providers
-
-Do:
-
-- Load the provider-specific reference first: `cloudflare.md`, `drizzle.md`, `neon.md`, `planetscale.md`, or `github.md`.
-- Merge every needed provider Layer exactly once.
-- Add `Drizzle.providers()` when using `Drizzle.Schema`.
-- Add `Planetscale.providers()` or `Neon.providers()` when using those resources.
-- Keep provider sets minimal.
-
-Don't:
-
-- Use a resource without its provider and then silence the type error.
-- Use provider CLI wrappers when Alchemy has native resources.
-
-## Workers And Phases
-
-Do:
-
-- Bind resources in Worker init.
-- Provide matching binding live layers.
-- For beta.58 capability resources, use namespaced bindings such as `Cloudflare.R2.ReadWriteBucket`, `Cloudflare.KV.ReadWriteNamespace`, and `Cloudflare.Queues.WriteQueue` instead of old single-resource `.bind` helpers.
-- Build shared Effect services as Layers and provide them at Worker init.
-- Keep request/event work in returned runtime handlers.
-- Resolve `Config` in init.
-- Use `InferEnv` for async Workers.
-
-Don't:
-
-- `yield* Config` only inside `fetch`.
-- Open raw database connections in Worker init.
-- Run request-dependent effects during init.
-- Put runtime-only `Alchemy.RuntimeContext` calls in plantime/init.
-- Scatter `Effect.provide` through request/business logic.
+- Bind the narrowest capability and provide its exact native/HTTP Layer.
+- Native platform bindings are preferable for trusted internal calls when available.
+- Schemaless RPC is for trusted internal communication, not arbitrary external input.
+- Effect RPC and Effect HTTP validate trust boundaries; do not pay schema encode/decode cost merely to restate internal types.
+- Client and server serialization must match.
+- Keep API schemas free of provider resources, credentials, SDK clients, and runtime implementation types.
 
 ## Cloudflare
 
-Do:
+- Use canonical namespaced resources: `R2.Bucket`, `KV.Namespace`, `D1.Database`, and `Queues.Queue`.
+- Use least-privilege R2/KV/Queue capabilities and matching Layers.
+- `alchemy dev` uses real cloud dependencies; it is not full emulation.
+- Prove frontend traffic targets the local Worker instead of a deployed URL.
+- Use a narrow Worker `cwd` in monorepos to prevent reloads on generated/sibling output.
+- Durable Object and Workflow handlers must account for replay/concurrency semantics.
+- Queue consumers must be idempotent and configure retry/dead-letter behavior.
+- Zone, DNS, route, Access, certificate, and security resources can affect unrelated traffic; inspect existing configuration before mutation.
 
-- Use `Cloudflare.Vite` for Vite frameworks.
-- Use `Cloudflare.StaticSite` for arbitrary build commands.
-- Enable `nodejs_compat` for drivers/frameworks that need Node APIs.
-- Use tagged class plus `.make(props, impl)` for circular Worker/DO/Lambda references; in beta.58 layer-form Worker/Container props live on `.make`.
-- Retry first workers.dev checks in tests; subdomain propagation can lag.
-- Prove `pnpm exec alchemy dev` before raising `compatibility.date`; local Miniflare/workerd support can lag Cloudflare production compatibility dates.
-- In monorepos, set Worker `cwd` to the owning app/package when local dev watches too much. A Worker watching repo root can restart on `.alchemy/out`, generated assets, or sibling app output.
-- For local frontend-to-API testing, set the API Worker `dev.port` deliberately and pass that local API URL into the frontend dev server. Keep production/build env pointed at the deployed API URL or domain.
+## AWS
 
-Don't:
+- Verify account and region, not only profile name.
+- `aws bootstrap` mutates the account and must precede Lambda CI deployments.
+- Operation bindings should generate IAM; broad hand-written wildcard policies are a warning sign.
+- Lambda is the default runtime until workload constraints justify ECS, EC2, EKS, or MicroVMs.
+- Event sources are commonly at-least-once and can redeliver batches.
+- S3 bodies and stream records should remain streaming when size can grow.
+- Route53 and ACM changes need explicit domain/zone ownership evidence.
 
-- Hand-roll env binding types when Alchemy can infer them.
-- Add Workers to a minimal starter if the user only asked for the first bucket stack.
-- Treat local dev as full emulation. `pnpm exec alchemy dev` uses real cloud resources and local Worker code.
-- Assume a frontend is calling the local Worker just because both resources run under `alchemy dev`; verify browser network traffic or an integration test against the local API URL.
+## Databases
 
-## Hyperdrive And Databases
+- Hyperdrive is for external Postgres/MySQL behind Workers, not D1.
+- Give Hyperdrive a direct origin, not a provider's pooled endpoint.
+- Open/close database clients at the runtime scope supported by the driver and host.
+- Use one migration owner; concurrent deploy jobs must not race migrations.
+- Shared projects/branches are upstream resources, not disposable preview children.
+- Production branch protection and destructive migrations require explicit review.
+- Keep DSNs and passwords redacted until the driver boundary.
 
-Do:
+## Tests
 
-- Put Hyperdrive in front of Worker database access.
-- Prefer Neon for development Postgres unless the repo or user explicitly chooses another provider.
-- Use direct Neon origins behind Hyperdrive, not pooled Neon URIs.
-- Create dev/PR Neon branches off a shared long-lived project when practical.
-- For PlanetScale Postgres, use a `PostgresRole` for Hyperdrive origin.
-- For PlanetScale MySQL, use a `MySQLPassword` for Hyperdrive origin.
-- Use one raw driver connection per request when not using Drizzle.postgres.
-- Close raw connections in `finally`/`ensuring`.
-- Put Drizzle/raw clients behind a service Layer when multiple modules need database access.
-- Use redacted values until the driver boundary.
-
-Don't:
-
-- Create a database project/cluster per dev, test, or PR stage when a branch off a shared project is enough.
-- Forget to deploy the shared Neon project-owning stage before `Neon.Project.ref(...)` stages.
-- Use a production branch without protection policy.
-- Forget that PlanetScale MySQL password plaintext cannot be recovered.
-- Assume MySQL and Postgres Drizzle runtime patterns are identical.
-
-## Drizzle
-
-Do:
-
-- Wire `Drizzle.Schema(...).out` into `migrationsDir`.
-- Review/commit generated migrations for team workflows unless the repo intentionally treats them as deploy artifacts.
-- Pass `relations` to `Drizzle.postgres` when using relational `db.query.*`.
-- Use `dialect: "mysql"` for MySQL schema generation when using `Drizzle.Schema` for MySQL flows.
-- Use mysql2 `disableEval: true` in Workers.
-
-Don't:
-
-- Run a separate `drizzle-kit generate` step in CI if Alchemy owns migration generation.
-- Delete migration directories because `Drizzle.Schema` was removed from the stack.
-- Expect relations to generate FK SQL; define FKs in tables.
-
-## References And Shared Resources
-
-Do:
-
-- Deploy upstream stages/stacks first.
-- Use `Resource.ref` for single resources.
-- Use typed stack handles for whole-stack outputs.
-- Let PR stages own branches/roles/Hyperdrive/Workers while referencing long-lived database projects.
-
-Don't:
-
-- Expect a reference to create anything.
-- Destroy a PR stage and expect referenced shared dev/prod resources to be deleted.
-- Hide reference misses; fix by deploying upstream or correcting `{ stack, stage, id }`.
+- Alchemy stack/provider tests can create real resources without prompting.
+- A unique stage is not enough if the provider uses globally unique names or shared data.
+- Deploy once per suite and bound every propagation/polling retry.
+- Do not use arbitrary sleeps or `Date.now()` deadline loops.
+- Teardown failure is a test failure and must report retained resources.
+- Do not run broad cleanup when a precise stack-stage destroy is available.
+- Mocks can test adapters but cannot prove provider lifecycle or cloud binding behavior.
 
 ## CI
 
-Do:
+- Plain mode does not prompt; mutation needs `--yes` after guards.
+- Every job must know whether it owns deployment, tests, or cleanup.
+- Do not let parallel jobs deploy/destroy one stage without coordination.
+- Prefer OIDC/workload identity; long-lived cloud keys require stronger justification.
+- Remote state and auth must be available to every runner that owns the same deployment.
+- PR comments and GitHub resources need stable IDs to avoid duplicates.
 
-- Compute explicit stage in workflows.
-- Use remote state.
-- Manage credentials as code when feasible.
-- Load `references/github.md` before writing GitHub provider resources.
-- Scope Cloudflare CI tokens to needed services.
-- Add cleanup for PR close.
-- Include `pull-requests: write` only when PR comments are used.
-- Use stable logical IDs for GitHub comments and credentials.
+## Docker, Kubernetes, Commands
 
-Don't:
-
-- Let GitHub runners fall back to `dev_$USER`.
-- Use a personal root/admin credential for normal app deploys.
-- Create a new preview comment each push; keep the logical ID stable.
-
-## GitHub
-
-Do:
-
-- Add `GitHub.providers()` whenever using `GitHub.Comment`, `Repository`, `Secret`, `Variable`, `Webhook`, or event subscriptions.
-- Prefer `gh auth token` or a stored PAT locally; use `GITHUB_ACCESS_TOKEN`/`GITHUB_TOKEN` in CI.
-- Use `GitHub.Secret` for sensitive values and `GitHub.Variable` only for non-sensitive config.
-- Use `Redacted` for every secret value that does not already come from a redacted provider output.
-- Treat repositories as retained by default; require explicit removal policy and `delete_repo` permission before deleting.
-- Use webhook secrets for `GitHub.events(...).subscribe(...)`.
-
-Don't:
-
-- Put secrets into `GitHub.Variable`.
-- Assume `GITHUB_TOKEN` can manage repository secrets or webhooks outside its workflow permissions.
-- Delete PR comments by default; discussion history is preserved unless `allowDelete: true`.
-- Use bulk `GitHub.Secrets`/`Variables` with duplicate keys in the same stack scope.
+- Pin remote images by digest where reproducibility matters.
+- Docker build context and Command inputs must exclude unrelated monorepo churn.
+- `Command.Build` output directories must never overlap source or shared artifacts.
+- `Command.Exec` must tolerate retry and partial prior success.
+- Verify Kubernetes cluster/context, namespace, and server-side apply ownership before changing objects.
+- Raw `Kubernetes.Object` is an escape hatch; validate manifests and pruning behavior.
 
 ## Custom Providers
 
-Do:
+- Credentials remain lazy and redacted.
+- Reconcile observes, ensures, syncs, and returns fresh attributes.
+- Do not equate `output === undefined` with create-only behavior.
+- `read` distinguishes absent, owned, and unowned where the API permits.
+- `diff` normalizes equivalent values and marks replacement intentionally.
+- `list` paginates and scopes results.
+- Provider tests cover no-op, drift, replacement, delete twice, recovery, adoption refusal, and partial failure.
 
-- Write convergent `reconcile`.
-- Use `Effect.fn("Provider.Resource.operation")` for provider lifecycle bodies by default.
-- Treat delete 404/not found as success.
-- Implement `read` for adoption/recovery when possible.
-- Guard unresolved inputs in `diff`.
-- Wrap SDK/cloud failures in typed errors and use `Effect.tryPromise`.
-- Use `Schedule`/`Effect.retry` only for retryable transient failures.
-- Use `Redacted` for secrets.
-- Test create/update/replace/delete/adoption paths.
+## Finish
 
-Don't:
-
-- Put lifecycle-managed cloud entities in `Action`.
-- Treat Action side effects as idempotent automatically.
-- Leak raw SDK errors or unredacted request/response payloads.
-- Use `Effect.promise` for SDK calls whose errors should be typed/reportable.
-- Use `Effect.fnUntraced` by default for new userland provider/action/service code.
-
-## Effect Infrastructure
-
-Do:
-
-- Load `references/effect-infra.md` when writing Effect Workers, provider lifecycle code, Actions, database services, retries, observability, or app-level Effect tests.
-- Model shared infrastructure capabilities as `Context.Service` plus named Layers.
-- Provide Layers at app, Worker, stack, test, or subsystem boundaries.
-- Use `Schema` for untrusted config, webhook, API, and database-result boundaries.
-- Use `Schedule` instead of manual retry/sleep/poll loops.
-
-Don't:
-
-- Create SDK/database clients inside request handlers when a layer/init boundary can own them.
-- Use `orDie` for config, cloud API, permission, network, or database errors operators can fix.
-- Duplicate layer factories across call sites.
-- Replace Alchemy stack/provider tests with generic Effect tests; use each for its own surface.
-
-## Finish Checklist
-
-- For explicit reviews, audits, pre-deploy checks, or broad infra changes, run `references/audit-checklist.md`.
-- Typecheck passes or failure is reported.
-- Existing tests pass or skipped failures are explained.
-- `pnpm exec alchemy plan`/dry-run was run for infra changes when safe.
-- No deploy/destroy was run without approval.
-- Stage/profile assumptions are explicit.
-- Generated migrations are intentional.
-- New secrets/config are bound in init and documented.
-- Stack outputs support verification.
+- Current imports and canonical API names.
+- Stable identities and expected plan.
+- Explicit stack/stage/profile/account/state.
+- Correct phase and binding ownership.
+- Typecheck/tests completed or skipped with reason.
+- No unapproved cloud mutation.
+- Exact retained resources and cleanup status reported.

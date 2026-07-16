@@ -80,7 +80,7 @@ Use:
 export const Hyperdrive = Effect.gen(function* () {
   const { branch } = yield* NeonDb;
 
-  return yield* Cloudflare.Hyperdrive("app-hyperdrive", {
+  return yield* Cloudflare.Hyperdrive.Connection("app-hyperdrive", {
     origin: branch.origin,
   });
 });
@@ -125,7 +125,7 @@ export const NeonDb = Effect.gen(function* () {
 export const Hyperdrive = Effect.gen(function* () {
   const { branch } = yield* NeonDb;
 
-  return yield* Cloudflare.Hyperdrive("app-hyperdrive", {
+  return yield* Cloudflare.Hyperdrive.Connection("app-hyperdrive", {
     origin: branch.origin,
   });
 });
@@ -134,7 +134,7 @@ export const Hyperdrive = Effect.gen(function* () {
 Runtime:
 
 ```ts
-const hd = yield* Cloudflare.Hyperdrive.bind(Hyperdrive);
+const hd = yield* Cloudflare.Hyperdrive.Connect(Hyperdrive);
 const db = yield* Drizzle.postgres(hd.connectionString, { relations });
 
 const users = yield* db.select().from(Users);
@@ -149,7 +149,7 @@ class UsersRepo extends Context.Service<UsersRepo, {
 
 const UsersRepoLive = Layer.effect(UsersRepo)(
   Effect.gen(function* () {
-    const hd = yield* Cloudflare.Hyperdrive.bind(Hyperdrive);
+    const hd = yield* Cloudflare.Hyperdrive.Connect(Hyperdrive);
     const db = yield* Drizzle.postgres(hd.connectionString, { relations });
 
     return {
@@ -158,7 +158,7 @@ const UsersRepoLive = Layer.effect(UsersRepo)(
       }),
     };
   }),
-).pipe(Layer.provide(Cloudflare.HyperdriveBindingLive));
+).pipe(Layer.provide(Cloudflare.Hyperdrive.ConnectBinding));
 ```
 
 ## PlanetScale Postgres Plus Drizzle
@@ -194,7 +194,7 @@ export const PlanetscaleDb = Effect.gen(function* () {
 export const Hyperdrive = Effect.gen(function* () {
   const { role } = yield* PlanetscaleDb;
 
-  return yield* Cloudflare.Hyperdrive("app-hyperdrive", {
+  return yield* Cloudflare.Hyperdrive.Connection("app-hyperdrive", {
     origin: role.origin,
     caching: { disabled: true },
   });
@@ -204,7 +204,7 @@ export const Hyperdrive = Effect.gen(function* () {
 Runtime uses the same Postgres Worker pattern as Neon:
 
 ```ts
-const hd = yield* Cloudflare.Hyperdrive.bind(Hyperdrive);
+const hd = yield* Cloudflare.Hyperdrive.Connect(Hyperdrive);
 const db = yield* Drizzle.postgres(hd.connectionString, { relations });
 ```
 
@@ -238,7 +238,7 @@ export const PlanetscaleDb = Effect.gen(function* () {
 export const Hyperdrive = Effect.gen(function* () {
   const { password } = yield* PlanetscaleDb;
 
-  return yield* Cloudflare.Hyperdrive("app-hyperdrive", {
+  return yield* Cloudflare.Hyperdrive.Connection("app-hyperdrive", {
     origin: password.origin,
     caching: { disabled: true },
   });
@@ -248,7 +248,7 @@ export const Hyperdrive = Effect.gen(function* () {
 Runtime uses the MySQL adapter, not `Drizzle.postgres`:
 
 ```ts
-const hd = yield* Cloudflare.Hyperdrive.bind(Hyperdrive);
+const hd = yield* Cloudflare.Hyperdrive.Connect(Hyperdrive);
 const connectionString = yield* hd.connectionString;
 
 const db = drizzle({

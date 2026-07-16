@@ -1,4 +1,4 @@
 interface:
   display_name: "Alchemy"
-  short_description: "Alchemy v2 pnpm infrastructure"
-  default_prompt: "Use $alchemy to build, review, or audit a pnpm-based Alchemy v2 infrastructure project with Cloudflare, GitHub Actions, Drizzle, Neon, PlanetScale, monorepos, local dev, and Effect infrastructure boundaries."
+  short_description: "Alchemy v2 infrastructure and applications"
+  default_prompt: "Use $alchemy to build, review, debug, or audit a production Alchemy v2 project across Cloudflare, AWS, APIs, databases, testing, CI, containers, and custom Effect infrastructure."

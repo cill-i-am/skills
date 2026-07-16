@@ -1,217 +1,181 @@
-# Effect Infrastructure Patterns
+# Infrastructure As Effects
 
-Use this file when Alchemy work touches Effect Workers, provider implementations, Actions, custom state stores, database services, retries, observability, or tests.
+Use this file for Functions, Servers, bindings, event sources, sinks, Layers, runtime phases, or infrastructure abstractions. Alchemy and application logic can be one Effect program; the important boundary is phase and ownership, not whether Effect is allowed.
 
-This is the Alchemy-side bridge to Effect practices. It records the Effect patterns that materially change infrastructure correctness. For broader app/domain Effect architecture, also use the dedicated Effect best-practices skill or current Effect docs when available.
+## Effectful Constructor
 
-## Contents
+A Function/Server class is simultaneously:
 
-- Boundary rules
-- Services and Layers
-- Workers
-- Custom providers and Actions
-- Databases
-- Config, Schema, and secrets
-- Retries and schedules
-- Observability
-- Testing
-- Gotchas
-
-## Boundary Rules
-
-Use Effect at the same boundaries Alchemy cares about:
-
-- Stack declarations and platform init.
-- Worker request, queue, workflow, and scheduled handlers.
-- Provider lifecycle operations.
-- Deploy-time Actions.
-- Database, SDK, and cloud API adapters.
-- Tests that need typed services, layers, time control, or Effect assertions.
-
-Prefer:
-
-- `Effect.gen` for inline stack/init workflows.
-- `Effect.fn("Name")` for reusable operations, provider methods, service methods, and deploy-time Actions.
-- `Context.Service` plus `Layer.effect` for shared infrastructure capabilities.
-- `Effect.tryPromise` to wrap SDK/driver calls whose failures should be typed.
-- `Schedule`/`Effect.retry` for backoff, polling, and transient cloud failures.
-
-Use `Effect.fnUntraced` only when it is a deliberate escape hatch: Alchemy core/provider internals that already use it, measured hot paths, or operations where tracing would be noisy and the loss is intentional.
-
-## Services And Layers
-
-Expose domain-shaped infrastructure services instead of leaking cloud primitives across the app.
+- a Resource declaration;
+- a typed identity other resources can bind;
+- an initialization Effect;
+- the runtime API returned by that Effect.
 
 ```ts
 import * as Cloudflare from "alchemy/Cloudflare";
+import * as Effect from "effect/Effect";
+import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
+
+export default class Api extends Cloudflare.Worker<Api>()(
+  "Api",
+  { main: import.meta.url },
+  Effect.gen(function* () {
+    const bucket = yield* Cloudflare.R2.ReadWriteBucket(Uploads);
+
+    return {
+      fetch: Effect.gen(function* () {
+        const item = yield* bucket.get("health.json");
+        return HttpServerResponse.text(item === null ? "missing" : "ok");
+      }),
+    };
+  }).pipe(Effect.provide(Cloudflare.R2.ReadWriteBucketBinding)),
+) {}
+```
+
+The constructor's outer Effect is initialization. Returned functions/Effects/Streams form the runtime interface.
+
+## Phase Ownership
+
+Initialization runs twice for different purposes:
+
+- Plan time: discovers resources, bindings, permissions, env, event mappings, and graph dependencies.
+- Runtime cold start: builds live SDK clients and service Layers.
+
+Returned handlers run per request/event only at runtime.
+
+Put in initialization:
+
+- resource and binding resolution;
+- `Config` resolution needed for secret/env binding;
+- SDK/client construction;
+- service Layer assembly;
+- event-source registration;
+- long-lived instance-scoped resources.
+
+Put in handlers:
+
+- request/message/event decoding;
+- request-scoped resources and transactions;
+- business workflows;
+- response construction;
+- per-event tracing and correlation.
+
+`RuntimeContext` requirements can run only inside returned runtime handlers. Do not branch user code on internal runtime guards; use the supplied binding Layers.
+
+## Binding Contract And Layer
+
+A binding separates a capability contract from the platform implementation Layer. Calling the capability in initialization records deploy-time access and returns the live runtime client when the program boots.
+
+```ts
+export const Uploads = Cloudflare.R2.Bucket("Uploads");
+
+const bucket = yield* Cloudflare.R2.ReadWriteBucket(Uploads);
+```
+
+Provide the matching Layer once at the Function boundary. Use native-binding Layers when the host supports them and HTTP Layers when the topology requires a network transport. Avoid leaking binding implementation choices into domain services.
+
+## Services And Infrastructure Layers
+
+Wrap repeated resource capabilities in domain-shaped services:
+
+```ts
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 
-export const UploadsBucket = Cloudflare.R2Bucket("Uploads");
+export class UploadStore extends Context.Service<
+  UploadStore,
+  {
+    readonly put: (key: string, body: BodyInit) => Effect.Effect<void>;
+  }
+>()("UploadStore") {}
 
-export class Uploads extends Context.Service<Uploads, {
-  readonly put: (key: string, body: BodyInit) => Effect.Effect<void>;
-}>()("Uploads") {}
-
-export const UploadsLive = Layer.effect(Uploads)(
+export const UploadStoreLive = Layer.effect(
+  UploadStore,
   Effect.gen(function* () {
-    const bucket = yield* Cloudflare.R2.ReadWriteBucket(UploadsBucket);
-
-    return {
-      put: Effect.fn("Uploads.put")(function* (key, body) {
+    const bucket = yield* Cloudflare.R2.ReadWriteBucket(Uploads);
+    return UploadStore.of({
+      put: Effect.fn("UploadStore.put")(function* (key, body) {
         yield* bucket.put(key, body);
       }),
-    };
+    });
   }),
 ).pipe(Layer.provide(Cloudflare.R2.ReadWriteBucketBinding));
 ```
 
 Rules:
 
-- Name reusable layers as constants such as `UploadsLive`, `DbLive`, or `GitHubLive`.
-- Prefer `Layer.effect` when construction depends on resources, Config, Scope, SDK clients, or other services.
-- Use `Layer.succeed` only for pure values.
-- Use `Layer.effectDiscard` for startup effects that do not provide a service.
-- Compose and provide layers at app, Worker, stack, test, or subsystem boundaries.
-- Avoid repeated layer factory calls; layer memoization is by layer reference.
-- Avoid `Effect.provide` deep inside business logic unless intentionally overriding a boundary for a test or adapter.
+- Export stable Layer values; memoization is by Layer reference.
+- Use `Layer.effect` for construction with dependencies and `Layer.succeed` for pure values.
+- Provide Layers at Function, application, test, or subsystem boundaries.
+- Keep domain interfaces provider-neutral when substitution has real value.
+- Do not scatter `Effect.provide` through business logic.
 
-## Workers
+## Event Sources
 
-In Effect Workers:
-
-- Bind Alchemy resources in the outer init effect.
-- Build service layers during init.
-- Return thin request/event handlers that call named operations.
-- Provide the matching binding live layers once.
-- Keep request-dependent work inside returned handlers.
+An event source binds a resource to a Function and invokes it when something happens. One declaration should own permissions, trigger/event mapping, and typed handler registration.
 
 ```ts
-export default class Api extends Cloudflare.Worker<Api>()(
-  "Api",
-  { main: import.meta.filename },
-  Effect.gen(function* () {
-    const uploads = yield* Uploads;
-
-    return {
-      fetch: Effect.fn("Api.fetch")(function* (request: Request) {
-        yield* uploads.put("health.json", JSON.stringify({ ok: true }));
-        return Response.json({ ok: true });
-      }),
-    };
-  }).pipe(Effect.provide(UploadsLive)),
-) {}
-```
-
-Resolve `effect/Config` in init, not only inside `fetch`, so Alchemy can discover and bind secrets.
-
-## Custom Providers And Actions
-
-Provider lifecycle methods are infrastructure operations. Make them observable, convergent, idempotent, and typed.
-
-```ts
-import * as Effect from "effect/Effect";
-import * as Schedule from "effect/Schedule";
-import * as Schema from "effect/Schema";
-
-class ProviderApiError extends Schema.TaggedErrorClass<ProviderApiError>()(
-  "ProviderApiError",
-  {
-    operation: Schema.String,
-    message: Schema.String,
-    retryable: Schema.Boolean,
-  },
-) {}
-
-const retryCloudApi = Schedule.exponential(500, 1.5).pipe(
-  Schedule.jittered,
+yield* Cloudflare.Queues.consumeQueueMessages<Job>(
+  queue,
+  { batchSize: 10, maxRetries: 3, retryDelay: "1 second" },
+  (messages) => Stream.runForEach(messages, processJob),
 );
-
-const createRemoteThing = Effect.fn("Example.Thing.create")(function* (
-  name: string,
-) {
-  return yield* Effect.tryPromise({
-    try: () => client.createThing({ name }),
-    catch: (cause) =>
-      ProviderApiError.make({
-        operation: "createThing",
-        message: cause instanceof Error ? cause.message : String(cause),
-        retryable: isRetryable(cause),
-      }),
-  }).pipe(
-    Effect.retry({
-      schedule: retryCloudApi,
-      while: (error) => error.retryable,
-    }),
-  );
-});
 ```
 
-Rules:
+Common sources:
 
-- Treat API not-found during delete as success.
-- Model expected cloud/API failures as typed errors, not defects.
-- Preserve enough cause/context for debugging, but never log raw secrets.
-- Use `Action` for idempotent deploy-time side effects; use a Resource for lifecycle, read, adoption, replacement, or delete semantics.
-- Use `Effect.orDie`/`Layer.orDie` only where failure is truly unrecoverable at that boundary.
+- Cloudflare Queue, cron, and GitHub repository events.
+- AWS SQS, Kinesis, DynamoDB Streams, S3 notifications, SNS, and EventBridge.
 
-## Databases
+Batch sources expose Effect Streams. Configure batching, ordering, retry, record age, partial failure, and dead-letter behavior at the declaration. Assume at-least-once delivery unless the platform proves otherwise; handlers must be idempotent.
 
-Keep database clients and query libraries at the infrastructure edge.
+## Sinks
 
-- For Drizzle, build the Drizzle client in Worker init or a `DbLive` layer and expose repositories/services.
-- For Effect SQL, domain services should depend on `SqlClient` or repository services, not native drivers.
-- For raw `pg`/`mysql2`, acquire one connection per request and release it with `ensuring`/`acquireRelease` or `try/finally`.
-- Decode external row/API/webhook data with Schema where shape drift would hurt.
-- Keep redacted connection strings redacted until the driver boundary.
+Sinks are the write-side dual of event sources: a bound resource becomes an Effect `Sink` for batching and backpressure.
 
-## Config, Schema, And Secrets
+Use a Sink when a Stream naturally terminates in SQS, Kinesis, DynamoDB, or another supported service. Prefer source-transform-sink pipelines over manual loops and ad hoc batching.
 
-Use Config and Schema at boundaries:
+Review sink chunking, concurrency, retry, partial failure, ordering, and IAM scope. A stream completing does not imply external side effects are reversible.
 
-- Resolve `Config.redacted(...)` in platform init so Alchemy binds secrets.
-- Use `Redacted` for tokens, passwords, connection strings, webhook secrets, and generated credentials.
-- Use `Schema.TaggedErrorClass` for errors that cross module/process boundaries or need structured diagnostics.
-- Use `Schema.decodeUnknownEffect` at webhook, API, env, and database-result boundaries when values are untrusted.
+## Circular Dependencies
 
-## Retries And Schedules
+When two Functions/Servers bind each other, declare stable class identities first and attach props/implementations through the current `.make`/constructor pattern documented for that platform. Keep the cycle at the binding graph; avoid cyclic module initialization and duplicated resource declarations.
 
-Use `Schedule` instead of manual loops for:
+Use circular bindings only when the domain truly requires bidirectional calls. An event, queue, shared service, or one-way dependency is often easier to operate.
 
-- Cloud API eventual consistency.
-- First Workers.dev availability checks.
-- Provider polling.
-- Transient database/API/network failures.
-- Queue/workflow retry policy helpers.
+## Custom Runtime
 
-Retry only retryable failures. Do not retry validation errors, permission errors, missing required config, or deterministic migration failures.
+A custom runtime adapts an Effectful constructor to a host Alchemy does not yet support. It must define:
 
-## Observability
+- how the runtime resource is declared and reconciled;
+- how application code is bundled and started;
+- which runtime API shape it exposes;
+- how bindings record deploy-time policy/config and produce runtime clients;
+- phase detection and runtime context;
+- cleanup and test strategy.
 
-- Name reusable operations with `Effect.fn("Provider.Resource.operation")`.
-- Add logs/spans/metrics at provider lifecycle, Action, request, job, workflow, and database operation boundaries.
-- Attach stage, stack, resource type, logical ID, provider, and request/job IDs when available.
-- Do not log raw props that may include secrets.
-- Do not create OpenTelemetry exporters or SDK clients in business logic; provide them through layers at the app boundary.
+Build a custom runtime only when a provider Resource plus existing host cannot express the workload. Verify it with a minimal binding, HTTP handler, event source if applicable, and real lifecycle tests.
 
-## Testing
+## Config And Secrets
 
-Use Alchemy's `alchemy/Test/Vitest` for stack/provider/deploy tests. Use `@effect/vitest` patterns for app-level Effect service tests when the repo already has or needs them.
+Resolve `Config` during initialization and capture the decoded/redacted value into handlers. Use Schema and branded types for untrusted configuration. Keep secrets redacted through Outputs, state, logs, and provider diagnostics.
 
-Prefer:
+## Errors, Retries, And Concurrency
 
-- explicit test layers instead of production clients.
-- `TestClock` for schedules, retries, polling, and timeouts.
-- `test.provider` for provider lifecycle behavior.
-- `alchemy/Test/Vitest` for resources that need plan/deploy/destroy semantics.
+- Wrap SDK/driver promises with `Effect.tryPromise` and typed errors.
+- Use `Effect.fn("Provider.Resource.operation")` for reusable operations.
+- Retry only tagged transient failures with a bounded `Schedule`.
+- Use Effect concurrency operators rather than unmanaged Promise fan-out.
+- Scope clients and resources to instance or request lifetime deliberately.
+- Treat interruption and cleanup as part of handler correctness.
 
-## Gotchas
+## Verification
 
-- Do not create SDK, database, or HTTP clients inside request handlers when a layer/init boundary can own them.
-- Do not scatter `Effect.provide` through implementation code.
-- Do not use `Effect.promise` for failures that should be typed or retried.
-- Do not use `fnUntraced` as the default for new userland provider/action/service code.
-- Do not use `orDie` to hide config, permission, network, or cloud API errors that operators can fix.
-- Do not duplicate layer factories in many call sites; name a layer and reuse it.
-- Do not replace Alchemy stack tests with generic Effect tests. They test different surfaces.
+- Initialization can execute during planning without performing runtime business work.
+- Every capability has the correct implementation Layer.
+- Runtime-only requirements remain inside returned handlers.
+- Internal service clients are typed through bindings.
+- Event handlers are idempotent and failure policy is explicit.
+- Service Layers are reusable and provided once.
+- Tests replace boundary Layers or deploy the real stack according to the surface under test.

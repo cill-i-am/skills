@@ -1,216 +1,165 @@
 # Core Model
 
-Alchemy v2 is Infrastructure-as-Effects: a single TypeScript/Effect program declares cloud resources, application runtime code, bindings, credentials, state, and deploy-time actions.
+Alchemy turns an Effect program into a dependency graph, computes a plan from desired code plus persisted/observed state, and reconciles cloud resources through provider Layers.
 
 ## Stack
 
-`Alchemy.Stack(name, options, effect)` is the deployment unit.
+`Alchemy.Stack(id, options, effect)` is the deployment and state ownership unit.
 
-- `name` identifies the stack in state.
-- `options.providers` supplies provider Layers.
-- `options.state` supplies a state store.
-- The generator declares resources and returns stack outputs.
+- The ID participates in resource identity and physical naming.
+- `providers` supplies lifecycle implementations and binding policies.
+- `state` persists resource inputs/attributes for later plans.
+- The Effect declares resources/actions and returns stack outputs.
+- Stage selects an isolated instance of the stack.
 
-Default CLI entrypoint is `alchemy.run.ts`, but any TypeScript file exporting a default stack can be used: `pnpm exec alchemy deploy stacks/github.ts`.
+Default-export one stack per entrypoint. Use a custom entrypoint only when the CLI command names it explicitly.
 
-Best practices:
+## Resource
 
-- Return useful outputs only: URLs, resource IDs, database branch names, bucket names, queue names, or values tests/operators need.
-- Prefer one stack while resources ship together. Split stacks only for independent ownership/deploy cadence.
-- Use typed stack handles for cross-stack outputs:
+A Resource has:
+
+- a resource type, such as `Cloudflare.R2.Bucket`;
+- a stable logical ID, such as `Uploads`;
+- input props describing desired state;
+- output attributes returned by the provider;
+- a provider lifecycle implementation.
 
 ```ts
-export class Backend extends Alchemy.Stack<Backend, { url: string }>()(
-  "Backend",
-) {}
-
-const backend = yield* Backend;
-const prodBackend = yield* Backend.stage.prod;
+export const Uploads = Cloudflare.R2.Bucket("Uploads");
 ```
 
-## Resources
+The constructor returns an Effect description. Yielding it registers the resource in the surrounding stack/function graph. Cloud APIs run later during planning and apply.
 
-A resource has a stable logical ID, input props, and output attributes. Calling `Cloudflare.R2Bucket("Bucket")` builds an Effect description. It is registered when `yield*` happens inside a stack or Layer; cloud API calls happen later during plan/apply.
+Logical IDs are identity. Renaming a variable does nothing; changing `"Uploads"` can create a different resource. Preserve IDs through refactors and migrations unless replacement is intentional.
 
-Logical ID rules:
+## Action
 
-- Stable ID means same resource across deploys.
-- Variable/file renames are safe if logical ID stays the same.
-- Logical ID change means new resource and deletion of the old one.
-- IDs only need to be unique within a stack namespace.
+An Action is deploy-time Effect work that reruns when its inputs change. It has graph dependencies and memoized input identity but no full remote lifecycle.
 
-Physical names are derived from stack, stage, logical ID, and instance ID. Stage isolation and deterministic names make retries/adoption possible.
+Use an Action for idempotent code generation, seeding, one-time API calls, or migration-like work that can safely retry. Use a Resource when the object needs read, adoption, drift reconciliation, replacement, or delete behavior.
 
 ## Outputs
 
-Resource attributes are lazy `Output<T>` values.
+Provider attributes are lazy `Output<T>` values because they do not exist until upstream resources resolve.
 
-- Use property access for nested outputs.
-- Use `Output.interpolate` for strings.
-- Use `Output.map`/`mapEffect` for transformations.
-- Use `Output.all` to combine dependencies.
-- Passing outputs into resource props creates graph edges.
+```ts
+import * as Output from "alchemy/Output";
 
-Do not try to log or unwrap outputs during declaration. They resolve when the engine evaluates the graph.
+const bucket = yield* Cloudflare.R2.Bucket("Uploads");
+
+const upper = bucket.bucketName.pipe(
+  Output.map((name) => name.toUpperCase()),
+);
+
+const objectArn = Output.interpolate`arn:aws:s3:::${bucket.bucketName}/objects/*`;
+```
+
+Use:
+
+- property access for nested attributes;
+- `literal` for a known value already needing Output shape;
+- `asOutput` in helpers accepting plain values, Effects, or Outputs;
+- `map` for pure transforms;
+- `mapEffect` for Effectful transforms;
+- `all` for parallel tuple composition;
+- `interpolate` for strings;
+- `of`/`ref` for explicit references;
+- `Redacted` for secrets flowing through evaluation.
+
+Passing an Output into another Resource's props creates a dependency edge. Do not run Output evaluation yourself or coerce Outputs to strings.
 
 ## References
 
-References read already-deployed state at plan time.
+References read attributes of resources or stacks that are already deployed in a state store.
 
-- `Resource.ref(id, { stage, stack })` references one deployed resource.
-- `yield* TypedStack` reads a whole stack output record at the matching stage.
-- `TypedStack.stage[name]` pins the stage.
-- `Output.ref` and `Output.stackRef` are lower-level escape hatches.
+- Same stack: reuse and yield the exported Resource constructor/tag.
+- Another stack: import/yield its Stack tag or use `Resource.ref`.
+- Another stage: use explicit stage selection only when intentionally shared/pinned.
+- Low-level: `Output.ref`/`Output.stackRef` when helper APIs require it.
 
-Missing refs fail at plan time with an invalid reference. Deploy upstream first.
-
-Canonical PR database pattern:
-
-```ts
-const project = stage.startsWith("pr-")
-  ? yield* Neon.Project.ref("app-db", { stage: "dev_shared" })
-  : yield* Neon.Project("app-db", { region: "aws-us-east-1" });
-```
+References do not deploy the target. Deploy upstream first and destroy downstream first. Missing targets should fail clearly; do not hide them with fallback infrastructure.
 
 ## Lifecycle
 
-Plan classifies each state entry/resource as create, update, replace, delete, or noop. Apply walks the dependency graph.
+A plan compares desired inputs with persisted state and provider observations. Resource operations include create/reconcile, no-op, update, replacement, read/recovery/adoption, and delete.
 
-Provider lifecycle:
+Providers should converge from observed state:
 
-- `reconcile`: required, converges live cloud to desired state.
-- `delete`: required, idempotent cleanup.
-- `diff`: optional planning hook for noop/update/replace.
-- `read`: optional recovery/adoption hook.
-- `precreate`: optional for circular platform bindings.
-- `tail`/`logs`: optional observability hooks.
+1. Read live state when possible.
+2. Ensure the object exists.
+3. Reconcile mutable differences.
+4. Replace only when the API cannot update a property safely.
+5. Return fresh attributes.
+6. Delete idempotently.
 
-Provider reconcile should be observe -> ensure -> sync -> return. Do not split create/update by `output === undefined`; adoption has output but no old props.
+A replacement creates or adopts the new identity according to provider ordering, updates dependents, then removes the old resource. Review replacements more carefully than ordinary updates.
 
-Adoption:
+## Adoption And Recovery
 
-- Owned resources can be silently recovered when state is missing.
-- `Unowned(attrs)` fails unless `--adopt` is used.
-- `--adopt` is a takeover flag, not a normal recovery flag.
+When state is missing, provider `read` determines whether a resource is absent, owned, or unowned.
 
-## Stages And Profiles
+- Owned resources can be recovered into state automatically.
+- Unowned resources fail by default.
+- `--adopt` authorizes takeover across the deploy.
 
-Stages isolate state and physical names. Resolution order:
+Adoption is an ownership mutation. Verify tags, physical identity, stack/stage/profile, and reconcile behavior before enabling it.
 
-1. `--stage`
-2. `STAGE`
-3. `dev_$USER` or `dev_$USERNAME`
-4. `dev_unknown`
+## Providers
 
-Common names: `dev_<user>`, `dev_shared`, `pr-<number>`, `prod`.
+The stack's provider Layer maps resource types to lifecycle implementations and contributes auth/binding services.
 
-Use `dev_shared` only for shared development resources such as a Neon project
-that PR/dev stages branch from. It is not a release gate, and it should not
-become a long-lived staging environment unless the user explicitly chooses that
-topology.
+```ts
+providers: Layer.mergeAll(
+  Cloudflare.providers(),
+  Drizzle.providers(),
+  Neon.providers(),
+)
+```
 
-Profiles isolate credentials. Use `--profile` or `ALCHEMY_PROFILE`. A typical pattern is `pnpm exec alchemy deploy --stage prod --profile prod`, but stages and profiles are orthogonal.
+Register each required provider once. Keep the set minimal and use `provider-extension.md` when implementing a new provider.
 
 ## State
 
-State stores persisted resource state by stack, stage, and fully-qualified resource name.
+State records resolved props and attributes, replacement history, stacks, stages, and resources. It is what the next plan diffs against; it is not the cloud itself.
 
-- Local state lives in `.alchemy/`; gitignore it.
-- `Cloudflare.state()` is recommended for teams/CI on Cloudflare. It bootstraps a state-store Worker backed by a Durable Object and Secrets Store.
-- A Cloudflare state bootstrap is one-time per account/state worker name.
-- Custom state stores provide `State` with a cached `StateService`; defer backend connection until first state access.
+- Use provider remote state for team and CI stacks.
+- Use local state for isolated work and examples.
+- Never commit `.alchemy/`.
+- Inspect state before clearing or switching stores.
+- Protect state storage and credentials as production infrastructure.
 
-## Platforms And Phases
+## Stages And Profiles
 
-Platforms combine infrastructure and runtime code. Cloudflare Workers, Lambda Functions, and Containers are platforms.
+- Stage answers: which isolated stack instance?
+- Profile answers: which credentials/auth methods?
 
-Alchemy platform code has two phases:
+Default developer stages are derived from the user. CI and production must pass explicit stages and profiles. Stage-aware props belong in stack context; do not build a second environment model from scattered env variables.
 
-- Plantime/init: stack graph and binding discovery during `plan`, `deploy`, or `dev`; also runs at runtime cold start.
-- Runtime: request/event handlers inside the deployed Worker/Lambda.
+## Plan, Init, Runtime
 
-Effect Workers return an Effect from an Effect:
+For ordinary Resources, planning describes and reconciles infrastructure. For Functions/Servers, one Effectful constructor spans:
 
-```ts
-export default Cloudflare.Worker(
-  "Api",
-  { main: import.meta.filename },
-  Effect.gen(function* () {
-    const bucket = yield* Cloudflare.R2.ReadWriteBucket(Bucket);
+- Init: runs at plan time to discover bindings and at cold start to build runtime clients/services.
+- Runtime: returned handlers execute only for requests/events.
 
-    return {
-      fetch: Effect.gen(function* () {
-        const object = yield* bucket.get("hello.txt");
-        return object
-          ? HttpServerResponse.text(yield* object.text())
-          : HttpServerResponse.text("Not found", { status: 404 });
-      }),
-    };
-  }).pipe(Effect.provide(Cloudflare.R2.ReadWriteBucketBinding)),
-);
-```
-
-Init can bind resources and construct layers. Runtime handles requests. `Alchemy.RuntimeContext` requirements should only appear in returned runtime effects.
+`Alchemy.RuntimeContext` is runtime-only. Init can capture clients and services into returned handlers, but must not perform request-dependent work.
 
 ## Bindings
 
-Bindings record runtime wiring and return typed clients. On Cloudflare they emit native Worker bindings or scoped HTTP credentials. Binding has two layers internally:
+A binding connects a resource to a Function/Server and usually combines:
 
-- Policy: plan-time binding emission.
-- Service: runtime SDK wrapper.
+- a typed runtime capability;
+- deploy-time wiring such as IAM, environment variables, native bindings, routes, or event mappings;
+- a runtime implementation Layer.
 
-Best practices:
+Use the narrowest capability. Examples include R2 read/write access, an AWS S3 operation, an SQS sender, or a typed internal service client. Bindings make access part of the graph rather than invisible configuration.
 
-- Effect style: bind in init, use typed client in runtime.
-- For beta.58 capability resources, prefer the least-privilege namespace: `Cloudflare.R2.ReadBucket`, `Cloudflare.R2.WriteBucket`, `Cloudflare.R2.ReadWriteBucket`, `Cloudflare.KV.ReadWriteNamespace`, and `Cloudflare.Queues.WriteQueue`.
-- Provide the matching implementation Layer such as `Cloudflare.R2.ReadWriteBucketBinding` or `Cloudflare.R2.ReadWriteBucketHttp`.
-- Hyperdrive still uses `Cloudflare.Hyperdrive.bind(Hyperdrive)` with `Cloudflare.HyperdriveBindingLive`.
-- Async style: use `env` props and `Cloudflare.InferEnv<typeof Worker>`.
-- Catch/handle binding errors in runtime effects so Worker error channels typecheck.
+## Graph Design Checklist
 
-## Secrets And Config
-
-`effect/Config` values resolved in platform init become bindings.
-
-```ts
-const apiKey = yield* Config.redacted("OPENAI_API_KEY");
-```
-
-Footgun: resolving `Config` only inside `fetch` means Alchemy does not discover or bind it. Resolve in init and capture it in the closure.
-
-All Config values bind as secrets. Use literal `env` values for intentionally plain, non-sensitive config.
-
-## Layers
-
-Use Effect Layers to encapsulate infrastructure behind typed services. A Layer can declare resources, bind them, and return a domain interface. Consumers depend on the service, not R2/KV/D1/etc.
-
-Use Layers when:
-
-- Multiple Workers share the same capability.
-- You want to swap storage implementations.
-- You want test fakes.
-- Runtime code is getting cloud-primitive-heavy.
-
-Best practices:
-
-- Use `Context.Service` plus named layer constants such as `UploadsLive`, `DbLive`, or `GitHubLive`.
-- Prefer `Layer.effect` when constructing a service depends on resources, bindings, Config, Scope, SDK clients, or other services.
-- Use `Layer.succeed` only for pure values and `Layer.effectDiscard` for startup effects that do not provide a service.
-- Provide Layers at stack, Worker init, test, or subsystem boundaries. Avoid scattering `Effect.provide` deep in business logic.
-- Avoid repeated layer factory calls; layer memoization is by layer reference.
-
-For Alchemy-specific Effect boundary patterns, load `effect-infra.md`.
-
-## Actions
-
-`Action` is a deploy-time graph node with input hashing. It runs when inputs change or `--force` is used. It has no provider lifecycle, no delete, and no read.
-
-Use Action for:
-
-- Seeding.
-- Notifications.
-- Artifact sync.
-- Cache invalidation.
-- One-off checks.
-
-Use Resource instead when lifecycle, adoption, reading, replacement, or delete behavior matters.
+- One owner for every physical resource and state record.
+- Stable logical IDs and deliberate physical names.
+- Dependencies represented by Outputs, bindings, event sources, or references.
+- No hidden deploy ordering in shell scripts.
+- Resources for lifecycles; Actions for input-keyed side effects.
+- Useful redacted outputs.
+- Explicit stage/profile/state for every mutating operation.

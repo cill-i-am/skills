@@ -1,40 +1,46 @@
 ---
 name: alchemy
-description: Alchemy v2 Infrastructure-as-Effects for pnpm projects. Use when authoring, reviewing, debugging, or auditing alchemy.run.ts stacks, Cloudflare resources, GitHub provider resources, Drizzle/Neon/PlanetScale database wiring, CI stages, local dev, monorepos, custom providers, or Effect infrastructure boundaries.
+description: Use when building, migrating, reviewing, auditing, debugging, or explaining pnpm-based Alchemy v2 Infrastructure-as-Effects projects across Cloudflare, AWS, GitHub, databases, APIs, tests, CI, containers, custom providers, and Effect runtimes.
 ---
 
-# Alchemy
+# Alchemy v2
 
-Use this skill as a first-principles Alchemy v2 suite. Do not rely on older local Alchemy skills. Prefer the live official docs and the current package/source in the user's repo whenever API details, versions, provider props, or CLI behavior matter.
+Treat Alchemy v2 as the production default. Use current v2 APIs and patterns; do not preserve v1 compatibility or historical transition guidance unless the user is explicitly migrating an existing v1 project.
+
+Alchemy is Infrastructure-as-Effects: infrastructure resources, application runtimes, bindings, event sources, and deploy-time workflows form one typed Effect program. Use Effect throughout the backend where it improves composition, errors, concurrency, testing, or observability. Keep phase ownership explicit so plan-time declarations, runtime initialization, and request/event execution happen in the right place.
 
 ## First Moves
 
-1. Inspect the repo before editing: `alchemy.run.ts`, package manager lockfile, `package.json`, existing `src/` shape, tests, CI, and any local instructions.
-2. If starting fresh, use pnpm. If a repo already has another package manager locked in, follow the repo, but do not introduce Bun as the default.
-3. Read the narrow reference file for the task:
-   - Code samples and copy-adaptable patterns: `references/code-samples.md`.
-   - New app, tutorial path, concepts, or docs routing: `references/doc-map.md`.
-   - Core Alchemy mental model, stacks, resources, phases, outputs, refs, state, providers: `references/core-model.md`.
-   - Cloudflare provider setup, state, Workers, Vite, Storage, Hyperdrive, CI: `references/cloudflare.md`.
-   - Cloudflare platform patterns and broad resource catalog: `references/cloudflare-platform.md`.
-   - Drizzle provider setup, Schema, migrations, Postgres/MySQL runtime guidance: `references/drizzle.md`.
-   - Neon provider setup, cheaper development Postgres, branches, Hyperdrive, Drizzle migrations: `references/neon.md`.
-   - PlanetScale provider setup, Postgres/MySQL resources, branches, roles/passwords: `references/planetscale.md`.
-   - Cross-provider database integration patterns for Hyperdrive, Drizzle, Neon, PlanetScale: `references/database-patterns.md`.
-   - Effect service/Layer boundaries for Workers, providers, Actions, databases, tests, retries, and observability: `references/effect-infra.md`.
-   - CLI, dev, tests, CI, stages, profiles, v1 migration: `references/operations-ci-testing.md`.
-   - pnpm monorepos, workspace package layout, single-stack vs multi-stack deploys: `references/monorepos.md`.
-   - GitHub provider resources, GitHub Actions, PR comments, credentials-as-code, webhooks/events: `references/github.md`.
-   - Custom resource providers, Actions, custom state stores: `references/provider-extension.md`.
-   - Final review, pre-deploy audit, or explicit audit/checklist tasks: `references/audit-checklist.md`.
-   - Always load `references/gotchas.md` before finalizing nontrivial Alchemy work.
-4. For version-sensitive decisions, browse official docs first. Start with `https://v2.alchemy.run/llms.txt`, then the narrow page.
-5. Never run `pnpm exec alchemy deploy`, `pnpm exec alchemy destroy`, or commands that mutate live cloud resources without explicit user confirmation. `pnpm exec alchemy plan`, typechecks, and local tests are fine when they do not mutate production.
-6. When writing new Alchemy code, load `references/code-samples.md` and adapt the closest pattern instead of inventing resource wiring from memory.
+1. Inspect `alchemy.run.ts`, `package.json`, the lockfile, workspace layout, runtime modules, tests, CI, and local instructions before editing.
+2. Follow the repository's package manager. For a new personal project, default to pnpm.
+3. Confirm the installed Alchemy version and exports before writing version-sensitive code.
+4. Open `https://alchemy.run/llms.txt`, then the narrow official page and generated provider API. Use `https://github.com/alchemy-run/alchemy` when docs and installed behavior need source verification.
+5. Load only the references needed for the task, plus `references/gotchas.md` before finalizing nontrivial work.
 
-## Default Project Shape
+## Task Router
 
-Use one default-exported stack unless the repo intentionally passes a custom stack file:
+- Concepts, stacks, resources, Actions, Outputs, references, lifecycle, providers: `references/core-model.md`.
+- Official docs and source routing: `references/doc-map.md`.
+- Effectful constructors, bindings, phases, Layers, event sources/sinks, runtime ownership: `references/effect-infra.md`.
+- API modality and trust-boundary design: `references/apis.md`.
+- Cloudflare Workers, data, frontends, messaging, AI, security, and local dev: `references/cloudflare.md`.
+- AWS compute, data, events, networking, websites, IAM bindings, and bootstrap: `references/aws.md`.
+- CLI planning, adoption, state inspection, deploy/destroy, logs, and migration: `references/cli-operations.md`.
+- Stages, profiles, auth providers, secrets, state stores, local development, and CI: `references/environments-auth-state.md`.
+- Stack, provider, integration, and observability tests: `references/testing.md`.
+- Axiom, CloudWatch, OpenTelemetry, logs, metrics, dashboards, and alarms: `references/observability.md`.
+- Docker, Kubernetes, and Command build/dev/process resources: `references/containers-toolchain.md`.
+- Drizzle, Neon, PlanetScale, and cross-provider database composition: `references/drizzle.md`, `references/neon.md`, `references/planetscale.md`, and `references/database-patterns.md`.
+- GitHub resources, events, Actions, PR previews, secrets, and variables: `references/github.md`.
+- pnpm workspaces and stack ownership: `references/monorepos.md`.
+- Custom resources, providers, Actions, state stores, auth, and runtimes: `references/provider-extension.md`.
+- Reviews and pre-deploy evidence: `references/audit-checklist.md`.
+
+## Current Install Rule
+
+Use Node.js 22 or newer and the install command from the live Getting Started page. While the documented v2 channel is `alchemy@next`, keep that channel in setup guidance without hardcoding its resolved package version into durable instructions. Inspect the resolved package and lockfile before using a recently added API. Alchemy v2 uses Effect v4; install Effect and its platform packages at the ranges documented alongside Alchemy rather than guessing a compatible version.
+
+## Default Stack
 
 ```ts
 import * as Alchemy from "alchemy";
@@ -48,13 +54,13 @@ export default Alchemy.Stack(
     state: Cloudflare.state(),
   },
   Effect.gen(function* () {
-    const bucket = yield* Cloudflare.R2Bucket("Bucket");
+    const bucket = yield* Cloudflare.R2.Bucket("Bucket");
     return { bucketName: bucket.bucketName };
   }),
 );
 ```
 
-Merge only the providers the stack needs:
+For multiple providers, merge only the required provider Layers:
 
 ```ts
 import * as Layer from "effect/Layer";
@@ -62,42 +68,47 @@ import * as Layer from "effect/Layer";
 providers: Layer.mergeAll(
   Cloudflare.providers(),
   Drizzle.providers(),
-  Neon.providers(), // or Planetscale.providers() when the stack uses PlanetScale
+  Neon.providers(),
 )
 ```
 
-Prefer `Cloudflare.state()` for team and CI Cloudflare projects. Use local `.alchemy/` only for solo experiments or isolated examples, and keep it gitignored.
+## Core Rules
 
-## beta.58 Platform Ergonomics
+- Keep logical IDs stable. Changing an ID is an identity and replacement decision, not a cosmetic rename.
+- Treat resource constructors as descriptions. A resource enters the stack graph when its Effect is yielded.
+- Compose unresolved values with `Output.map`, `mapEffect`, `all`, `interpolate`, `of`, `ref`, and `redacted`; do not force them early.
+- Use a Resource when identity, read, adoption, drift, replacement, or deletion matters. Use an Action for idempotent deploy-time work keyed by inputs.
+- Use one stack by default. Split stacks only for real ownership, lifecycle, blast-radius, or deploy-cadence boundaries.
+- Stages select isolated infrastructure state; profiles select credentials. Never use profiles as an environment model.
+- Prefer remote state for team and CI deployments. Keep local `.alchemy/` state gitignored.
+- Use the canonical namespaced provider APIs shown in current docs, such as `Cloudflare.R2.Bucket`, `Cloudflare.KV.Namespace`, `Cloudflare.D1.Database`, and `Cloudflare.Queues.Queue`.
+- Bind the narrowest runtime capability that code needs. A binding should wire both access and least-privilege policy where the platform supports it.
+- Resolve `Config` and binding dependencies in runtime initialization so Alchemy can discover secrets and permissions. Keep request-, message-, or event-specific work in returned handlers.
+- Prefer schemaless RPC for trusted internal services. Add Schema at trust boundaries through Effect RPC or Effect HTTP.
+- Model expected provider, SDK, network, and database failures as typed Effect errors. Retry only failures known to be transient.
+- Return useful, redacted stack outputs for tests and operators.
 
-Alchemy 2.0.0-beta.58 changed the recommended platform and binding shapes:
+## Mutation Safety
 
-- Layer-form Worker and Container tags are pure identity. Declare `export class Api extends Cloudflare.Worker<Api, Cloudflare.WorkerShape>()("Api") {}` and pass props to `Api.make(props, impl)`. Inline `Cloudflare.Worker("Api", props, impl)` remains supported.
-- Resolve `Cloudflare.DurableObjectState` in the outer Durable Object init Effect when a Layer or service needs storage.
-- Use resource capability namespaces for R2, KV, and Queues: `Cloudflare.R2.ReadWriteBucket(Bucket)`, `Cloudflare.KV.ReadWriteNamespace(Namespace)`, and `Cloudflare.Queues.WriteQueue(Queue)`, with matching `*Binding` or `*Http` Layers.
-- Hyperdrive still uses `Cloudflare.Hyperdrive.bind(Hyperdrive)` in beta.58.
-- Use `Cloudflare.WorkerLoader`, not `DynamicWorkerLoader`, and `yield* loader.load(...)`.
-- Use `Command.Build`, `Command.Dev`, and `Command.Exec`; the old `Build` module is removed.
+Safe without additional confirmation when they do not have project-specific side effects:
 
-## Implementation Rules
+- Typechecks, unit tests, formatting, static validation, and source inspection.
+- `pnpm alchemy plan`.
+- Read-only `alchemy state`, `logs`, `tail`, and profile inspection commands.
 
-- Keep logical IDs stable. Changing `"Bucket"` to `"Uploads"` is a replacement, even if the variable name change looked cosmetic.
-- Treat resource declarations as values. Export resources or platform tags from modules and `yield*` them in the stack.
-- Use `Output` operators (`map`, `interpolate`, `all`) instead of forcing values early.
-- Let stages model ownership boundaries: default `dev_$USER`, `dev_shared` for shared development resources when needed, `pr-<number>` for previews, and `prod` for trunk. Do not create a long-lived staging gate by default.
-- Pair profiles with credentials, not environments. Stages decide what is deployed; profiles decide how to authenticate.
-- Resolve `effect/Config` in platform init, not inside `fetch`, so Alchemy can bind secrets at deploy time.
-- In Effect Workers, bind resources in the outer init effect and provide the matching `*BindingLive` layer. Runtime work belongs inside returned handlers.
-- In async Workers, declare `env` on the Worker resource and export/use `Cloudflare.InferEnv<typeof Worker>`.
-- For Cloudflare frontends, use `Cloudflare.Vite` for Vite-based apps and `Cloudflare.StaticSite` for arbitrary build commands.
-- In monorepos, default to one root stack with package resources as siblings; split into package-level stacks only for independent deploy cadence or ownership.
-- For GitHub resources, add `GitHub.providers()` to the provider layer and load `references/github.md` before writing comments, secrets, variables, repository resources, webhooks, or GitHub Actions CI stacks.
-- Use Neon as the default development Postgres choice unless the repo or user explicitly chooses another provider. Prefer one shared Neon project with per-stage branches over one project per dev/PR stage.
-- For databases behind Workers, put Hyperdrive in front of the database origin. Use direct Neon origins, PlanetScale `PostgresRole.origin`, or PlanetScale `MySQLPassword.origin`.
-- Use `Drizzle.Schema` plus provider-applied `migrationsDir` for Postgres flows. For PlanetScale MySQL, follow the checked-in migration directory and mysql2 runtime pattern.
-- Use `Action` for deploy-time side effects that rerun when inputs change. Use a Resource when lifecycle, read, adoption, replace, or delete semantics matter.
-- When writing Effect-based Alchemy code, apply `references/effect-infra.md`: model shared infrastructure as typed services/Layers, provide Layers at stack/Worker/test boundaries, and use dedicated Effect best-practices skills or docs for broader app/domain Effect design.
+Require explicit user confirmation immediately before running:
+
+- `alchemy deploy`, `destroy`, or `dev` when it creates or updates cloud resources.
+- `deploy --adopt`, state clearing, provider bootstrap, credential/token creation, or other ownership/authentication changes.
+- Any test suite that provisions real cloud resources.
+- `alchemy unsafe nuke` under all circumstances.
+
+Never infer approval for one stage, account, or command from approval for another. State the stack, stage, profile/account, mutation, and cleanup behavior before asking.
 
 ## Verification
 
-Run the repo's existing typecheck/tests with pnpm. For infrastructure changes, run `pnpm exec alchemy plan` or `pnpm exec alchemy deploy --dry-run` before asking to deploy. For explicit reviews, audits, pre-deploy checks, or nontrivial infra changes, apply `references/audit-checklist.md`. For tests that create cloud resources, choose a safe stage and cleanup path. Report any command you could not run and why.
+1. Run the repository's existing format, typecheck, lint, and unit-test commands.
+2. Run `pnpm alchemy plan --stage <explicit-stage>` when credentials and state access are available and planning is safe.
+3. For integration tests, use a unique non-production stage, one stack deployment per suite, assertions against real resources, and guaranteed teardown.
+4. For reviews or nontrivial infrastructure changes, apply `references/audit-checklist.md`.
+5. Report the resolved Alchemy version, stage/profile assumptions, commands run, skipped checks, and whether any command could mutate cloud state.

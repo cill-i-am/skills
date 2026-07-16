@@ -110,7 +110,7 @@ export default Alchemy.Stack(
   Effect.gen(function* () {
     const accountId = yield* Config.string("CLOUDFLARE_ACCOUNT_ID");
 
-    const token = yield* Cloudflare.AccountApiToken("CIToken", {
+    const token = yield* Cloudflare.ApiToken.AccountApiToken("CIToken", {
       accountId,
       policies: [
         {
@@ -271,7 +271,7 @@ yield* GitHub.Webhook("repo-webhook", {
 });
 ```
 
-Prefer `GitHub.events(...).subscribe(...)` inside a Cloudflare Worker when Alchemy should provision the webhook and dispatch verified deliveries to an Effect handler.
+Prefer `GitHub.consumeRepositoryEvents(...)` inside a Cloudflare Worker when Alchemy should provision the webhook, claim the delivery route, verify signatures, and dispatch typed deliveries to an Effect handler.
 
 ```ts
 // src/GitHubEvents.ts
@@ -279,7 +279,6 @@ import * as Cloudflare from "alchemy/Cloudflare";
 import * as GitHub from "alchemy/GitHub";
 import * as Config from "effect/Config";
 import * as Effect from "effect/Effect";
-import * as Layer from "effect/Layer";
 import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
 
 export default class GitHubEvents extends Cloudflare.Worker<GitHubEvents>()(
@@ -288,13 +287,14 @@ export default class GitHubEvents extends Cloudflare.Worker<GitHubEvents>()(
   Effect.gen(function* () {
     const secret = yield* Config.redacted("GITHUB_WEBHOOK_SECRET");
 
-    yield* GitHub.events({
-      owner: "your-org",
-      repository: "your-repo",
-      events: ["push", "pull_request"],
-      secret,
-    }).subscribe((event) =>
-      Effect.log(`received ${event.name} delivery ${event.id}`),
+    yield* GitHub.consumeRepositoryEvents(
+      {
+        owner: "your-org",
+        repository: "your-repo",
+        events: ["push", "pull_request"],
+        secret,
+      },
+      (event) => Effect.log(`received ${event.name} delivery ${event.id}`),
     );
 
     return {
@@ -302,7 +302,7 @@ export default class GitHubEvents extends Cloudflare.Worker<GitHubEvents>()(
     };
   }).pipe(
     Effect.provide(
-      Layer.mergeAll(Cloudflare.GitHubRepositoryEventSourceLive),
+      Cloudflare.Workers.GitHubRepositoryEventSourceLive,
     ),
   ),
 ) {}
@@ -336,7 +336,7 @@ export default Alchemy.Stack(
 
 Event-source notes:
 
-- `GitHub.events` is currently wired for Cloudflare Worker hosts.
+- `GitHub.consumeRepositoryEvents` currently has a Cloudflare Worker implementation.
 - The delivery path defaults to a deterministic per-repository path.
 - Always provide a webhook secret unless there is a strong reason not to.
 - The runtime verifies `X-Hub-Signature-256` before calling the handler.
@@ -394,4 +394,4 @@ Cleanup must guard production and run in dependency order:
 - Secrets are not readable after creation; debug secret updates by checking timestamps and workflow access, not by trying to read values.
 - Variables are plain text. Never put tokens, database URLs, or passwords in variables.
 - Webhooks require repository admin access.
-- `GitHub.events(...).subscribe(...)` needs a Cloudflare Worker host and `Cloudflare.GitHubRepositoryEventSourceLive`.
+- `GitHub.consumeRepositoryEvents(...)` needs a Cloudflare Worker host and `Cloudflare.Workers.GitHubRepositoryEventSourceLive`.

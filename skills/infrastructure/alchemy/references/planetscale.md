@@ -157,7 +157,7 @@ Postgres:
 export const Hyperdrive = Effect.gen(function* () {
   const { role } = yield* PlanetscaleDb;
 
-  return yield* Cloudflare.Hyperdrive("AppHyperdrive", {
+  return yield* Cloudflare.Hyperdrive.Connection("AppHyperdrive", {
     origin: role.origin,
     caching: { disabled: true },
   });
@@ -170,7 +170,7 @@ MySQL:
 export const Hyperdrive = Effect.gen(function* () {
   const { password } = yield* PlanetscaleDb;
 
-  return yield* Cloudflare.Hyperdrive("AppHyperdrive", {
+  return yield* Cloudflare.Hyperdrive.Connection("AppHyperdrive", {
     origin: password.origin,
     caching: { disabled: true },
   });

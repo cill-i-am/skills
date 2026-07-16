@@ -1,27 +1,33 @@
-# Provider Extension, Actions, Custom State
+# Extending Alchemy
 
-Use this file when adding a new Alchemy resource/provider, authoring deploy-time actions, or implementing a custom state store.
+Use this file when Alchemy lacks a first-class Resource, auth provider, state store, binding, or runtime. Prefer an existing native provider over shelling out to a vendor CLI.
 
-## Custom Resource Provider
+## Choose The Extension
 
-Provider workflow:
+- Resource provider: remote object with identity and lifecycle.
+- Action: idempotent deploy-time work keyed by inputs, without a managed remote lifecycle.
+- Auth Provider: credentials/profile integration for `alchemy login`.
+- State store: custom persistence for Alchemy resource state.
+- Binding: runtime capability plus deploy-time policy/config wiring.
+- Runtime: new host for Effectful Functions/Servers.
 
-1. Define props and attributes.
-2. Define a `Resource<Type, Props, Attributes, Error, Providers>` type.
-3. Export the resource constructor with `Resource<T>("Provider.Type")`.
-4. Implement a provider Layer with `Provider.effect` or `Provider.succeed`.
-5. Bundle it into a `providers()` Layer.
-6. Add provider lifecycle tests with `test.provider`.
+Do not use an Action to avoid implementing required read/delete/adoption semantics. Do not build a custom runtime when an existing Function/Server resource can host the code.
 
-Minimal type shape:
+## Declare A Resource
+
+Separate desired props from observed attributes and use a stable provider-qualified type:
 
 ```ts
+import { Resource } from "alchemy";
+
 export interface ProductProps {
-  name: string;
+  readonly name: string;
+  readonly description?: string;
 }
 
 export interface ProductAttributes {
-  productId: string;
+  readonly productId: string;
+  readonly createdAt: number;
 }
 
 export type Product = Resource<
@@ -33,146 +39,159 @@ export type Product = Resource<
 export const Product = Resource<Product>("Stripe.Product");
 ```
 
-Provider shape:
+Resource type and logical IDs are durable identity. Add aliases only for intentional migration of an earlier type, and test state recovery through the alias.
+
+## Provider Layer
+
+Register the typed lifecycle service with `Provider.succeed`:
 
 ```ts
+import * as Provider from "alchemy/Provider";
+import * as Effect from "effect/Effect";
+
 export const ProductProvider = () =>
-  Provider.effect(
+  Provider.succeed(
     Product,
-    Effect.gen(function* () {
-      const client = yield* StripeClient;
-
-      return Product.Provider.of({
-        stables: ["productId"],
-        reconcile: Effect.fn("Stripe.Product.reconcile")(function* ({ news, output }) {
-          // observe -> ensure -> sync -> return
-        }),
-        delete: Effect.fn("Stripe.Product.delete")(function* ({ output }) {
-          // treat not-found as success
-        }),
-      });
+    Product.Provider.of({
+      reconcile: Effect.fn("Stripe.Product.reconcile")(function* (input) {
+        const observed = yield* readProduct(input.output?.productId);
+        const ensured = observed ?? (yield* createProduct(input.news));
+        const synced = productMatches(ensured, input.news)
+          ? ensured
+          : yield* updateProduct(ensured.id, input.news);
+        return toProductAttributes(synced);
+      }),
+      delete: Effect.fn("Stripe.Product.delete")(function* () {
+        // not-found is success
+      }),
+      list: Effect.fn("Stripe.Product.list")(function* () {
+        return [];
+      }),
     }),
-  );
+);
 ```
 
-Default to `Effect.fn("Provider.Resource.operation")` for provider lifecycle operations so traces and diagnostics have useful names. Use `Effect.fnUntraced` only for deliberate hot paths or provider internals where tracing has been consciously avoided.
+The adapter helpers in the skeleton (`readProduct`, `createProduct`, `updateProduct`, and attribute conversion) are provider-specific typed Effects; implement them before registering the Layer.
 
-## Reconcile Rules
+`reconcile`, `delete`, and `list` are required. Optional hooks include `diff`, `read`, and `precreate`. Use `Provider.effect` only when constructing the provider service requires a stable non-credential dependency; credentials must remain lazy.
 
-Reconcile must be convergent and idempotent.
+## Credentials
 
-Do:
+Expose credentials as a `Context.Service` whose value is an Effect returning a redacted structure. Provider Layers are created before login/configuration may exist, so they must not resolve credentials at construction.
 
-- Observe live cloud state first.
-- Use deterministic physical names or cached IDs to find resources.
-- Create only if missing.
-- Sync drift field by field.
-- Return fresh attributes.
-- Use `Effect.tryPromise` for SDK calls.
-- Wrap foreign SDK/API errors in typed provider errors with enough operation/resource context to debug.
-- Use `Schedule`/`Effect.retry` for transient cloud failures and polling.
-- Tolerate retries and partial failures.
-
-Do not:
-
-- Split into `if (!output) create else update`.
-- Trust `olds` as live cloud state.
-- Repeat ownership policy checks after `read` has approved write.
-- Leak raw SDK errors across provider boundaries.
-- Retry validation, permission, or deterministic input errors.
-- Log raw secrets.
-
-Input matrix:
-
-| output | olds | Meaning |
-| --- | --- | --- |
-| undefined | undefined | greenfield |
-| defined | defined | normal update |
-| defined | undefined | adoption |
-
-## Diff
-
-Use `diff` when property changes need explicit planning:
-
-- `noop`: ignore trivial changes.
-- `update`: apply in place.
-- `replace`: create replacement, switch dependents, delete old.
-- `replace` with `deleteFirst`: required when old/new cannot coexist.
-
-Guard unresolved inputs:
+Lifecycle handlers run:
 
 ```ts
-if (!isResolved(news)) return undefined;
+const { apiKey } = yield* yield* StripeCredentials;
 ```
 
-Use `deepEqual`/`anyPropsAreDifferent` helpers for nested props when available.
+The first yield obtains the lazy credential Effect; the second resolves the current profile/session. This enables environment credentials in CI and refreshed sessions locally.
 
-## Read And Adoption
+Use `environments-auth-state.md` to implement `AuthProviderLayer`, profile configuration, credential storage, login/logout, redacted display, and lazy read.
 
-`read` is called when there is no prior state. It supports recovery and adoption.
+## Reconcile
 
-Return:
+Write one convergent flow for create, update, recovery, and adoption:
 
-- `undefined`: resource not found.
-- plain attrs: exists and is owned/safe to adopt.
-- `Unowned(attrs)`: exists but not owned; require `--adopt`.
+1. Observe the live API using a deterministic physical identifier or prior output.
+2. Ensure the object exists, tolerating already-exists races.
+3. Compare observed mutable fields with desired props.
+4. Apply only required changes.
+5. Return freshly observed attributes.
 
-If the API cannot find resources without cached output, return `undefined` when `output` is absent.
+Inputs include desired `news`, optional previous `olds`, optional previous/imported `output`, logical `id`, deterministic `instanceId`, and attached `bindings`.
 
-Providers for resources with irrecoverable plaintext credentials must account for write-only secrets. PlanetScale `MySQLPassword` cannot adopt without cached plaintext because the API never reissues it.
+Do not branch the whole method into `if output undefined then create else update`. During adoption, output can exist while old props do not. Trust observed cloud state.
+
+Wrap SDK calls with `Effect.tryPromise` and map failures into tagged provider errors containing operation, resource identity, safe message, and retryability. Retry only transient failures with a bounded Schedule.
+
+## Diff And Replacement
+
+Implement `diff` only when the default structural comparison cannot express provider semantics.
+
+- Guard unresolved Inputs/Outputs.
+- Mark replacement only for immutable fields or identity changes.
+- Ignore provider-computed/defaulted fields that should not cause perpetual updates.
+- Normalize equivalent representations before comparison.
+- Include a human-readable reason for replacement.
+
+Test no-op, mutable update, and replacement separately. A noisy diff is an operational defect.
+
+## Read, Ownership, And Adoption
+
+`read` lets Alchemy find a resource when state is absent.
+
+- Return `undefined` when absent.
+- Return plain attributes when the resource is provably owned by this stack/stage/logical ID.
+- Return `Unowned(attributes)` when it exists but ownership cannot be proven.
+
+Use provider tags, labels, or naming metadata for ownership. Never silently claim a foreign object because its name matches. If the upstream API has no ownership concept, document that recovery/adoption cannot distinguish ownership.
 
 ## Delete
 
-Delete must be idempotent. Missing resource is success. Cleanup dependent write-only credentials carefully and use TTLs when the cloud supports them.
+Delete must be idempotent:
+
+- already absent is success;
+- disable/protect semantics are explicit props, not hidden environment behavior;
+- dependent child cleanup follows provider requirements;
+- asynchronous deletion is polled with a bounded Schedule;
+- credentials/permission errors remain visible;
+- secrets never enter logs.
+
+If a provider cannot safely delete an object, model retention/protection in the Resource contract and plan output.
+
+## List
+
+`list` supports broad inventory operations, including `unsafe nuke`. It must:
+
+- scope results to the authenticated account/project/region where possible;
+- paginate completely;
+- return stable physical identity and attributes;
+- avoid leaking secrets;
+- make ownership metadata available to callers.
+
+Because list can feed catastrophic deletion, test scoping more aggressively than ordinary read.
+
+## Bindings
+
+A custom binding should expose a narrow runtime capability and attach deploy-time policy/config to a host.
+
+- Keep contract and implementation Layer separate.
+- Record only minimum permissions.
+- Provide native and HTTP implementations only when both topologies are supported.
+- Keep provisioning SDKs out of runtime bundles.
+- Test plan-time wiring and runtime behavior.
 
 ## Actions
 
-Use `Action` for deploy-time work whose result should be input-hashed:
+Use an Action for idempotent side effects that should rerun when declared inputs change.
 
-```ts
-const Seed = Action("Seed", Effect.fn("Seed")(function* (input: { url: string }) {
-  // idempotent deploy-time work
-  return { ok: true };
-}));
+- Hash every semantic input.
+- Make retries harmless.
+- Return redacted, serializable outputs.
+- Do not use timestamps/randomness unless they are intentional inputs.
+- Do not use an Action for a remote object that requires deletion, drift correction, or adoption.
 
-const seed = yield* Seed("initial", { url: dbUrl });
-```
+## State And Runtime Extensions
 
-Action has no read, delete, replace, or lifecycle. Removed actions drop state without running a cleanup body. Bodies must tolerate retries. Use `Effect.fn("ActionName")` unless there is a measured reason to suppress tracing.
+For custom state, implement the full `StateService` contract and test persistence, listing, deletion, replacement history, concurrency, and interrupted writes.
 
-Use Action for seeding, notifications, sync, cache invalidation, generated artifacts. Use Resource for actual managed infrastructure.
+For a custom runtime, define bundling, Resource lifecycle, runtime API, phase handling, binding policy/client behavior, runtime context, and cleanup. Prove one HTTP handler and one binding end to end before expanding the surface.
 
-## Custom State Store
+## Provider Tests
 
-A state store is a Layer that provides `State`, whose value is a deferred `Effect<StateService>`. Initialization should be lazy and cached.
+Use `test.provider` against a sandbox API/account. Cover:
 
-Important rules:
+- create and fresh attributes;
+- no-op repeated reconcile;
+- mutable update and drift correction;
+- replacement;
+- delete twice;
+- owned recovery;
+- unowned refusal and explicit adoption;
+- pagination/list scoping;
+- typed errors and transient retry;
+- redaction;
+- partial failure recovery.
 
-- Use `Effect.cached` so the backend connects only on first state use.
-- Capture `Scope` if a delayed initializer needs a scoped resource.
-- Use `encodeState` and `reviveState` for serialization.
-- Return `undefined` for missing `get`.
-- Wrap transport failures in `StateStoreError`.
-- Keep backend connection setup effectful, typed, lazy, and cached instead of doing eager module-level I/O.
-- Implement `listStacks`, `listStages`, `list`, `get`, `set`, `delete`, `deleteStack`, and `getReplacedResources`.
-
-Hot path methods:
-
-- `get({ stack, stage, fqn })`
-- `set({ stack, stage, fqn, value })`
-
-`getReplacedResources` returns resources with status `replaced` so the next deploy can finish old-generation cleanup.
-
-## Provider Test Strategy
-
-Use `test.provider` for lifecycle tests:
-
-- Create.
-- Noop.
-- Update.
-- Replace if applicable.
-- Delete.
-- Adoption/read if applicable.
-- Out-of-band deletion recovery if the cloud API makes it reasonable.
-
-Use real cloud tests only when necessary and always select a non-production stage/profile.
+Read-only unit tests around normalization/diff helpers are useful, but they do not replace lifecycle tests.

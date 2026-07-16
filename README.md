@@ -28,8 +28,8 @@ The bundle is portable, but opinionated.
 - Effect for TypeScript backend services, shared packages, schemas, typed
   errors, retries, observability, SQL, and testable async workflows.
 - TanStack Start, Router, Query, and Form for rich React apps.
-- Alchemy v2 for Infrastructure-as-Effects, especially Cloudflare-backed
-  projects.
+- Alchemy v2 for Infrastructure-as-Effects across Cloudflare, AWS, databases,
+  APIs, tests, and deployment tooling.
 - Linear as the planning and execution source of truth.
 - Codex worker/reviewer threads as the default unit of non-trivial agent work.
 

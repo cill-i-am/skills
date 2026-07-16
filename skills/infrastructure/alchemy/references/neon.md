@@ -18,11 +18,11 @@ Use this file for Alchemy Neon provider resources and development database patte
 
 Start here when API details may have changed:
 
-- Alchemy Neon Project: `https://v2.alchemy.run/providers/neon/project/`
-- Alchemy Neon Branch: `https://v2.alchemy.run/providers/neon/branch/`
-- Alchemy Hyperdrive tutorial: `https://v2.alchemy.run/tutorial/cloudflare/hyperdrive/`
-- Alchemy Drizzle tutorial: `https://v2.alchemy.run/tutorial/cloudflare/drizzle/`
-- Alchemy shared database branches: `https://v2.alchemy.run/tutorial/cloudflare/branch-from-shared-database/`
+- Alchemy Neon Project: `https://alchemy.run/providers/neon/project`
+- Alchemy Neon Branch: `https://alchemy.run/providers/neon/branch`
+- Alchemy Hyperdrive guide: `https://alchemy.run/cloudflare/data/hyperdrive`
+- Alchemy Drizzle guide: `https://alchemy.run/cloudflare/data/drizzle`
+- Alchemy shared database branches: `https://alchemy.run/cloudflare/data/branch-from-shared-database`
 - Neon projects: `https://neon.com/docs/manage/projects`
 - Neon branches: `https://neon.com/docs/manage/branches`
 - Neon API keys: `https://neon.com/docs/manage/api-keys`
@@ -207,7 +207,7 @@ Use the direct Neon origin behind Hyperdrive:
 export const Hyperdrive = Effect.gen(function* () {
   const { branch } = yield* NeonDb;
 
-  return yield* Cloudflare.Hyperdrive("app-hyperdrive", {
+  return yield* Cloudflare.Hyperdrive.Connection("app-hyperdrive", {
     origin: branch.origin,
   });
 });

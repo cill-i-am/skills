@@ -89,12 +89,12 @@ import { Hyperdrive } from "./infra.ts";
 import { relations } from "./schema.ts";
 
 export const DatabaseLive = Effect.gen(function* () {
-  const hd = yield* Cloudflare.Hyperdrive.bind(Hyperdrive);
+  const hd = yield* Cloudflare.Hyperdrive.Connect(Hyperdrive);
 
   return yield* Drizzle.postgres(hd.connectionString, {
     relations,
   });
-}).pipe(Effect.provide(Cloudflare.HyperdriveBindingLive));
+}).pipe(Effect.provide(Cloudflare.Hyperdrive.ConnectBinding));
 ```
 
 Runtime notes:
@@ -131,7 +131,7 @@ class DatabaseQueryError extends Data.TaggedError("DatabaseQueryError")<{
 }> {}
 
 const program = Effect.gen(function* () {
-  const hd = yield* Cloudflare.Hyperdrive.bind(Hyperdrive);
+  const hd = yield* Cloudflare.Hyperdrive.Connect(Hyperdrive);
   const connectionString = yield* hd.connectionString;
 
   const db = drizzle({
@@ -148,7 +148,7 @@ const program = Effect.gen(function* () {
     try: () => db.select().from(schema.Users),
     catch: (cause) => new DatabaseQueryError({ cause }),
   });
-}).pipe(Effect.provide(Cloudflare.HyperdriveBindingLive));
+}).pipe(Effect.provide(Cloudflare.Hyperdrive.ConnectBinding));
 ```
 
 Use `disableEval: true` because Cloudflare Workers isolates do not allow the JIT/eval path used by mysql2 parsers.
