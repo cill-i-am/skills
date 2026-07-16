@@ -1,4 +1,4 @@
 interface:
   display_name: "Effect TS"
-  short_description: "Source-backed Effect guidance."
-  default_prompt: "Use $effect-ts to implement or review Effect services, Layers, Schema boundaries, typed errors, retries, observability, HttpApi/RPC clients, SQL, scoped resources, concurrency, or tests."
+  short_description: "Effect-first TypeScript with Effect v4 beta."
+  default_prompt: "Use $effect-ts to implement or review an Effect v4 beta application with Schema-backed branded domain types, services and Layers, scoped lifecycles, typed errors, observability, config, retries, caches, streams, HTTP/RPC clients, SQL, concurrency, and deterministic tests."

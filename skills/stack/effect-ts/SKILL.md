@@ -1,67 +1,99 @@
 ---
 name: effect-ts
-description: Source-backed Effect guidance for TypeScript backends, workers, CLIs, SDKs, shared packages, and tests. Use when implementing or reviewing Effect services, Layers, Schema boundaries, typed errors, retries, schedules, observability, SQL, HttpApi/RPC clients, scoped resources, concurrency, or runtime boundaries.
+description: Effect v4 beta guidance for Effect-first TypeScript backends, workers, CLIs, SDKs, shared packages, and tests. Use when modeling domains with Schema and brands, implementing services and Layers, managing lifecycles or concurrency, handling typed errors, config, retries, caches, streams, HTTP/RPC, SQL, observability, or Effect tests.
 ---
 
-# Effect Expert
+# Effect v4 Expert
 
-Lead with the boundary. Effect earns its place when code needs typed failure, explicit dependencies, resource lifetime, cancellation, retries, observability, protocol decoding, or testable concurrency.
+Build backend application code as Effect programs. Keep effects as values throughout services and workflows; execute them only where an external host requires a Promise, callback, synchronous value, or process lifecycle hook.
 
-## Reference Map
+This skill targets Effect v4 beta only. Do not introduce v3 compatibility code, deprecated v3 patterns, or fallback APIs.
 
-Read the smallest file that answers the current question:
+## Start Here
 
-- `references/principles.md`: first-principles model for deciding whether Effect belongs in a design and which primitive fits.
-- `references/patterns.md`: implementation recipes, examples, and anti-patterns for services, Layers, Schema, errors, clients, resources, concurrency, observability, SQL, and tests.
-- `references/source-lookup.md`: live `opensrc` commands and routed source files for opencode, executor, effect-smol, and Effect itself.
-- `references/source-study.md`: coverage metrics and evidence from the source and sentence audit behind this rewrite.
+Before giving advice or editing code:
 
-## First Pass
+1. Read the nearest repository instructions and project-local Effect guidance.
+2. Inspect `package.json`, the lockfile, and installed versions of `effect` and `@effect/*`.
+3. Inspect nearby services, Layers, schemas, tests, and runtime entrypoints.
+4. Resolve the installed Effect source with `pnpm exec opensrc path --cwd . effect` when API spelling or semantics matter.
+5. Read every task branch below that matches the work.
 
-1. Inspect the target project before giving advice:
-   - `git status --short`
-   - package manager and scripts
-   - installed `effect` / `@effect/*` versions
-   - existing Effect imports, services, layers, schemas, errors, tests, and runtime entrypoints
-2. Resolve current source:
-   - run `pnpm exec opensrc path --cwd . effect`
-   - use `references/source-lookup.md` when the task needs opencode, executor, or effect-smol examples
-3. Classify the boundary:
-   - unknown input or encoding -> Schema
-   - expected failure -> typed error
-   - dependency -> service and Layer
-   - owned resource -> Scope, Layer, acquire/release
-   - parallel or resumable work -> Fiber, Deferred, Queue, Exit
-   - outbound protocol -> Effect platform client, usually `HttpClient`
-   - host callback or process edge -> one `run*` boundary
-4. Use the reference map above before loading detailed guidance.
+Keep all `effect` and `@effect/*` packages on a compatible v4 beta line. Verify examples against the target project's exact pin; do not solve version drift with casts or v3 fallbacks.
 
-## Defaults
+## Task Router
 
-- Keep pure synchronous transforms as plain TypeScript.
-- Use `Effect.gen` for inline multi-step composition.
-- Use named `Effect.fn("Domain.operation")` for reusable operations that deserve a stack frame, span, or stable runtime identity.
-- Use unnamed `Effect.fn` for reusable operations that need stack-frame behavior but no named span.
-- Use `Effect.fnUntraced` for library internals, hot paths, and tiny wrappers where traces would add noise or cost.
-- Prefer `Context.Service` class syntax in current v4-style code. Follow local `Context.Tag` style only when the project is pinned to it.
-- Use `Schema.TaggedErrorClass` for schema-backed or wire-visible errors. Use `Data.TaggedError` for lightweight internal errors.
-- Provide layers at entrypoints, adapters, tests, workers, CLIs, routes, or runtimes. Keep domain functions dependency-declarative.
-- Decode boundary data once, then pass typed values through the domain.
-- Run Effect only at host edges: handler, worker callback, CLI command, test, SDK callback bridge, or runtime adapter.
+- Architecture, Effect-first boundaries, function shapes, or runtime execution: read `references/principles.md`.
+- Records, DTOs, IDs, brands, string avoidance, variants, optionality, decoders, or encoded forms: read `references/schema.md`.
+- Services, module surfaces, Layers, dependency graphs, runtime wiring, or long-lived service work: read `references/services-layers.md`.
+- Scope, acquisition/release, fibers, queues, coordination, interruption, or managed runtimes: read `references/resources-concurrency.md`.
+- Typed errors, defects, recovery, redaction, logs, spans, or metrics: read `references/errors-observability.md`.
+- Environment variables, bindings, secrets, `Config`, or `ConfigProvider`: read `references/configuration.md`.
+- Retry, repeat, polling, timeout, backoff, jitter, pacing, or idempotency: read `references/scheduling.md`.
+- Memoization, TTL caches, concurrent lookup deduplication, request batching, or cache lifecycle: read `references/caching.md`.
+- Streams, async iterables, queues, pubsubs, pagination, consumers, or backpressure: read `references/streams.md`.
+- Outbound HTTP, HttpClient, HttpApi, RPC, generated clients, transport decoding, or rate limits: read `references/http-rpc-clients.md`.
+- SQL clients, row schemas, transactions, resolvers, migrations, or persistence adapters: read `references/sql.md`.
+- Effect tests, test services, test Layers, virtual time, concurrency synchronization, cleanup, or live tests: read `references/testing.md`.
+- Live source routes and exemplar repositories: read `references/source-lookup.md`.
+- Evidence and design decisions behind this skill: read `references/source-study.md`.
+
+## Core Defaults
+
+- Backend operations return `Effect` by default. Public service methods and exported workflows should not return raw Promises.
+- Compose multi-step work with `Effect.gen(function* () { ... })`.
+- Define public and non-trivial internal operations with named `Effect.fn("Domain.operation")`.
+- Use `Effect.fnUntraced` only when omitting stack-frame and span metadata is intentional.
+- A tiny, total, synchronous leaf transform may remain a plain function. Call it inside the larger Effect workflow with `map`, `flatMap`, or `Effect.gen`.
+- Use `Context.Service` plus explicit interfaces for application capabilities and `Layer` for implementations.
+- Decode unknown values with Schema at ingress. Derive TypeScript types from schemas instead of duplicating interfaces.
+- Avoid stringly typed domain contracts. Model IDs and scalar value objects with constrained Schema brands; model finite states, roles, event kinds, and modes with literals or tagged unions.
+- Use `Schema.TaggedErrorClass` for schema-backed or boundary-visible expected errors.
+- Read runtime config through `Config`; use Effect-native time, randomness, logging, HTTP, SQL, and concurrency services.
+- Own resources and background work with `Scope`, scoped Layers, and structured concurrency.
+- Use `Schedule`, `Cache`, `Stream`, Effect platform clients, and Effect test services before hand-rolling equivalent machinery.
+- Provide Layers and call `run*` only in host adapters, runtime composition roots, and tests.
+
+## Runtime Rule
+
+"Run Effect only at host edges" restricts execution, not usage.
+
+```ts
+// Domain and application code compose Effect values.
+export const registerUser = Effect.fn("Users.register")(function* (
+  input: RegisterUserInput,
+) {
+  const users = yield* UserRepository;
+  const welcome = yield* WelcomeEmail;
+  const user = yield* users.create(input);
+  yield* welcome.send(user);
+  return user;
+});
+
+// The framework adapter executes the fully provided program once.
+export const POST = (request: Request) =>
+  registerFromRequest(request).pipe(
+    Effect.provide(AppLayer),
+    Effect.runPromise,
+  );
+```
+
+Do not call `runPromise`, `runSync`, or `runFork` inside services to escape the Effect type. Preserve typed errors, requirements, interruption, and tracing until the host boundary.
 
 ## No-op Detection
 
-If the task only touches pure formatting, static UI render code, copy, or packaging metadata without Effect boundaries, do not force Effect patterns into it. Say the Effect skill does not add guidance for that change and follow the local project conventions.
+This skill may have no useful guidance for isolated copy, formatting, static visual styling, or packaging metadata that neither belongs to backend application logic nor touches an Effect contract. Do not use that exception to keep backend orchestration, validation, configuration, errors, I/O, or state transitions outside Effect.
 
 ## Completion Criteria
 
 Effect work is complete only when:
 
-- The current Effect version and local conventions were checked.
-- Nontrivial APIs were verified against source or a routed reference.
-- Boundary inputs are decoded or explicitly trusted at a named boundary.
-- Expected failures stay typed; defects are intentional.
-- Public errors have stable display and redaction behavior.
-- Dependencies are visible through the effect type or a Layer supplied at an edge.
-- Owned resources, fibers, queues, streams, schedules, and timers have cleanup or interruption behavior.
-- Tests or focused runtime checks cover the success path and at least one failure, retry, interruption, or cleanup path.
+- The exact Effect v4 beta versions and local conventions were checked.
+- Non-trivial or unstable APIs were verified against installed or current source.
+- Raw boundary values are decoded once into Schema-derived domain types.
+- Domain contracts avoid interchangeable raw strings where brands, literals, or tagged unions express the concept.
+- Expected failures remain typed and defects are intentional.
+- Service dependencies stay visible until a composition root supplies their Layers.
+- Resources, fibers, queues, streams, caches, schedules, and timers have explicit ownership and interruption behavior.
+- Runtime execution occurs at host edges rather than inside reusable application code.
+- Focused tests cover success plus the important failure, retry, interruption, finalization, or concurrency path.

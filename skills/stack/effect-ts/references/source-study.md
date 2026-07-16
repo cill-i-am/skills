@@ -1,22 +1,50 @@
 # Source Study
 
-This reference records the source and skill audit behind the first-principles rewrite.
+This file records the evidence and design decisions behind the current Effect v4 skill.
 
-## Skill Sentence Audit
+## 2026-07-16 Deepening Pass
 
-The first-principles rewrite audit inspected an expanded working copy of the old skill with 28 Markdown/YAML files and 4,971 sentence-like units. The reusable skills-repo version contained the same long guide stack without the duplicate suffixed files. The audit opened every skill file and flagged stale duplicates, repeated guide prose, stale `.repos/effect` path assumptions, negation-first wording, old `Context.Tag` defaults, over-narrow `Effect.fnUntraced` advice, and broad generated feature lists.
+The pass read all 1,028 lines in Kit Langton's `skills/effect` bundle at commit `30dee8607214c893dd89f6eee65c669ef3dce8c9`:
 
-Rewrite decision:
+- root task router
+- Schema and data modeling
+- services, Layers, module surfaces, and long-lived work
+- Config and ConfigProvider
+- scheduling and retry
+- Cache and request deduplication
+- Stream source, transformation, and consumer selection
+- Effect HttpClient
+- deterministic testing
 
-- Remove duplicate stale reference files.
-- Replace the large guide stack with four focused references.
-- Keep one source of truth for each rule.
-- Keep `SKILL.md` procedural and push details into references.
-- Use opencode, executor, and effect-smol as source-backed exemplars rather than copying generic Effect docs.
+The pass also checked relevant APIs against Effect upstream commit `80b539f8aba68f478c75c35c2b4140c4ffc4fada`, whose package version was `4.0.0-beta.98`. The target repository's installed pin remains authoritative for future use.
 
-## Source Coverage
+## What We Adopted From Kit
 
-Line-oriented source pass on 2026-07-07:
+- Task-oriented routing from the root skill into focused references.
+- Concrete v4 defaults and primitive selection tables.
+- `Schema.Struct` plus a same-name derived interface.
+- constrained Schema brands, exact optionality, and tagged variant selection.
+- explicit `Context.Service` interfaces, `Layer.effect`, `Service.of`, and Layer constructor guidance.
+- the lifecycle rule that long-lived work forks into the owning Layer scope and Layer acquisition completes.
+- concrete ConfigProvider, Schedule, Cache, Stream, HttpClient, TestClock, and test-service patterns.
+- source verification for unstable v4 modules.
+
+## What We Extended
+
+This skill goes further for an Effect-first backend portfolio:
+
+- v4 beta only, with no v3 compatibility branches.
+- Effect as the default representation of backend operations, while tiny total leaf transforms may remain plain functions.
+- an explicit distinction between composing Effect throughout the backend and executing it only at host boundaries.
+- a strong rule against stringly typed domain contracts, including IDs, states, roles, event names, operation labels, and bounded categories.
+- dedicated references for resources/concurrency, errors/observability, RPC/protocol contracts, SQL/transactions, and runtime ownership.
+- deeper lifecycle, interruption, redaction, test, and verification checklists.
+
+Kit's self-exporting module namespace convention was not adopted as a universal rule. Existing repository module style remains authoritative.
+
+## Earlier Source Corpus
+
+The prior first-principles rewrite performed a line-oriented pass over opencode, executor, and effect-smol. It indexed imports, calls, dependencies, and candidate files, then manually reread routed implementation and test files.
 
 | Repo        | Files |     Lines | Effect Import Files | Effect Call Files |
 | ----------- | ----: | --------: | ------------------: | ----------------: |
@@ -24,50 +52,20 @@ Line-oriented source pass on 2026-07-07:
 | executor    | 1,654 |   867,545 |                 760 |               643 |
 | effect-smol | 2,010 |   628,198 |                 863 |             1,071 |
 
-Candidate files included TypeScript, JavaScript, Markdown/MDX docs and skills, package manifests, TypeScript configs, and Vitest configs. Obvious vendor, generated, build, output, cache, media, binary, and lockfile paths were excluded.
+Candidate files included TypeScript, JavaScript, Markdown/MDX, manifests, TypeScript configs, and Vitest configs. Vendor, generated, build, output, cache, media, binary, and lockfile paths were excluded. This was complete line indexing plus focused manual review, not a claim that every line was semantically hand-read.
 
-The scanner opened each candidate file and indexed every line for imports, calls, dependency evidence, and categories. Manual rereads focused on the routed files in `source-lookup.md`. Do not claim every line was semantically hand-read; claim complete line indexing plus focused manual review.
+## Durable Findings
 
-## opencode Findings
+- opencode demonstrates process-owned runtime graphs, resumable state machines, ScopedCache, Scope finalizers, keyed concurrency, explicit test Layers, and contract-derived clients.
+- executor demonstrates Schema decoding over casts, typed boundary errors, Effect-native SDK adapters, Cloudflare callback bridges, resumable Queue/Deferred/Fiber workflows, and bounded telemetry polling.
+- Effect source and tests remain the authority for API spelling, lazy execution, Layer and Scope semantics, Schedule behavior, Cache deduplication, Stream backpressure, and virtual time.
 
-opencode is useful for app/runtime architecture:
+## Rewrite Decisions
 
-- `app-runtime.ts` builds one app runtime from explicit layers and a shared memo map.
-- `runner.ts` models resumable work as a state machine with `Deferred`, `Fiber`, `Scope`, `Exit`, and typed Busy/Cancelled errors.
-- `instance-state.ts` uses `ScopedCache`, current scope finalizers, and external disposer registration.
-- `test/lib/effect.ts` keeps test and live layers explicit, closes scopes, and pretty-prints causes.
-- Protocol and client files keep generated Promise and Effect surfaces contract-first.
-- The repo skill and AGENTS file prefer current source, named services, Schema at API/domain boundaries, thin handlers, explicit layers, and scoped tests.
-
-## executor Findings
-
-executor is useful for SDK, Cloudflare, and host callback boundaries:
-
-- Schema-boundary skills prefer `decodeUnknownEffect`, `fromJsonString`, and `decodeUnknownOption(parseJson())` over casts and probes.
-- Typed-error skills add a new error only for distinct recovery/status/UI/retry/telemetry behavior.
-- SDK code builds typed clients with `HttpClient` transforms instead of raw fetch seams.
-- Error classes add `message` getters when schema tagged errors would render blank in telemetry.
-- The execution engine uses `Deferred`, `Queue`, `Fiber`, and `Exit` for idempotent pause/resume.
-- Host code uses one Effect entry at Promise/SDK/Durable Object boundaries, then maps defects to opaque public results and logs causes out-of-band.
-- Telemetry tests query exported spans and poll with bounded `Schedule`.
-
-## effect-smol Findings
-
-effect-smol is useful for API spelling and library-level idioms:
-
-- `.patterns/effect.md` rejects `try/catch` inside `Effect.gen` for recoverable failures.
-- `Effect.fnUntraced` is documented as the reusable function form that omits stack-frame/span capture and avoids generator wrapper allocation.
-- `Effect.fn` is documented as the traced reusable function form, with named and unnamed variants.
-- Current v4-style examples prefer `Context.Service` class syntax.
-- `Layer` models service construction, dependencies, construction errors, scoped resources, memoization, and lifecycle hooks.
-- `Scope` owns finalizers and is the lifetime boundary behind scoped resources.
-
-## Reusable Conclusions
-
-- Source-backed Effect guidance starts with boundary classification, not a module list.
-- Schema, typed errors, services/layers, resources, concurrency, observability, retries, and tests are separate reasons to use Effect.
-- Pure sync logic remains plain TypeScript.
-- Runtime execution belongs at host edges.
-- Generated protocol/client code comes from one source contract.
-- `fnUntraced` is a valid library/hot-path tool, not a forbidden escape hatch and not the application default.
-- Tests prove failure and cleanup behavior, not just the happy path.
+- Keep `SKILL.md` procedural and route detail into focused references.
+- Keep one owner for each rule; cross-link instead of copying entire sections.
+- Prefer complete patterns with ownership, errors, and tests over isolated API snippets.
+- Treat the boundary ladder as a primitive chooser, not a gate that excludes Effect from backend code.
+- Keep runtime execution at hosts so service requirements, typed failures, interruption, and tracing remain composable.
+- Verify unstable and non-trivial APIs against the target project's exact v4 beta source.
+- Reject casts, Promise escapes, v3 fallbacks, unowned fibers, and stringly domain contracts.

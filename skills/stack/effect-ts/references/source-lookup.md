@@ -1,44 +1,85 @@
 # Source Lookup
 
-Use live source for API spelling. Do not create or commit `.repos/effect`.
+Use live source for API spelling and semantics. Do not create or commit a vendored `.repos/effect` tree.
 
-## Commands
+## Priority Order
 
-Resolve the target project's installed Effect source:
+1. Target project's package pin, lockfile, local Effect guidance, and nearby code.
+2. Installed `effect` and `@effect/*` source for that exact v4 beta.
+3. Current upstream Effect v4 source and tests.
+4. Kit Langton's Effect skill for concise production patterns.
+5. Exemplar application repositories for architecture, adapters, and runtime ownership.
+
+An exemplar never overrides the target pin. Do not copy v3 fallback code into a v4 project.
+
+## Resolve Source
+
+Installed Effect:
 
 ```bash
 pnpm exec opensrc path --cwd . effect
 ```
 
-Resolve exemplar repositories when source-backed patterns are needed:
+Exemplar repositories:
 
 ```bash
+pnpm exec opensrc path --cwd . kitlangton/skills
 pnpm exec opensrc path --cwd . anomalyco/opencode
 pnpm exec opensrc path --cwd . UsefulSoftwareCo/executor
-pnpm exec opensrc path --cwd . Effect-TS/effect-smol
 ```
 
-If a target repo has no opensrc mapping for an exemplar, clone read-only to `/tmp` and do not vendor it into the project.
+If `opensrc` cannot resolve a repository, clone it read-only under `/tmp`. Record its commit SHA in the investigation or `source-study.md`; do not vendor it into the target repository.
 
-## Resolved Root Shape
+## Effect v4 Routes
 
-`opensrc` returns machine-local cache paths. Treat these as examples of the
-shape, not stable paths:
+Start with the module implementation and its adjacent tests:
 
-- `effect`: `$HOME/.opensrc/repos/github.com/Effect-TS/effect/<version>/packages/effect`
-- `opencode`: `$HOME/.opensrc/repos/github.com/anomalyco/opencode/<ref>`
-- `executor`: `$HOME/.opensrc/repos/github.com/UsefulSoftwareCo/executor/<ref>`
-- `effect-smol`: `$HOME/.opensrc/repos/github.com/Effect-TS/effect-smol/<ref>`
+- `packages/effect/src/Effect.ts`
+- `packages/effect/src/Context.ts`
+- `packages/effect/src/Layer.ts`
+- `packages/effect/src/Scope.ts`
+- `packages/effect/src/ManagedRuntime.ts`
+- `packages/effect/src/Schema.ts`
+- `packages/effect/src/Config.ts`
+- `packages/effect/src/ConfigProvider.ts`
+- `packages/effect/src/Schedule.ts`
+- `packages/effect/src/Cache.ts`
+- `packages/effect/src/ScopedCache.ts`
+- `packages/effect/src/Stream.ts`
+- `packages/effect/src/FiberSet.ts`
+- `packages/effect/src/FiberMap.ts`
+- `packages/effect/src/testing/TestClock.ts`
+- `packages/effect/src/unstable/http/**`
+- `packages/effect/src/unstable/httpapi/**`
+- `packages/effect/src/unstable/rpc/**`
+- `packages/effect/src/unstable/sql/**`
+- nearby `packages/effect/test/**` files for the API under review
 
-Resolve them live before relying on exact line numbers or API names.
+Read exports, type signatures, doc examples, implementation, and tests. A matching symbol name alone is not proof that semantics match an older example.
+
+## Kit Langton Routes
+
+Use Kit's skill for task routing and compact production patterns:
+
+- `skills/effect/SKILL.md`
+- `skills/effect/references/SCHEMA.md`
+- `skills/effect/references/SERVICES_LAYERS.md`
+- `skills/effect/references/CONFIG.md`
+- `skills/effect/references/SCHEDULING.md`
+- `skills/effect/references/CACHING.md`
+- `skills/effect/references/STREAMS.md`
+- `skills/effect/references/HTTP_CLIENTS.md`
+- `skills/effect/references/TESTING.md`
+
+Pay particular attention to Schema v4 modeling, Layer constructor choice, scoped long-lived work, Effect.fn transforms, ConfigProvider, exit-aware cache TTL, Stream source/consumer selection, and deterministic tests.
+
+Do not copy Kit's optional self-exporting module namespace convention unless the target repository has deliberately adopted it.
 
 ## opencode Routes
 
-Use opencode for production app runtime patterns:
+Use opencode for application runtime and resumable workflow patterns:
 
 - `.opencode/skills/effect/SKILL.md`
-- `AGENTS.md`
-- `CONTEXT.md`
 - `packages/opencode/src/effect/app-runtime.ts`
 - `packages/opencode/src/effect/runner.ts`
 - `packages/opencode/src/effect/instance-state.ts`
@@ -47,15 +88,13 @@ Use opencode for production app runtime patterns:
 - `packages/core/src/effect/service-use.ts`
 - `packages/core/src/effect/keyed-mutex.ts`
 - `packages/protocol/src/api.ts`
-- `packages/protocol/src/groups/event.ts`
-- `packages/opencode/src/server/routes/instance/httpapi/handlers/session.ts`
 - `packages/client/src/effect.ts`
-- `packages/opencode/src/mcp/index.ts`
-- `packages/core/src/git.ts`
+
+Use these for runtime memoization, Scope ownership, Deferred/Fiber state machines, keyed concurrency, and contract-derived clients. Re-verify API names against the target v4 pin.
 
 ## executor Routes
 
-Use executor for SDK, host boundary, Cloudflare, and resumable workflow patterns:
+Use executor for SDK, Cloudflare, and host callback boundaries:
 
 - `.agents/skills/wrdn-effect-schema-boundaries/SKILL.md`
 - `.agents/skills/wrdn-effect-typed-errors/SKILL.md`
@@ -69,34 +108,24 @@ Use executor for SDK, host boundary, Cloudflare, and resumable workflow patterns
 - `packages/hosts/cloudflare/src/mcp/agent-session-durable-object.ts`
 - `packages/hosts/mcp/src/tool-server.ts`
 - `e2e/src/services.ts`
-- `e2e/src/surfaces/telemetry.ts`
 
-## effect-smol Routes
+Use these for boundary decoding, error mapping, raw-fetch exceptions, callback bridges, resumable work, and test Layers.
 
-Use effect-smol for current API spelling and tests:
+## Search Commands
 
-- `AGENTS.md`
-- `.patterns/effect.md`
-- `.patterns/testing.md`
-- `packages/effect/src/Effect.ts`
-- `packages/effect/src/Layer.ts`
-- `packages/effect/src/Scope.ts`
-- `packages/effect/src/Schema.ts`
-- `packages/effect/src/Stream.ts`
-- `packages/effect/src/Schedule.ts`
-- `packages/effect/src/unstable/sql/SqlClient.ts`
-- `packages/effect/src/unstable/sql/SqlResolver.ts`
-- nearby `packages/effect/test/**` files for the API under review
-
-## Inventory Command
-
-For a broad source pass:
+Repository convention pass:
 
 ```bash
-root="$(pnpm exec opensrc path --cwd . anomalyco/opencode)"
-rg --files "$root" \
-  -g '*.{ts,tsx,mts,cts,js,jsx,mjs,cjs,md,mdx,json}' \
-  -g '!**/{node_modules,dist,build,out,coverage,.turbo,.next,.svelte-kit,.astro,vendor,.wrangler,.cache,.git,generated,generated-effect,__generated__,.output}/**'
+rg -n 'from "effect"|from "effect/|@effect/' .
+rg -n 'Context\.Service|Layer\.|Effect\.fn|Schema\.|TaggedError|ManagedRuntime|runPromise|HttpClient|Deferred|Queue|Fiber|Schedule\.' .
 ```
 
-Record include/exclude rules before claiming exhaustive coverage.
+Source API pass:
+
+```bash
+effect_root="$(pnpm exec opensrc path --cwd . effect)"
+symbol='makeWith'
+rg -n "export (const|function|class|interface|type) ${symbol}|${symbol}" "$effect_root/src" "$effect_root/test"
+```
+
+Record the source version or SHA and the files actually inspected before calling advice source-backed.

@@ -1,123 +1,119 @@
-# Principles
+# Effect-First Principles
 
-Use this file to decide whether a design needs Effect and which primitive fits.
+Use this file for architecture decisions, function shape, dependency boundaries, and runtime execution.
 
-## Core Model
+## Application Model
 
-`Effect<A, E, R>` describes work that:
+`Effect<A, E, R>` is the default representation of backend work:
 
-- succeeds with `A`
-- fails with expected error `E`
-- requires services `R`
+- `A` is the success value.
+- `E` is the expected failure contract.
+- `R` is the required capability set.
 
-Add Effect when at least one of those dimensions matters. Leave code plain when the work is pure, local, synchronous, and easier to test without a runtime.
+An Effect value is a lazy description. It does nothing until a runtime executes it. That lets the application compose validation, dependencies, failures, cancellation, resource safety, retries, and telemetry without converting to Promise-shaped code between each step.
 
-## Boundary Ladder
-
-Apply the first matching rung:
-
-1. Unknown data: decode with Schema or a precise typed adapter.
-2. Expected failure: return a tagged error in the Effect error channel.
-3. External dependency: require a service and provide it with a Layer.
-4. Owned lifetime: acquire in Scope or Layer and release with finalizers.
-5. Concurrent workflow: use Fiber, Deferred, Queue, Ref, Semaphore, Exit, or Stream.
-6. Retried or timed workflow: use Schedule, Clock, timeout, and TestClock.
-7. Protocol or SDK boundary: use Effect platform clients and one authoritative contract.
-8. Host edge: enter or leave Effect once with `runPromise`, `runSync`, `runFork`, or a managed runtime.
-
-## Function Shape
-
-- `Effect.gen`: inline composition and local orchestration.
-- `Effect.fn("Name")`: reusable operation with a meaningful trace or stack-frame boundary.
-- `Effect.fn`: reusable operation that needs traced-function behavior without a named span.
-- `Effect.fnUntraced`: reusable low-level implementation, hot path, resolver, cache helper, or wrapper that intentionally omits trace capture.
-
-Do not convert a helper into `Effect.fn` just because it returns an Effect. Name a reusable operation when the name improves tracing, recovery, composition, or review.
-
-## Services And Layers
-
-Prefer `Context.Service` class syntax in current v4-style code:
+Use Effect throughout backend application and infrastructure workflows. The small exception is a total synchronous leaf calculation whose only contract is input to output:
 
 ```ts
-import { Context, Effect } from "effect";
+const normalizeDisplayName = (value: string): string => value.trim();
 
-class Users extends Context.Service<
-  Users,
-  {
-    readonly get: (id: string) => Effect.Effect<User, UserNotFound>;
-  }
->()("Users") {}
-```
-
-Use a service when callers need substitution, dependency tracking, lifecycle, or a runtime capability. Keep pure transforms as functions.
-
-Layer rules:
-
-- Construct live dependencies in Layers.
-- Provide Layers at entrypoints and tests.
-- Keep domain logic free of hidden local `Effect.provide`.
-- Memoize runtime layers only at a deliberate app or process boundary.
-- Add a layer graph abstraction only when the graph is large enough to need typed replacement or dependency validation.
-
-## Schema Boundaries
-
-Decode once at the edge:
-
-```ts
-const ConfigSchema = Schema.Struct({
-  endpoint: Schema.String,
+export const renameUser = Effect.fn("Users.rename")(function* (
+  id: UserId,
+  displayName: string,
+) {
+  const users = yield* UserRepository;
+  return yield* users.rename(id, normalizeDisplayName(displayName));
 });
-
-const config = yield * Schema.decodeUnknownEffect(ConfigSchema)(raw);
 ```
 
-Use Schema for:
+Do not turn a pure leaf into `Effect.sync` merely to make it look Effectful. Wrap it when laziness, typed failure, requirements, tracing, interruption, or resource ownership becomes part of its real contract.
 
-- HTTP/RPC payloads
-- storage rows and persisted JSON
-- environment/config values
-- generated API contracts
-- IDs that need brands
-- wire-visible errors
+## Primitive Chooser
 
-Use named guards only when Schema is too heavy for a local branch and the guard has a precise return type.
+The boundary ladder chooses an Effect primitive. It does not decide whether Effect belongs in an Effect-first backend.
 
-## Error Semantics
+1. Unknown input or encoded data: Schema decoder.
+2. Scalar identity or value object: constrained Schema brand.
+3. Finite domain state: literal schema, `Data.TaggedEnum`, or `Schema.TaggedUnion`.
+4. Expected failure: tagged error in the Effect error channel.
+5. Runtime capability: `Context.Service` and Layer.
+6. Owned lifetime: Scope, scoped Layer, or acquire/release.
+7. Concurrent coordination: Fiber, Deferred, Queue, PubSub, Latch, Ref, Semaphore, FiberSet, or FiberMap.
+8. Retried or timed work: Schedule, Clock, timeout, or TestClock.
+9. Multi-value work: Stream with an explicit source and consumer.
+10. Protocol boundary: Effect platform client plus Schema-backed request and response contracts.
+11. Host interop: one `run*` or managed-runtime bridge after provisioning.
 
-Use a new error type only when callers need distinct recovery, HTTP status, UI behavior, retry policy, telemetry classification, or redaction.
+## Function Shapes
 
-Choose:
+Use the shape that communicates the operation's role:
 
-- `Schema.TaggedErrorClass`: public, encoded, schema-backed, or protocol-visible failures.
-- `Data.TaggedError`: internal failures that do not need schema encoding.
-- defects: impossible states, bugs, or host edges that cannot represent typed failure.
+- `Effect.gen`: local orchestration and readable multi-step workflows.
+- `Effect.fn("Domain.operation")`: public service methods and reusable operations that deserve runtime identity.
+- `Effect.fn`: reusable functions that need traced-function behavior without a named span.
+- `Effect.fnUntraced`: low-level or hot-path internals where trace capture is deliberately unnecessary.
+- plain function: tiny total synchronous leaf with no Effect semantics of its own.
 
-For schema tagged errors with no `message` field, add a `message` getter when logs, spans, or `Cause.pretty` need a useful label.
+Name operations using stable domain vocabulary, not implementation mechanics:
 
-At true host boundaries, convert typed failures into the host's shape. Do not leak unknown JavaScript exceptions through domain code.
+```ts
+export const completeCheckout = Effect.fn("Checkout.complete")(function* (
+  command: CompleteCheckout,
+) {
+  const inventory = yield* Inventory;
+  const payments = yield* Payments;
+  const orders = yield* Orders;
 
-## Runtime Edges
+  yield* inventory.reserve(command.items);
+  const payment = yield* payments.capture(command.payment);
+  return yield* orders.complete(command, payment);
+});
+```
 
-Use `runPromise`, `runSync`, `runFork`, `runPromiseExit`, and managed runtimes at:
+Use whole-function transforms on `Effect.fn` for policies that apply to the entire call, such as error classification, retry, timeout, annotations, or local provisioning. Keep branch-specific behavior in the function body.
 
-- worker/fetch handlers
-- HTTP route handlers
-- CLI commands
-- test wrappers
+## Composition And Execution
+
+Compose effects everywhere the application needs them; execute once per host invocation or owned runtime.
+
+Host edges include:
+
+- HTTP or worker callbacks that must return a Promise or Response
+- CLI command entrypoints
 - SDK callback bridges
-- Durable Object or process lifecycle methods
+- process and Durable Object lifecycle methods
+- framework test adapters
+- deliberately process-owned managed runtimes
 
-Reusable domain functions return Effects. They do not run them.
+Reusable services, repositories, policies, and workflows return Effect values. They do not call `runPromise`, hide `Effect.provide`, or manufacture a new runtime.
+
+```ts
+// Good: requirements and failures remain visible.
+const program = reconcileAccount(accountId);
+
+// Composition root: provide once, execute once.
+const handler = () => AppRuntime.runPromise(program);
+```
+
+Prefer one managed runtime for a long-lived process or application graph. Do not build a runtime per request unless runtime isolation is itself a requirement.
+
+## Dependency Direction
+
+- Domain and application code depend on service tags and domain contracts.
+- Adapter Layers depend on SDKs, databases, environment bindings, and platform APIs.
+- Composition roots assemble the Layer graph.
+- Host adapters translate between framework values and the fully provided Effect program.
+
+Keep `Effect.provide` out of ordinary domain workflows. A workflow that silently chooses its own live implementation is harder to test, replace, and audit.
 
 ## Source Discipline
 
-Effect APIs move. Verify current source before copying old examples, especially for:
+Effect v4 beta APIs can move. Verify the target project's exact pin before using or changing:
 
-- `Effect.fn` and `Effect.fnUntraced`
-- `Context.Service` / `Context.Tag`
-- `HttpApi` and `HttpClient`
-- `Schema` helpers
-- retry and timeout combinators
-- test helpers
+- `Context.Service` and Layer constructors
+- `Effect.fn` transforms and `Effect.fnUntraced`
+- Schema brands, unions, optional fields, transforms, and constructors
+- unstable HTTP, HttpApi, RPC, SQL, workflow, and platform modules
+- Cache, Stream, Schedule, Scope, and test helpers
 
-Use the target project's pinned version first. Source exemplars refine local style; they do not override sound local conventions.
+Use current v4 source to refine a design. Never respond to an API mismatch by adding v3 compatibility branches or unchecked casts.
