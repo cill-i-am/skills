@@ -33,6 +33,18 @@ export const StoredUser = User.pipe(
 );
 ```
 
+## Contract Ownership Across Packages
+
+Place a serializable contract's owning Schema in the lowest stable package that owns its meaning. Consumers import that Schema or a type derived from it; they do not reconstruct the same shape in a runtime, transport, CLI, UI, or test package.
+
+- A new independently parseable contract needs its own Schema.
+- A projection may reuse `.fields`, Schema combinators, or a type derived from the owning Schema when it does not invent a new runtime boundary.
+- Function-bearing services and adapters remain TypeScript capability interfaces; do not force executable values into data schemas.
+- Keep provider and framework DTOs private to their adapter when possible. Decode or explicitly translate them into owned domain contracts before returning them inward.
+- Persist and publish encoded serializable data, not class instances, errors, functions, clients, fibers, scopes, or platform handles.
+
+When a repository enforces these rules mechanically, follow `schema-enforcement.md` rather than relying on names, paths, or text matching.
+
 ## Avoid Stringly Typed Domains
 
 Do not use raw `string` for distinct domain concepts merely because their encoded representation is text.

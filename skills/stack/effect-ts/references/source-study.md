@@ -2,6 +2,21 @@
 
 This file records the evidence and design decisions behind the current Effect v4 skill.
 
+## 2026-07-19 Schema-Enforcement Pass
+
+A completed repository-wide schema-first migration across shared contracts, runtime workflows, persistence, APIs, CLI consumers, UI state, and tests exposed a gap between writing good Schema code and proving that the invariant remains true across a large TypeScript graph.
+
+The resulting guidance adds `schema-enforcement.md` and sharpens cross-package contract ownership. Durable findings were:
+
+- semantic domain strings should become constrained Schema brands at ingress and remain branded inward;
+- a decoder elsewhere in a function does not prove that the actual raw value reached the boundary;
+- names, paths, familiar methods, structural lookalikes, and counterfeit or shadowed imports are not semantic provenance;
+- syntax-aware checks are useful locally, while cross-file ownership and canonical symbol identity may require compiler-backed verification;
+- every accepted exception needs a paired adversarial fixture, including disconnected decoders and escaping values;
+- migration audits should converge on zero actionable violations without count snapshots, broad suppressions, or grandfathered allowlists.
+
+The enforcement reference is deliberately optional. Do not build a custom checker when normal schemas, focused type checks, and tests already protect the repository invariant.
+
 ## 2026-07-16 Deepening Pass
 
 The pass read all 1,028 lines in Kit Langton's `skills/effect` bundle at commit `30dee8607214c893dd89f6eee65c669ef3dce8c9`:

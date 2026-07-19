@@ -25,6 +25,7 @@ Keep all `effect` and `@effect/*` packages on a compatible v4 beta line. Verify 
 
 - Architecture, Effect-first boundaries, function shapes, or runtime execution: read `references/principles.md`.
 - Records, DTOs, IDs, brands, string avoidance, variants, optionality, decoders, or encoded forms: read `references/schema.md`.
+- Repository-wide schema ownership, migration audits, semantic provenance, or anti-regression checks: read `references/schema-enforcement.md`.
 - Services, module surfaces, Layers, dependency graphs, runtime wiring, or long-lived service work: read `references/services-layers.md`.
 - Scope, acquisition/release, fibers, queues, coordination, interruption, or managed runtimes: read `references/resources-concurrency.md`.
 - Typed errors, defects, recovery, redaction, logs, spans, or metrics: read `references/errors-observability.md`.

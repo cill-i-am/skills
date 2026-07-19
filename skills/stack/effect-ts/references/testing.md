@@ -27,6 +27,8 @@ describe("Users", () => {
 
 Use Schema constructors in fixtures. Do not bypass branded types with casts.
 
+Keep intentionally invalid fixtures `unknown` or in their raw encoded form, then assert that the real decoder rejects them. Never cast malformed input to the domain type merely to reach the code under test.
+
 ## Test Layer Shapes
 
 For a tiny static dependency, use `Layer.succeed`:
