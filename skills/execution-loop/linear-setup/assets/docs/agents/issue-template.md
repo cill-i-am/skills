@@ -1,13 +1,24 @@
 # Issue Template
 
-## Parent
+## Title
+
+<Plain-language statement of the observable outcome. It should complete: "When
+this is done, it will be true that ...">
+
+Do not put code symbols, file names, handlers, schemas, migrations, or internal
+implementation shorthand in the title unless that technical capability is the
+outcome readers need to track.
+
+## Hierarchy
 
 Linear Project/PRD: <link>
+Parent outcome Issue: <link or omit when this is the parent outcome>
 Initiative: <link or omit>
+Hierarchy role: parent outcome | delivery outcome
 
-## Goal
+## Outcome
 
-One concise outcome for this vertical slice.
+What becomes observably true when this Issue is complete, and for whom?
 
 ## Context
 
@@ -46,7 +57,9 @@ Out of scope:
 
 ## Implementation Notes
 
-Name required skills, constraints, or likely files. Do not over-prescribe the implementation.
+Name required skills, constraints, likely files, and internal technical work
+here. Do not move implementation shorthand into the title or over-prescribe the
+solution.
 
 ## Handoff Notes
 

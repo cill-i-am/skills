@@ -69,9 +69,10 @@ repo still needs `linear-setup`.
    and residual risks.
 11. **Create follow-ups only when concrete.** A worker may create narrow Linear
    follow-up issues discovered during implementation or review. The follow-up
-   must link to the current issue, explain why it is out of scope, and leave
-   prioritization to triage or the orchestrator. Do not create speculative
-   backlog items.
+   must use a plain-language outcome title, link to the current issue, sit under
+   the nearest correct parent outcome when known, explain why it is out of scope,
+   and leave prioritization to triage or the orchestrator. Put code symbols and
+   implementation details in the body. Do not create speculative backlog items.
 
 ## Stop Conditions
 

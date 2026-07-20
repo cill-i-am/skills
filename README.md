@@ -79,6 +79,10 @@ linear-setup
   -> ci-watch
 ```
 
+Within that loop, `to-issues`, `triage`, and `reconcile-project` maintain a
+Project -> parent capability outcome -> child delivery outcome hierarchy. Linear
+titles describe what becomes true; implementation details stay in Issue bodies.
+
 Use stack and infrastructure skills inside that loop as needed:
 
 - `coding-standards`, `tdd`, `tech-spec`, and `code-review` for core engineering

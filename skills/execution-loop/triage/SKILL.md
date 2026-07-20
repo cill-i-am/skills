@@ -47,8 +47,8 @@ specific issue.
 ## Triage A Specific Issue
 
 1. **Gather context.** Read the full issue, comments, labels/status, parent
-   Project/PRD, blockers, assignee, and related PRs. Check relevant source or
-   docs rather than trusting stale issue prose.
+   Project/PRD, parent/sub-Issues, blockers, assignee, and related PRs. Check
+   relevant source or docs rather than trusting stale issue prose.
 2. **Classify.** Recommend category and state:
    `bug`, `enhancement`, `chore`, `spike`; and one of the states in
    `docs/agents/triage-states.md`.
@@ -57,10 +57,16 @@ specific issue.
    Alchemy stage, state that clearly.
 4. **Clarify if needed.** Use `grilling` in Docs Mode for real domain ambiguity.
    Capture resolved decisions in Linear comments or the parent PRD.
-5. **Prepare for execution.** If ready for an agent, ensure the issue has
+5. **Normalize title and hierarchy.** Ensure the title states an observable
+   outcome in plain language and the Issue sits under the correct parent
+   capability outcome. Keep parent/sub-Issue grouping separate from blockers.
+   Rename or reparent directly when the scope is clearly unchanged, and record
+   the correction in a comment. Ask before changing anything that could alter
+   product scope or ownership.
+6. **Prepare for execution.** If ready for an agent, ensure the issue has
    acceptance criteria, blockers, verification expectations, out-of-scope
    boundaries, and AFK/HITL classification.
-6. **Apply Linear updates.** Update status/labels/relations and add a concise
+7. **Apply Linear updates.** Update title/status/labels/relations and add a concise
    comment explaining what changed.
 
 ## Ready Checklist
@@ -69,6 +75,8 @@ Before moving an issue to the live Linear state that means "ready for agent
 work", verify:
 
 - parent Project/PRD is linked or intentionally absent
+- title describes what becomes true rather than the implementation activity
+- parent outcome Issue is linked, or the Issue is intentionally a parent outcome
 - acceptance criteria are concrete and testable
 - blockers are represented as Linear relations
 - no unresolved HITL decision is hidden in prose
@@ -93,8 +101,9 @@ work, not a final won't-do decision.
 Workers may create follow-up issues only for narrow, concrete work discovered
 during implementation or review. Triage those issues like any other intake:
 verify the link to the source issue, confirm why the work was out of scope, and
-prioritize it deliberately. Do not preserve speculative backlog grooming just
-because a worker generated it.
+prioritize it deliberately. Give the follow-up an outcome title and place it
+under the nearest correct parent outcome. Do not preserve speculative backlog
+grooming just because a worker generated it.
 
 ## Comments
 

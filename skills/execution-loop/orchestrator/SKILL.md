@@ -93,11 +93,14 @@ test, or skill-bundle validation. In Simulation Mode:
    handoff or previous heartbeat summary as orientation, not the operative
    source of truth.
 2. **Reconcile.** Run `reconcile-project` before dispatching new work.
-3. **Build the dependency graph.** Use Linear blocker relations as the graph.
-   Do not infer blockers only from prose unless you also update Linear.
-4. **Pick dispatchable issues.** Prefer unblocked AFK issues in the live Linear
-   state that means "ready for agent work" and maximize downstream unblocking.
-   Skip HITL issues until the human decision is captured.
+3. **Load the outcome hierarchy and dependency graph.** Use parent/sub-Issue
+   relations for outcome grouping and Linear blocker relations for execution
+   order. Do not infer either structure only from prose; update Linear when the
+   durable graph is wrong.
+4. **Pick dispatchable leaf issues.** Prefer unblocked AFK leaf Issues in the live
+   Linear state that means "ready for agent work" and maximize downstream
+   unblocking. Do not dispatch parent outcome Issues as implementation work. Skip
+   HITL issues until the human decision is captured.
 5. **Spawn workers.** Use the Codex app thread tools by default. Create one
    user-visible Codex thread per dispatchable Linear issue, with a worktree
    environment and explicit reasoning effort. Include the Linear issue, parent
@@ -128,6 +131,8 @@ test, or skill-bundle validation. In Simulation Mode:
      and stop condition.
 6. **Track status.** Move assigned issues to the live Linear in-progress state
    and comment with the worker thread, branch expectation, and dispatch time.
+   Keep parent outcome state aligned with its children without pretending the
+   combined outcome is complete before it is verified.
 7. **Set a heartbeat.** After dispatching workers, create or update one
    current-thread heartbeat automation via `automation_update` to continue
    orchestration while work is active. Prefer a short interval, such as 10
@@ -200,3 +205,7 @@ Move an issue to the live Linear completed state only when:
 - quality gate passes
 - CI is green or the accepted completion path does not require CI
 - Linear has a final evidence comment with PR, verification, and residual risk
+
+Move a parent outcome Issue to completed only when all required child outcomes
+are complete and the combined parent outcome has been verified. A closed set of
+child tickets is evidence to review, not automatic proof of the parent outcome.

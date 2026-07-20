@@ -33,7 +33,8 @@ connect the Linear app before attempting to publish the PRD.
    resolved from Linear, source, or architecture docs.
 2. **Choose Linear container.**
    - Existing Initiative/Project: update it.
-   - New product area: create or propose a Project under the right Initiative.
+   - New product area: create or propose a Project under the right Initiative,
+     named after the overall user, business, or operational outcome.
    - Unknown team/project mapping: ask once with a recommended default.
 3. **Stress-test with domain docs.** Use current repo vocabulary and verify any
    implementation claims against source. If the source contradicts the product
@@ -70,8 +71,10 @@ HITL/open questions for `to-issues` to slice without inventing product intent.
 - Do not create implementation issues inside this skill unless the user
   explicitly asks; `to-issues` owns issue slicing.
 - Link the PRD to the parent Initiative when one exists.
-- If creating a Project, give it a title that can become the umbrella for child
-  issues and PRs.
+- If creating a Project, give it a plain-language outcome title that can become
+  the umbrella for parent capability outcomes and child delivery outcomes.
+- Identify the likely capability outcomes that `to-issues` should use as parent
+  Issues, without prematurely decomposing them into technical tasks.
 - Add a short Linear comment summarizing what changed and what remains open.
 - If the PRD is ready for slicing, set or recommend the live Linear state that
   maps to "ready for issue slicing" or "needs grooming" according to
