@@ -29,12 +29,15 @@ repo still needs `linear-setup`.
    orientation, not the operative source of truth.
 2. **Confirm assignment.** Ensure the issue is unblocked and in an implementable
    state. If it is HITL, blocked, or under-specified, stop and update Linear.
-3. **Create or verify isolation.** Use `worktree-isolation` for the worker
-   worktree and branch setup. Use `codex/<linear-key>-<slug>` unless instructed
-   otherwise. Never start provider-mutating Alchemy work without confirming
-   stage and credentials. Do not implement until you can report the isolated
-   path, branch, base commit, install result, and baseline check result or
-   blocker.
+3. **Activate and prove isolation.** Use `worktree-isolation` to verify the
+   orchestrator-provisioned detached worktree came from the exact freshly fetched
+   `origin/main` SHA. Create and own `codex/<linear-key>-<slug>` inside that
+   worktree. After a fresh `git fetch --prune origin`, do not plan or edit until
+   the tree is clean, `HEAD == origin/main == merge-base`, and ahead/behind is
+   `0 0`. Report the isolated path, branch, all three SHAs, ahead/behind, install
+   result, and baseline result or blocker. Local `main`, coordinator `HEAD`, and
+   handoff prose are not base evidence. Never start provider-mutating Alchemy
+   work without confirming stage and credentials.
 4. **Plan the narrow slice.** Re-state the acceptance criteria, out-of-scope
    boundaries, expected files or modules, and verification commands. Keep this
    brief. Proceed after posting unless Linear, the orchestrator, or a clear
@@ -79,6 +82,9 @@ repo still needs `linear-setup`.
 Stop and update Linear instead of improvising when:
 
 - blocker or HITL decision is discovered
+- fetched `origin/main` does not equal the worker base before edit authority
+- the worktree is dirty, has non-zero ahead/behind, or cannot prove the required
+  `HEAD == origin/main == merge-base` equality
 - acceptance criteria conflict with source or parent PRD
 - implementation requires out-of-scope files
 - verification fails repeatedly without a clear root cause
@@ -87,3 +93,8 @@ Stop and update Linear instead of improvising when:
 - reviewer feedback changes scope, product behavior, architecture, data shape,
   or requires judgment
 - GitHub or Linear auth is unavailable for required PR/comment watching
+
+If `origin/main` advances before edit authority, hold work and notify the
+orchestrator. Use only the non-destructive exact-base refresh in
+`worktree-isolation`; then rerun relevant baselines and repeat the plan/reviewer
+gate. Do not reset, rebase speculatively, or continue from stale handoff state.

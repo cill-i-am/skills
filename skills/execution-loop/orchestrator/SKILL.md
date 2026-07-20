@@ -17,9 +17,10 @@ Prefer the Codex app thread tools for issue workers. If thread tools are not in
 the active tool list, search for `create_thread`, `read_thread`,
 `send_message_to_thread`, `set_thread_archived`, and `list_threads` before
 considering a fallback. Use `list_threads` when you need to avoid duplicate
-worker/reviewer threads. Create one new Codex thread per Linear issue, with a
-worktree environment and explicit reasoning effort. Each thread should own
-exactly one issue and report progress through Linear and the thread itself.
+worker/reviewer threads. Create one new Codex thread per Linear issue, with an
+exact-base worktree environment and explicit reasoning effort. Each thread
+should own exactly one issue and report progress through Linear and the thread
+itself.
 
 Before spawning a worker, check live Linear comments/status, linked PRs,
 existing worker/reviewer threads, and the current project heartbeat. If an
@@ -33,9 +34,17 @@ Use `send_message_to_thread` to steer existing worker/reviewer threads. Use
 needed. Do not silently substitute internal subagents for issue workers because
 the thread tool was not loaded yet.
 
-Tell workers to use `worktree-isolation` to verify or create their isolated
-workspace before editing unless the Codex thread environment already guarantees
-that isolation and the worker verifies it.
+Before every dispatch, use `worktree-isolation` to run `git fetch --prune origin`,
+resolve the exact fetched `origin/main` SHA, and provision both worker and
+reviewer worktrees from that SHA. Never use local `main`, the coordinator's
+current `HEAD`, or handoff prose as base evidence. If a Codex thread environment
+cannot guarantee the exact SHA, provision the worktree manually or stop.
+
+The orchestrator coordinates the pair but does not own the worker topic branch.
+Dispatch the worker into its detached exact-base worktree and require it to
+create and own `codex/<issue-key>-<slug>` there. Dispatch the reviewer into the
+paired worktree at the same SHA; it remains detached and strictly read-only
+unless a separately authorized narrower task changes that role.
 
 For every non-trivial implementation worker, also create a user-visible
 read-only reviewer/spec thread at dispatch time. The reviewer thread may stay
@@ -92,7 +101,8 @@ test, or skill-bundle validation. In Simulation Mode:
    statuses, linked PRs, and recent worker evidence live from Linear. Treat any
    handoff or previous heartbeat summary as orientation, not the operative
    source of truth.
-2. **Reconcile.** Run `reconcile-project` before dispatching new work.
+2. **Reconcile.** Run `reconcile-project` before dispatching new work, including
+   fetched-remote base provenance for active or proposed worker/reviewer pairs.
 3. **Load the outcome hierarchy and dependency graph.** Use parent/sub-Issue
    relations for outcome grouping and Linear blocker relations for execution
    order. Do not infer either structure only from prose; update Linear when the
@@ -101,24 +111,32 @@ test, or skill-bundle validation. In Simulation Mode:
    Linear state that means "ready for agent work" and maximize downstream
    unblocking. Do not dispatch parent outcome Issues as implementation work. Skip
    HITL issues until the human decision is captured.
-5. **Spawn workers.** Use the Codex app thread tools by default. Create one
-   user-visible Codex thread per dispatchable Linear issue, with a worktree
-   environment and explicit reasoning effort. Include the Linear issue, parent
-   PRD/Project, blockers, relevant comments, branch naming convention, and
-   instruction to use the `worker` and `worktree-isolation` skills. Tell
-   workers to refresh live Linear before planning or implementing. Require
-   explicit plan approval only for high-risk work or when the issue/orchestrator
-   says approval is required.
+5. **Spawn workers.** Use the Codex app thread tools by default. Immediately
+   before dispatch, fetch/prune `origin`, resolve the exact `origin/main` SHA, and
+   create the worker/reviewer pair from that same SHA through
+   `worktree-isolation`. Create one user-visible Codex thread per dispatchable
+   Linear issue, with explicit reasoning effort. Include the Linear issue,
+   parent PRD/Project, blockers, relevant comments, exact base SHA, worktree path,
+   branch naming convention, and instruction to use the `worker` and
+   `worktree-isolation` skills. Tell workers to refresh live Linear and prove
+   clean exact-base state before planning or implementing. Require explicit plan
+   approval only for high-risk work or when the issue/orchestrator says approval
+   is required.
    - First prove the issue is not already owned by an active worker, reviewer,
      branch, PR, or heartbeat. Reuse or steer the existing owner when found.
    - For every non-trivial worker, create a paired user-visible read-only
-     reviewer/spec thread. Include the worker thread, Linear issue, parent
-     PRD/Project, expected skills/standards, and instruction to use the
-     reviewer thread template. For user-visible changes, include the expectation
-     that the reviewer should gather independent runtime evidence with Browser
-     or a narrow test subset, or explicitly say why it was not practical. Tell
-     the reviewer to stay idle until the worker posts a plan or PR if there is
-     nothing useful to inspect yet.
+     reviewer/spec thread in its detached worktree at the same exact base SHA.
+     Include the worker thread, Linear issue, parent PRD/Project, base SHA,
+     reviewer worktree path, expected skills/standards, and instruction to use
+     the reviewer thread template. For user-visible changes, include the
+     expectation that the reviewer should gather independent runtime evidence
+     with Browser or a narrow test subset, or explicitly say why it was not
+     practical. Tell the reviewer to prove clean exact-base detached state, then
+     stay idle until the worker posts a plan or PR if there is nothing useful to
+     inspect yet.
+   - If `origin/main` advances before edit authority, hold both lanes. Use the
+     non-destructive refresh path in `worktree-isolation`, rerun relevant
+     baselines, and repeat the worker plan plus reviewer/orchestrator gate.
    - Tell every worker that after opening or updating a PR it must run
      `ci-watch`, monitor CI plus GitHub PR comments/review threads and Linear
      comments, fix actionable in-scope failures or comments, and keep watching
@@ -147,8 +165,8 @@ test, or skill-bundle validation. In Simulation Mode:
    below before moving Linear forward.
 
 Dispatch is complete only when every selected issue is either assigned to one
-active worker with a paired reviewer when required, skipped with a durable
-reason, or blocked in Linear.
+active worker with a paired reviewer when required and exact-base provenance is
+recorded, skipped with a durable reason, or blocked in Linear.
 
 ## Acceptance Gates
 

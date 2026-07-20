@@ -13,6 +13,7 @@ Make Linear truthful before dispatching or accepting more work.
   statuses
 - linked PRs and CI status
 - worker/orchestrator evidence comments
+- freshly fetched `origin/main` SHA and active worker/reviewer worktree evidence
 - relevant source or architecture docs when spec drift is suspected
 
 ## Checks
@@ -22,6 +23,15 @@ Find and repair or report:
 - blocker completed but dependent issue still blocked
 - issue marked ready for agent work but missing acceptance criteria or verification
 - worker assigned but stale with no recent evidence
+- proposed or active worktree was based on local `main`, coordinator `HEAD`,
+  handoff prose, or an unfetched/stale remote ref
+- worker/reviewer pair does not share the same exact fetched `origin/main` base,
+  the worker branch was not created from that base, or the reviewer is not
+  detached/read-only
+- pre-edit proof is missing, dirty, non-zero ahead/behind, or does not show
+  `HEAD == origin/main == merge-base`
+- `origin/main` advanced before edit authority without a held dispatch, clean
+  non-destructive refresh, fresh baselines, and repeated plan/reviewer gate
 - PR opened but Linear not linked
 - PR merged but issue not moved to the completed/done state
 - PR failed CI but no `ci-watch` is active
@@ -46,6 +56,8 @@ Use Linear updates for durable state:
 - move state to the live workflow equivalent of needs information, blocked,
   ready for agent work, in review, or completed
 - add comments with evidence
+- hold dispatch or edit authority when base provenance is stale or unproven; use
+  `worktree-isolation` for exact fetched-base provisioning or refresh
 - mark obsolete issues with rationale
 - trigger or recommend `ci-watch` for PRs with pending/failing CI
 

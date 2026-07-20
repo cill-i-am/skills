@@ -28,13 +28,32 @@ The orchestrator owns the work loop. Workers implement. Reviewers/spec agents ve
 - Use `automation_update` for heartbeat automations. Do not write raw automation
   directives by hand.
 
+## Worktree Base Provenance
+
+- Before every dispatch or base refresh, run `git fetch --prune origin` and
+  resolve the exact fetched `origin/main` commit.
+- Create the worker and paired reviewer worktrees from that same exact commit.
+  A local `main`, the coordinator's current `HEAD`, or handoff prose is not base
+  evidence.
+- The worker creates and owns its `codex/<issue>-<slug>` topic branch inside the
+  pre-provisioned worktree. The reviewer remains detached and strictly
+  read-only unless a narrower reviewed need explicitly changes that role.
+- Before worker planning, reviewer plan review, or edits, require an empty
+  worktree plus proof that `HEAD == origin/main == merge-base` and ahead/behind
+  is `0 0` after a fresh fetch.
+- If `origin/main` advances before edit authority, hold both lanes. Follow
+  `worktree-isolation` to incorporate the exact fresh commit with a
+  non-destructive, reviewable operation, rerun relevant baselines, and repeat
+  the plan/reviewer gate.
+
 ## Worker Rules
 
 - Use a user-visible Codex worker thread for non-trivial implementation.
-- Use an isolated worktree by default, and use `worktree-isolation` to verify or
-  create that workspace before editing.
-- Do not implement until the worker can report the isolated path, branch, base
-  commit, install result, and baseline check result or blocker.
+- Use the exact-base worktree provisioned by the orchestrator and create the
+  worker-owned topic branch there before planning.
+- Do not implement until the worker can report the isolated path, topic branch,
+  fetched base commit, clean-state and equality proof, ahead/behind `0 0`,
+  install result, and baseline check result or blocker.
 - Read the live Linear issue, parent Project/PRD, blockers, and comments before
   planning. Handoff context is orientation only.
 - Post a short plan before implementation.
@@ -53,10 +72,13 @@ The orchestrator owns the work loop. Workers implement. Reviewers/spec agents ve
 
 ## Reviewer Rules
 
-The reviewer is read-only. It should read live Linear before reviewing the
-worker's plan when possible and the final diff before approval. Plan review
-should catch overcomplication, scope drift, or missed constraints; it should not
-block normal AFK work unless approval was explicitly required.
+The reviewer is detached and read-only. Before reviewing the worker's plan, it
+should independently prove its clean worktree is still at the dispatched,
+freshly fetched `origin/main` commit with ahead/behind `0 0`. It should read live
+Linear before reviewing the plan when possible and the final diff before
+approval. Plan review should catch overcomplication, scope drift, or missed
+constraints; it should not block normal AFK work unless approval was explicitly
+required.
 
 For user-visible changes, the reviewer should gather independent runtime
 evidence with the in-app Browser, preview target, or a focused test subset when
