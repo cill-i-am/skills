@@ -28,15 +28,15 @@ Link the parent Project, PRD, docs, prior decisions, and blockers.
 
 In scope:
 
-- 
+-
 
 Out of scope:
 
-- 
+-
 
 ## Acceptance Criteria
 
-- 
+-
 
 ## Verification Expectations
 

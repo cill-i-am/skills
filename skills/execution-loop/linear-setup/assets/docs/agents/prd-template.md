@@ -7,11 +7,11 @@ perspective?
 
 ## Goals
 
-- 
+-
 
 ## Non-Goals
 
-- 
+-
 
 ## Users And Stories
 
