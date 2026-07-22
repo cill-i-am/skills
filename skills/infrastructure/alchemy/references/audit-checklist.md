@@ -125,4 +125,4 @@ AWS:
 
 ## Report
 
-For reviews, report findings first by severity with file/line evidence, then assumptions, skipped checks, and verification. For implementation completion, summarize only relevant evidence: versions, tests, plan status, stage/profile/account, migrations, cloud mutation, and retained resources.
+For reviews, classify every finding as exactly one of `pre-edit blocker`, `pre-merge blocker`, `deferred hardening`, or `question`, and include file/line evidence before assumptions, skipped checks, and verification. For implementation completion, summarize only relevant evidence: versions, tests, plan status, stage/profile/account, migrations, cloud mutation, and retained resources.

@@ -16,6 +16,7 @@ Treat `../coding-standards/` as the standards package. Load standards by topic; 
 - Preserve local conventions when compatible with the standards; do not use local convention to excuse correctness, safety, boundary, observability, or test-integrity violations.
 - Prefer fewer, stronger findings over exhaustive commentary.
 - Do not include praise or a "what's good" section.
+- When an issue or acceptance criteria exists, it controls scope. Identify unrelated hardening as follow-up work instead of silently expanding the reviewed issue.
 
 ## 1. Select the review target
 
@@ -41,7 +42,7 @@ Read:
 Then load topic files matching the changed responsibilities:
 
 | Change touches... | Load... |
-|---|---|
+| --- | --- |
 | domain values, invariants, states, transitions | `../coding-standards/DOMAIN_MODELING.md` |
 | expected failures, custom errors, catch/classification | `../coding-standards/ERROR_HANDLING.md` |
 | logs, traces, telemetry, redaction, secrets | `../coding-standards/OBSERVABILITY.md` |
@@ -106,7 +107,7 @@ Examples:
 - Async finding: identify the retry, cancellation, redelivery, concurrency, or timeout path and the duplicated/lost/leaked work.
 - Test finding: name the behavior or runtime seam that remains unproven, or the implementation detail the test relies on.
 
-If proof is missing, downgrade to **Question** or drop it.
+If proof is missing, classify it as `question` or drop it.
 
 Completion criterion: every candidate finding has a precise location and behavioral proof shown with real code, values, or a reproduction where possible — not just a standards preference.
 
@@ -126,29 +127,31 @@ Drop or downgrade findings that do not survive.
 
 Completion criterion: final findings have survived an explicit attempt to disprove them.
 
-## Severity labels
+## Finding Classification
 
-- **Blocker** — likely correctness, safety, security, data-loss, runtime, idempotency, boundary, observability, or test-integrity issue in changed code; or a changed path violates a standards non-negotiable with behavioral consequence.
-- **Should Fix** — meaningful design, contract, maintainability, diagnosability, or verification issue that should be addressed before merge but is not a blocker.
-- **Simplification** — a clearer/deeper/smaller design that removes unnecessary complexity without changing semantics.
-- **Nit** — small local issue with low behavioral risk, usually documentation/naming/mechanical cleanup.
-- **Question** — unresolved ambiguity where the right call depends on product, domain, operational, or local-convention intent.
+Classify every finding as exactly one of:
+
+- `pre-edit blocker`: evidence that even a bounded reversible implementation slice would be unsafe or likely encode the wrong product meaning. Use only for a missing human/product decision that changes acceptance criteria, an unauthorized irreversible external action, an unresolved destructive data/migration boundary, or no provider-free/test seam for the tracer.
+- `pre-merge blocker`: a concrete evidenced risk of data loss or orphaned durable evidence, duplicate paid calls or uncontrolled retries, invalid or unsafe migrations, privacy/credential/raw-provider-data leakage, incorrect or non-monotone lifecycle/public state, or direct acceptance-criteria failure.
+- `deferred hardening`: useful non-blocking resilience, operability, observability, generalization, simplification, or cleanup work.
+- `question`: unresolved intent or uncertainty without enough evidence to block.
+
+Among review findings, only a `pre-edit blocker` prevents implementation from beginning. Uncertainty alone does not qualify. A concrete `pre-merge blocker` must be resolved before merge unless the orchestrator explicitly accepts the residual risk. Do not classify generalized canaries, schedulers, control-plane attestation, reconciliation systems, or broad observability as blockers unless a failing tracer or acceptance criterion proves they are required.
 
 ## Output format
 
 Start with:
 
 ```md
-Review target: <target>
-Standards loaded: <topic files>
+Review target: <target> Standards loaded: <topic files>
 ```
 
 If there are no findings, say so briefly and include the standards areas checked. Do not add praise.
 
 For each finding:
 
-```md
-### <Severity>: <short title>
+````md
+### <Classification>: <short title>
 
 - **Issue:** <concise explanation of the defect or problem>
 - **Where:** `<file>:<line>` or precise symbol/path
@@ -163,10 +166,10 @@ For each finding:
   ```ts
   // snippet or pseudo-code of the fix; not a full patch unless asked
   ```
-```
+````
 
 Include the **Problematic code** block whenever the issue lives in code you can quote; omit it only when the finding is about something absent (e.g. a missing contract or test), and say what is missing instead. Always include a fix-direction snippet or pseudo-code unless the fix is purely a deletion.
 
-Group findings by severity in this order: Blocker, Should Fix, Simplification, Nit, Question.
+Group findings in this order: `pre-edit blocker`, `pre-merge blocker`, `deferred hardening`, `question`.
 
 Completion criterion: the final review is actionable without code edits, every finding includes proof, and no review-only step modified the workspace.
