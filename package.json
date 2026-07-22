@@ -4,6 +4,7 @@
   "type": "module",
   "packageManager": "pnpm@11.8.0",
   "scripts": {
-    "test": "node scripts/validate-skills.mjs"
+    "test": "node scripts/validate-skills.mjs && node scripts/validate-execution-policy.mjs",
+    "test:execution-policy": "node scripts/validate-execution-policy.mjs"
   }
 }

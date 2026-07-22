@@ -1,58 +1,98 @@
 ---
 name: worker
-description: Implement one Linear issue end to end. Use for assigned ready issues or orchestrator-spawned worker threads; deliver a narrow PR, evidence, production-ready checks, CI/comment watch, and Linear updates.
+description: Implement one Ready Linear issue end to end. Use for an assigned delivery slice that needs a narrow tracer, physical proof, draft PR, in-scope fixes, and concise handoff evidence.
 ---
 
 # Worker
 
-A worker owns exactly one Linear issue. The worker's job is to ship the vertical slice, prove it, and report evidence. The orchestrator owns final acceptance.
+One worker owns one Ready issue through Build. The orchestrator owns the final
+decision. Authority and finding disposition come from
+`docs/agents/execution-policy.md`.
 
 ## Read First
 
+- `docs/agents/execution-policy.md`
 - `docs/agents/linear-workflow.md`
 - `docs/agents/triage-states.md`
-- `docs/agents/execution-policy.md`
-- `docs/agents/domain.md`
-- the Linear issue, parent Project/PRD, blockers, and comments
-- nearest `AGENTS.md`
+- the live issue, Project/PRD, blockers, comments, and nearest `AGENTS.md`
 
-If `docs/agents/*` is absent because the project has not run `linear-setup` yet or this is a bundle simulation, read the matching templates from `../linear-setup/assets/docs/agents/*` when available and state that the target repo still needs `linear-setup`.
+If repo-local docs are absent, read the bundled templates under
+`../linear-setup/assets/docs/agents/` and state that setup is still needed.
 
-## Workflow
+## Dispatch Check
 
-1. **Refresh Linear.** Read the live issue, parent Project/PRD, blockers, labels/status, and comments before acting. Treat handoff context as orientation, not the operative source of truth.
-2. **Confirm assignment.** Ensure the issue is unblocked and in an implementable state. If it is HITL, blocked, or under-specified, stop and update Linear.
-3. **Activate and prove isolation.** Use `worktree-isolation` to verify the orchestrator-provisioned detached worktree came from the exact freshly fetched `origin/main` SHA. Create and own `codex/<linear-key>-<slug>` inside that worktree. After a fresh `git fetch --prune origin`, do not plan or edit until the tree is clean, `HEAD == origin/main == merge-base`, and ahead/behind is `0 0`. Report the isolated path, branch, all three SHAs, ahead/behind, install result, and baseline result or blocker. Local `main`, coordinator `HEAD`, and handoff prose are not base evidence. Never start provider-mutating Alchemy work without confirming stage and credentials.
-4. **Plan the narrow slice.** Post one compact plan covering material architecture decisions, scope and explicit boundaries, the smallest end-to-end tracer, intended tests and verification, known risks, and deferred questions. Do not attempt to pre-specify every table, query, retry, operation count, or hypothetical failure path. High-risk planning should normally fit within approximately 60-90 minutes.
-   - Obtain one independent plan review by default.
-   - If findings require changes, make one targeted revision. Do not replace the whole plan unless product scope or acceptance criteria materially changed.
-   - Do not enter a third plan-review cycle without explicit human approval.
-   - Begin a bounded reversible implementation slice as soon as no classified `pre-edit blocker` remains.
-5. **Implement the tracer and learn.** Build the smallest vertical tracer first. Prefer realistic fixtures, provider-free fakes, outbound-call traps, measured operation counts, and crash/replay or lifecycle-transition tests over more planning prose. Open a draft PR as soon as the tracer works.
-   - Use `tdd` for behavior changes when practical.
-   - Use `systematic-debugging` for failures, bugs, flakes, or unexpected behavior.
-   - Use `subagent-execution` for bounded implementation, investigation, and review tasks.
-6. **Review locally.** Before claiming done, run `production-ready`.
-7. **Open or update a PR.** Use the Linear issue title as the PR title when it includes the key.
-8. **Own CI and comments.** Immediately after PR creation/update, run `ci-watch` in this worker thread. Watch GitHub checks, GitHub PR comments, review threads/review decisions, and new Linear comments. Fix actionable failures and concrete reviewer comments when the fix stays inside the issue scope, push follow-up commits, reply/update evidence, and keep watching until green, resolved, or genuinely blocked. Stop and ask the orchestrator when a comment changes scope, product behavior, architecture, data shape, or requires judgment.
-9. **Use a short watcher heartbeat when needed.** If checks or comments remain pending after a short inline watch, create or update a 2-3 minute heartbeat automation for this worker thread with the Codex app `automation_update` tool. Include the PR URL, Linear issue key, branch, head SHA, pending checks/comments, retry/fix budget, Linear update requirement, and stop condition. Reuse an existing watcher for the same PR; do not create duplicates. Delete, pause, or stop the watcher through `automation_update` once the PR is green, merged, closed, or blocked with evidence.
-10. **Update Linear.** Comment with PR URL, branch, commits, verification evidence, CI/comment-watch status, watcher automation if active, blockers, and residual risks.
-11. **Create follow-ups only when concrete.** A worker may create narrow Linear follow-up issues discovered during implementation or review. The follow-up must use a plain-language outcome title, link to the current issue, sit under the nearest correct parent outcome when known, explain why it is out of scope, and leave prioritization to triage or the orchestrator. Put code symbols and implementation details in the body. Do not create speculative backlog items.
+1. Refresh live Linear and confirm the observable outcome, acceptance criteria,
+   scope boundaries, dependencies, proof expectations, risk tier, and
+   human/external gates.
+2. Use `worktree-isolation` to fetch/prune the remote, dynamically resolve
+   `origin/HEAD`, prove the isolated tree begins clean at the exact dispatched
+   SHA, and create the worker-owned `codex/<issue>-<slug>` branch there.
+3. Install dependencies and run the smallest honest baseline required by the
+   repository.
+
+If the issue meets the Ready bar, begin. Do not rewrite it as a plan or wait for
+a reviewer to grant edit authority. At most, post a compact execution note with
+the exact base and branch, first tracer or failing test, likely changed surfaces,
+physical proof, and newly discovered divergence.
+
+Tier A has no pre-edit review. If the orchestrator selected Tier B, respect the
+single named dangerous seam and begin the smallest safe tracer as soon as that
+focused review is bounded. For Tier C, stop only at the unauthorized external or
+irreversible effect when safe internal work is separable.
+
+## Build
+
+1. Implement the smallest end-to-end outcome through existing seams. Prefer a
+   real vertical tracer over more prose.
+2. Use relevant capability skills inside Build: `tdd`, coding standards,
+   `effect-ts`, `systematic-debugging`, and `simplify` as the changed surface
+   warrants. They do not create workflow gates.
+3. Begin physical proof during implementation. Exercise the actual CLI,
+   browser, process, service, database, queue, artifact, restart, replay, or
+   other real changed seam with disposable resources where practical.
+4. Map each material acceptance criterion to automated proof,
+   physical/runtime proof, or an explicit unproven external gate.
+5. Open a draft PR as soon as a meaningful tracer works.
+6. Fix reproducible in-scope implementation, CI, and review defects without
+   requesting a new authorization cycle. Use a focused correction rather than
+   broad replanning.
+7. Simplify before requesting exact-head review. Delete speculative abstraction,
+   duplicated paths, and fallbacks that hide broken contracts.
+
+## Review And CI
+
+Run `production-ready` to aggregate evidence; it does not start a review stack.
+The orchestrator activates the independent exact-head reviewer. Address concrete
+`Fix before merge` findings inside scope, and return other dispositions to the
+orchestrator.
+
+After a PR exists, use `ci-watch` only if this worker owns the PR's single next
+poll. Reuse an existing watcher; do not create worker and project watchers for
+the same event. Keep the watcher delta-only and stop it cleanly.
 
 ## Stop Conditions
 
-Stop and update Linear instead of improvising when:
+Stop and report when:
 
-- blocker or HITL decision is discovered
-- fetched `origin/main` does not equal the worker base before edit authority
-- the worktree is dirty, has non-zero ahead/behind, or cannot prove the required `HEAD == origin/main == merge-base` equality
-- acceptance criteria conflict with source or parent PRD
-- implementation requires out-of-scope files
-- verification fails repeatedly without a clear root cause
-- provider credentials, Alchemy stage mutation, or production data is needed
-- PR scope grows beyond one vertical slice
-- a classified `pre-edit blocker` shows that even a bounded reversible slice is unsafe or likely to encode the wrong product meaning
-- reviewer feedback materially changes product scope or acceptance criteria; ordinary `pre-merge blocker`, `deferred hardening`, and `question` findings do not restart whole-plan review
-- GitHub or Linear auth is unavailable for required PR/comment watching
+- product meaning or acceptance criteria must materially change;
+- the fix crosses issue scope;
+- safe fetched-remote provenance cannot be established;
+- a destructive, provider, publication, production, credential, customer-data,
+  spend, or irreversible effect lacks authority;
+- a genuine external dependency is unavailable;
+- the claim requires external proof that cannot be safely separated.
 
-If `origin/main` advances before edit authority, hold work and notify the orchestrator. Use only the non-destructive exact-base refresh in `worktree-isolation`; then rerun relevant baselines, revalidate the existing plan against the fresh base, and repeat focused review for affected deltas. Do not reset, rebase speculatively, commission a replacement plan without material scope change, or continue from stale handoff state.
+A compiler error, flaky tool, ordinary defect, or reviewer preference is not a
+human gate. Diagnose, reproduce, fix, and continue when it remains in scope.
+
+## Handoff Evidence
+
+Report the exact head, implemented scope, acceptance-to-proof mapping, commands
+and exact results, physical/runtime evidence, PR and CI state, finding fixes,
+external gates, residual risks, and the single watcher owner if one remains.
+Keep durable evidence concise in Linear and the PR.
+
+Completion criterion: the Ready issue has a narrow implementation head, every
+material outcome claim has direct proof or an honest external gate, the diff is
+simplified, and the orchestrator has enough current evidence to activate review
+and decide.

@@ -127,16 +127,27 @@ Drop or downgrade findings that do not survive.
 
 Completion criterion: final findings have survived an explicit attempt to disprove them.
 
-## Finding Classification
+## Finding Disposition
 
-Classify every finding as exactly one of:
+This capability reports evidence and recommends a disposition; it does not own
+workflow state. When `docs/agents/execution-policy.md` exists, use its exact
+definitions:
 
-- `pre-edit blocker`: evidence that even a bounded reversible implementation slice would be unsafe or likely encode the wrong product meaning. Use only for a missing human/product decision that changes acceptance criteria, an unauthorized irreversible external action, an unresolved destructive data/migration boundary, or no provider-free/test seam for the tracer.
-- `pre-merge blocker`: a concrete evidenced risk of data loss or orphaned durable evidence, duplicate paid calls or uncontrolled retries, invalid or unsafe migrations, privacy/credential/raw-provider-data leakage, incorrect or non-monotone lifecycle/public state, or direct acceptance-criteria failure.
-- `deferred hardening`: useful non-blocking resilience, operability, observability, generalization, simplification, or cleanup work.
-- `question`: unresolved intent or uncertainty without enough evidence to block.
+- `Fix before merge`: concrete, reproducible acceptance, safety/privacy,
+  security, data-integrity, migration, duplicate-effect, retry/redispatch,
+  lifecycle, destructive-behavior, or claimed-runtime failure.
+- `Residual risk`: an understood limitation that does not invalidate the safe
+  current slice.
+- `Follow-up`: concrete hardening, observability, generalization,
+  simplification, cleanup, or adjacent improvement outside current acceptance.
+- `Human decision required`: unresolved product meaning or external,
+  destructive, irreversible, legal/policy, customer-data, spend, or risk
+  authority.
 
-Among review findings, only a `pre-edit blocker` prevents implementation from beginning. Uncertainty alone does not qualify. A concrete `pre-merge blocker` must be resolved before merge unless the orchestrator explicitly accepts the residual risk. Do not classify generalized canaries, schedulers, control-plane attestation, reconciliation systems, or broad observability as blockers unless a failing tracer or acceptance criterion proves they are required.
+Do not report speculative canaries, schedulers, control-plane attestation,
+reconciliation systems, or broad observability as `Fix before merge` unless a
+failing tracer or acceptance criterion proves they are required. Drop unproven
+possibilities or present them as explicit questions, not findings.
 
 ## Output format
 
@@ -151,7 +162,7 @@ If there are no findings, say so briefly and include the standards areas checked
 For each finding:
 
 ````md
-### <Classification>: <short title>
+### <Recommended disposition>: <short title>
 
 - **Issue:** <concise explanation of the defect or problem>
 - **Where:** `<file>:<line>` or precise symbol/path
@@ -170,6 +181,7 @@ For each finding:
 
 Include the **Problematic code** block whenever the issue lives in code you can quote; omit it only when the finding is about something absent (e.g. a missing contract or test), and say what is missing instead. Always include a fix-direction snippet or pseudo-code unless the fix is purely a deletion.
 
-Group findings in this order: `pre-edit blocker`, `pre-merge blocker`, `deferred hardening`, `question`.
+Group `Fix before merge` findings first, followed by residual risks and
+follow-ups. Put any explicit questions last.
 
 Completion criterion: the final review is actionable without code edits, every finding includes proof, and no review-only step modified the workspace.

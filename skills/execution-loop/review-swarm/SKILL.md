@@ -5,7 +5,11 @@ description: Read-only multi-perspective review. Use for broad, risky, cross-bou
 
 # Review Swarm
 
-Run a high-signal, read-only review. Do not edit files as part of this skill. This skill finds broad risk; it has no merge authority and does not replace `code-review` for standards-backed changed-code review.
+Run this exceptional capability only when explicitly requested or justified by
+broad, security/privacy-sensitive, data-affecting, or genuinely cross-boundary
+risk. It is not a routine production-ready dependency or workflow phase. Keep
+it read-only; it has no edit, state, or merge authority and does not replace
+`code-review` for standards-backed changed-code review.
 
 ## Scope
 
@@ -28,7 +32,10 @@ Use subagents in parallel when available and useful; otherwise run the same lens
 - **Contracts and coverage:** do APIs, schemas, config, migrations, routes, clients, and tests still line up?
 - **Runtime and interaction verification:** for UI-facing or workflow claims, does the behavior work in a real browser or focused test, without visible jank, flashes of unstyled content, duplicate requests, or double submissions?
 
-Every reviewer is read-only. Findings should include file/line or symbol, issue, why it matters, recommended fix, confidence, and exactly one classification: `pre-edit blocker`, `pre-merge blocker`, `deferred hardening`, or `question`. Use the definitions in `docs/agents/execution-policy.md` when available.
+Every reviewer is read-only. Findings should include file/line or symbol, issue,
+proof, impact, recommended fix, confidence, and one recommended disposition
+from `docs/agents/execution-policy.md`: Fix before merge, residual risk,
+follow-up, or human decision required.
 
 Assign each subagent one lens or one clearly bounded scope. Do not run several agents with the same broad prompt unless you explicitly want independent confirmation of a high-risk area.
 
@@ -54,10 +61,14 @@ The main agent owns the verdict:
 - merge duplicates
 - discard weak, speculative, or style-only feedback
 - turn unclear intent into open questions instead of false findings
-- enforce exactly one finding classification and order by classification, then confidence
+  - enforce exactly one recommended disposition and order proven defects before
+    residual risk and follow-ups
 - prevent reviewers from expanding acceptance criteria; route useful unrelated hardening to outcome-named follow-up work
 
-Among review findings, only a `pre-edit blocker` prevents implementation from beginning. After implementation starts, review the working diff, tests, runtime evidence, and focused deltas rather than restarting whole-package architecture review. Treat uncertainty as a `question`, not a blocker.
+After implementation starts, review the exact working head, tests, runtime
+evidence, and focused correction deltas rather than restarting architecture
+planning. Treat unproven possibilities as questions to the orchestrator, not
+blockers.
 
 If there are no material issues, say so plainly and name any residual test or verification risk.
 

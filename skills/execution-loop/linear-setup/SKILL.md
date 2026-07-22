@@ -43,6 +43,10 @@ such as project terms and domain-doc locations. Keep Linear teams, statuses,
 labels, and Initiatives in Linear as the source of truth; read them live when a
 skill needs them instead of persisting a second local mapping.
 
+`execution-policy.md` is the canonical authority owner. Preserve its semantics
+when adapting role templates; do not add project-local plan approval, reviewer
+edit authority, routine pre-edit review, or duplicate watcher requirements.
+
 Create missing files automatically. For existing files, patch conservatively by
 section and preserve project-specific decisions. If an existing file has drifted
 substantially from the bundled template, report the difference and ask before

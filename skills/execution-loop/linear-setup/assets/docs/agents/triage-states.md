@@ -1,27 +1,40 @@
 # Triage States
 
-Use triage to turn vague work into executable slices.
+Use triage to turn vague work into Ready vertical slices.
 
 ## Intake Buckets
 
-- `Needs Grooming`: unclear goal, missing acceptance criteria, or missing owner.
-- `Needs Decision`: blocked on a product, technical, or sequencing choice.
-- `Ready`: enough context exists for a worker and reviewer.
-- `Blocked`: external dependency prevents progress.
+- `Needs Grooming`: unclear outcome, missing acceptance criteria, or missing
+  owner.
+- `Needs Decision`: product meaning or a material irreversible choice is open.
+- `Ready`: one delivery owner can begin without inventing product meaning.
+- `Blocked`: a genuine human decision or unavailable external dependency
+  prevents progress.
 - `Duplicate`: another issue owns the work.
 - `Won't Do`: intentionally closed with rationale.
 
-## Grooming Checklist
+## Ready Bar
 
 Before marking an issue `Ready`, verify:
 
-- the desired user or system behavior is clear
-- acceptance criteria are testable
-- dependencies are represented as Linear blockers
-- scope is small enough for one PR
-- required skills, docs, or repo constraints are named
-- risky provider mutations or destructive actions are explicit
+- observable outcome and testable acceptance criteria;
+- explicit scope boundaries and non-goals;
+- dependencies represented as Linear blockers;
+- material product decisions already made;
+- a first vertical tracer can be identified;
+- proof-of-outcome expectations name the real seam;
+- external, destructive, credential, provider, customer-data, or human gates
+  are explicit;
+- scope fits one delivery owner and normally one PR.
+
+A Ready issue is normally the worker's plan. Do not require a second planning
+phase or default pre-edit reviewer. Record the orchestrator's Tier A, B, or C
+judgment in an existing natural field or comment when useful; do not create a
+new form or status.
 
 ## Recommendations
 
-Agents should make recommendations with tradeoffs instead of leaving vague open questions. Escalate only when the decision materially changes product behavior, architecture, cost, security, or data safety.
+Agents should recommend a concrete next state with tradeoffs. Escalate only when
+the decision materially changes product meaning, cost, security, privacy, data
+safety, or external authority. Resolve ordinary technical uncertainty during
+Build.

@@ -18,6 +18,7 @@ or leave it in the live ready-for-agent state.
 
 - `docs/agents/linear-workflow.md`
 - `docs/agents/triage-states.md`
+- `docs/agents/execution-policy.md`
 - `docs/agents/domain.md`
 - relevant Linear issue/Project/PRD/comments
 - relevant source and architecture docs for the area
@@ -81,8 +82,13 @@ work", verify:
 - blockers are represented as Linear relations
 - no unresolved HITL decision is hidden in prose
 - out-of-scope boundaries are explicit
-- verification expectations are realistic
-- likely review stack and risk tier are noted
+- proof-of-outcome expectations name automated and physical/runtime evidence
+- the Tier A, B, or C judgment and any genuine human/external gate are clear
+- a worker can identify the first vertical tracer without inventing product meaning
+
+A Ready issue is normally the implementation plan. Do not add a second worker
+planning phase, predetermined review ceremony, or routine pre-edit reviewer as
+a readiness requirement.
 
 ## Wontfix / Out Of Scope
 

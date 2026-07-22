@@ -1,73 +1,77 @@
 ---
 name: reconcile-project
-description: Reconcile Linear project state. Use at the start of orchestration loops or when issues, PRs, blockers, CI status, worker evidence, or the parent PRD may be stale or drifted.
+description: Repair meaningful drift between Linear, Codex tasks, branches, PRs, CI, reviewers, and watchers. Use before dispatch, acceptance, or when live evidence conflicts; do not reconstruct ceremonial history.
 ---
 
 # Reconcile Project
 
-Make Linear truthful before dispatching or accepting more work.
+Make live execution state truthful enough for the orchestrator's next decision.
+Use `docs/agents/execution-policy.md` for authority; absence of ceremonial
+packages or approval comments is not drift.
 
 ## Read
 
-- Linear Project/PRD, parent/sub-Issue hierarchy, blockers, comments, assignees, statuses
-- linked PRs and CI status
-- worker/orchestrator evidence comments
-- freshly fetched `origin/main` SHA and active worker/reviewer worktree evidence
-- plan-review cycle count, edit-authority time, source diff, executable blocker, and draft-PR evidence for In Progress issues
-- relevant source or architecture docs when spec drift is suspected
+- live Linear Project/PRD, outcome hierarchy, blockers, comments, and statuses;
+- active Codex worker/reviewer tasks;
+- fetched remote-default SHA, branches, PRs, exact heads, checks, and comments;
+- current acceptance proof, finding dispositions, and watcher ownership.
 
-## Checks
+Treat handoffs and heartbeat text as orientation. Fetch/prune and dynamically
+resolve `refs/remotes/origin/HEAD` before provenance-dependent conclusions.
+
+## Reconcile Meaningful Drift
 
 Find and repair or report:
 
-- blocker completed but dependent issue still blocked
-- issue marked ready for agent work but missing acceptance criteria or verification
-- worker assigned but stale with no recent evidence
-- proposed or active worktree was based on local `main`, coordinator `HEAD`, handoff prose, or an unfetched/stale remote ref
-- worker/reviewer pair does not share the same exact fetched `origin/main` base, the worker branch was not created from that base, or the reviewer is not detached/read-only
-- pre-edit proof is missing, dirty, non-zero ahead/behind, or does not show `HEAD == origin/main == merge-base`
-- `origin/main` advanced before edit authority without a held dispatch, clean non-destructive refresh, fresh baselines, existing-plan revalidation, and focused reviewer gate for affected deltas
-- a third plan-review cycle started without explicit human approval
-- an In Progress issue completed two plan-review cycles without a source diff or draft PR and the planning loop was not stopped
-- several hours passed after edit authority without a source diff, executable blocker, or draft PR and no human stall notification was posted
-- plan or code-review findings lack exactly one classification from `pre-edit blocker`, `pre-merge blocker`, `deferred hardening`, or `question`
-- uncertainty or unrelated production hardening was treated as a pre-edit blocker, or reviewer feedback silently expanded the acceptance criteria
-- PR opened but Linear not linked
-- PR merged but issue not moved to the completed/done state
-- PR failed CI but no `ci-watch` is active
-- issue marked completed/done without production-ready evidence
-- parent PRD changed after issue dispatch
-- issue scope no longer matches parent PRD or source reality
-- Issue title describes an internal technical task rather than an observable outcome, or uses unexplained codebase shorthand
-- delivery outcome is orphaned or attached to the wrong parent capability outcome
-- parent outcome is marked done while children remain incomplete, or all children are done but the combined parent outcome has not been verified
-- duplicate or obsolete issues
+- Ready issue missing outcome, testable acceptance, boundaries, dependencies,
+  proof expectations, or genuine external gates;
+- duplicate worker, reviewer, branch, PR, or watcher ownership;
+- new worker lane based on local or stale state rather than the exact fetched
+  remote default;
+- active worker without executable movement or a concrete blocker;
+- draft PR or exact head missing from Linear;
+- review requested before a concrete implementation head exists for routine
+  work, or exact-head review missing when evidence is ready;
+- reviewer controlling edit, merge, or Linear state;
+- material finding without one canonical disposition;
+- fixable in-scope defect misclassified as human-blocked;
+- acceptance claim without automated or physical/runtime proof;
+- PR checks/comments with no single next-poll owner;
+- stale watcher head/instructions, duplicate watcher, or watcher past its stop
+  condition;
+- merged/closed PR with stale issue state;
+- parent outcome completed before combined outcome proof;
+- source, issue, and PR scope materially disagreeing.
+
+Do not repeatedly re-prove unchanged history when no decision or mutation
+depends on it. Do not recreate plan-review cycles, approval chains, or complete
+governance narratives.
 
 ## Actions
 
-Use Linear updates for durable state:
+Use Linear and task/watcher tools only within delegated authority to:
 
-- add or correct blockers
-- rename outcome-equivalent titles and correct parent/sub-Issue relations when scope and ownership are clearly unchanged; report ambiguity instead of silently changing product meaning
-- move state to the live workflow equivalent of needs information, blocked, ready for agent work, in review, or completed
-- add comments with evidence
-- hold dispatch or edit authority when base provenance is stale or unproven; use `worktree-isolation` for exact fetched-base provisioning or refresh
-- stop stalled planning loops and notify the human with the issue, elapsed/cycle evidence, current blocker classification, and smallest available rescue tracer; never commission another complete plan as the response
-- route useful non-blocking hardening to an outcome-named follow-up issue rather than expanding the active issue without orchestrator approval
-- mark obsolete issues with rationale
-- trigger or recommend `ci-watch` for PRs with pending/failing CI
+- correct blockers, links, outcome-equivalent titles, hierarchy, and state;
+- reuse or steer the existing owner and archive obsolete idle tasks;
+- hold unsafe stale-base dispatch and route through `worktree-isolation`;
+- activate one exact-head reviewer when concrete evidence is ready;
+- create, update, or stop the one watcher that owns the next PR poll;
+- route a concrete follow-up without expanding the active issue;
+- present inconsistent product meaning or external authority to the
+  orchestrator/human.
 
-Do not implement code. Do not close or mark done without evidence.
+Do not implement code, merge, or mark outcomes done without evidence.
 
 ## Output
 
-Report every touched item in exactly one bucket:
+For each active issue report only:
 
-- `dispatchable`: issue is ready for an AFK worker and blockers are clear.
-- `active-worker`: issue already has an active worker, reviewer, branch, PR, or heartbeat; include the owner, plan-review cycle count or edit-authority age, available executable evidence, and next check.
-- `needs-ci-watch`: PR exists but checks, PR comments, review threads, or Linear comments still need monitoring.
-- `blocked-hitl`: human decision, external provider state, credentials, or blocker relation prevents agent work.
-- `ready-for-acceptance`: worker evidence exists and orchestrator gates should run.
-- `inconsistent`: Linear, PR, worker evidence, or PRD state disagree; include the proposed correction or the update already made.
+- owner and phase: Dispatch, Build, Verify, or Decide;
+- current exact branch/PR head when relevant;
+- material proof or evidence gap;
+- single next action and owner;
+- watcher owner or stop action;
+- genuine human/external gate, if any.
 
-Completion criterion: Linear's outcome hierarchy, titles, blockers, and execution state are truthful enough that the orchestrator can safely dispatch, steer, accept, or pause each item without relying on stale handoff context.
+Completion criterion: the orchestrator can safely dispatch, steer, verify, or
+decide from current state without duplicated ownership or stale policy history.

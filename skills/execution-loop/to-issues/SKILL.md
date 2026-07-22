@@ -13,6 +13,7 @@ links.
 
 - `docs/agents/linear-workflow.md`
 - `docs/agents/triage-states.md`
+- `docs/agents/execution-policy.md`
 - `docs/agents/domain.md`
 - relevant parent Linear Initiative/Project/PRD
 - relevant `docs/architecture/*`
@@ -68,7 +69,8 @@ publishing. In Draft Mode:
 8. **Publish parents and blockers first.** Create parent outcome Issues before
    their children, and create blockers before later Issues need to link to them.
 9. **Prepare orchestrator handoff.** Each leaf issue should be self-contained for
-   a fresh worker session and include review/verification expectations.
+   one fresh delivery owner and include risk, physical proof, and genuine
+   human/external gates. A Ready issue should not require a replacement plan.
 
 In Draft Mode, stop after the proposed issue list, dependency summary, and
 publishing notes.
@@ -96,8 +98,8 @@ target repo still needs setup.
 - Do not assign work to a worker until all blockers are represented in Linear.
 - Each published issue must include an outcome, hierarchy role, parent context,
   in/out of scope,
-  acceptance criteria, verification expectations, risk/review level, blockers,
-  and handoff notes sufficient for a fresh worker and reviewer thread.
+  acceptance criteria, proof-of-outcome expectations, risk tier, human/external
+  gates, blockers, and handoff notes sufficient for a fresh delivery owner.
 
 ## Linear Updates
 

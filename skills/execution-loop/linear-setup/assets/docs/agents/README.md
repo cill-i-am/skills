@@ -7,7 +7,9 @@ Use them with the bundled agent skills:
 - `linear-workflow.md`: durable source-of-truth rules for Linear Projects, Issues, blockers, PRs, and Codex threads.
 - `triage-states.md`: issue intake and routing states.
 - `domain.md`: product/domain document conventions.
-- `execution-policy.md`: worker, reviewer, CI, preview, and merge authority.
+- `execution-policy.md`: canonical Dispatch, Build, Verify, Decide phases; role
+  authority; risk tiers; finding disposition; physical proof; and watcher
+  ownership.
 - `prd-template.md`: template for Linear Project or PRD documents.
 - `issue-template.md`: template for vertical-slice Linear Issues.
 - `worker-thread-template.md`: template for Codex worker handoffs.
@@ -15,3 +17,6 @@ Use them with the bundled agent skills:
 
 Patch stable repo-specific domain terms during setup. Keep Linear team names,
 statuses, labels, and Initiatives in Linear as the source of truth.
+
+Role skills and these templates consume `execution-policy.md`; capability skills
+provide techniques inside a phase and must not invent authority transitions.

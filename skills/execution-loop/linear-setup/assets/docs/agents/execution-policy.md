@@ -1,112 +1,193 @@
 # Execution Policy
 
-The orchestrator owns the work loop. Workers implement. Reviewers/spec agents verify.
+This document is the canonical owner of workflow phases, role authority, risk
+selection, finding disposition, human gates, and watcher ownership.
 
-## Roles
+## Policy Precedence
 
-- `Orchestrator`: decomposes work, dispatches threads, owns final done/merge decision.
-- `Worker`: implements one issue in an isolated worktree and produces a PR.
-- `Reviewer/Spec`: read-only reviewer that checks spec adherence, simplicity, tests, and standards.
-- `CI Watch`: monitors checks, PR comments, review state, and deployment previews.
+1. This execution policy owns authority and state transitions.
+2. Role skills add role-specific behavior without changing that authority.
+3. Templates render this policy without inventing gates.
+4. Capability skills provide techniques inside a phase; they do not grant or
+   withhold workflow authority.
+5. Project instructions may narrow scope or add product-specific safety
+   boundaries, but should not duplicate generic ceremony.
 
-## Dispatch Rules
+When instructions conflict, use the highest applicable source and report any
+project-specific safety constraint that narrows it.
 
-- Create a user-visible worker thread for each non-trivial implementation issue.
-- Create the paired user-visible reviewer/spec thread at the same dispatch time.
-- Use Codex app thread tools for thread lifecycle: discover thread tools when they are not loaded, use `list_threads` when avoiding duplicate worker or reviewer threads, use `create_thread` for new user-visible threads, use `send_message_to_thread` for steering, and use `set_thread_archived` only after the thread is no longer needed.
-- Before dispatching, check Linear comments/status, linked PRs, existing worker/reviewer threads, and active heartbeats. Reuse or steer an active owner instead of creating a duplicate worker for the same issue.
-- Let the reviewer/spec thread stay mostly idle until the worker posts a plan or PR when there is nothing useful to inspect yet.
-- The orchestrator may waive the reviewer/spec thread only for tiny or mechanical changes, and should record why.
-- Use `automation_update` for heartbeat automations. Do not write raw automation directives by hand.
+## Delivery Contract
 
-## Worktree Base Provenance
+The default is one Ready issue, one delivery owner, zero or one compact
+execution note, one implementation, one independent exact-head review, one
+focused correction pass when needed, and one orchestrator shipping decision.
 
-- Before every dispatch or base refresh, run `git fetch --prune origin` and resolve the exact fetched `origin/main` commit.
-- Create the worker and paired reviewer worktrees from that same exact commit. A local `main`, the coordinator's current `HEAD`, or handoff prose is not base evidence.
-- The worker creates and owns its `codex/<issue>-<slug>` topic branch inside the pre-provisioned worktree. The reviewer remains detached and strictly read-only unless a narrower reviewed need explicitly changes that role.
-- Before worker planning, reviewer plan review, or edits, require an empty worktree plus proof that `HEAD == origin/main == merge-base` and ahead/behind is `0 0` after a fresh fetch.
-- If `origin/main` advances before edit authority, hold both lanes. Follow `worktree-isolation` to incorporate the exact fresh commit with a non-destructive, reviewable operation, rerun relevant baselines, revalidate the existing plan against the fresh base, and repeat the reviewer gate. Update only affected plan deltas unless scope or acceptance criteria changed.
+The four workflow phases are:
 
-## Planning Lifecycle
+1. **Dispatch:** reconcile live issue and repository state, confirm readiness,
+   choose the risk tier, establish exact fetched-remote provenance, assign one
+   delivery owner, and name genuine external or human gates.
+2. **Build:** implement the smallest end-to-end outcome, use capability skills
+   within the work, exercise a real seam early, simplify continuously, and open
+   a draft PR once a meaningful tracer works.
+3. **Verify:** review the exact implementation head, acceptance criteria,
+   automated checks, and physical proof; classify findings; apply one focused
+   correction pass for proven blockers.
+4. **Decide:** the orchestrator chooses to merge, accept residual risk, create a
+   follow-up, or ask the human for a genuine decision.
 
-- Default to one compact implementation plan and one independent plan review.
-- If review requests changes, allow one targeted revision cycle. Do not require a complete replacement plan unless product scope or acceptance criteria materially changed.
-- Never start a third plan-review cycle automatically. Stop and request explicit human approval.
-- Once the plan is safe enough for a small reversible slice, grant bounded edit authority and learn through executable code. High-risk planning should normally fit within approximately 60-90 minutes.
-- Keep the plan to material architecture decisions, scope and explicit boundaries, the smallest end-to-end tracer, intended tests and verification, known risks, and deferred questions. Do not attempt to specify every table, query, retry, operation count, or hypothetical failure path.
+Review, CI, production-ready evidence, comments, and heartbeats inform these
+transitions. They do not own them.
 
-## Finding Classification
+## Ready Issues And Planning
 
-Classify every plan-review and code-review finding as exactly one of:
+A Ready issue is normally the implementation plan. It must contain:
 
-- `pre-edit blocker`: evidence that even a bounded reversible slice would be unsafe or likely encode the wrong product meaning. This requires a missing human/product decision that changes acceptance criteria, an unauthorized irreversible external action, an unresolved destructive data/migration boundary, or no provider-free/test seam for the proposed tracer.
-- `pre-merge blocker`: a concrete evidenced risk of data loss or orphaned durable evidence, duplicate paid calls or uncontrolled retries, invalid or unsafe migrations, privacy/credential/raw-provider-data leakage, incorrect or non-monotone lifecycle/public state, or direct failure of acceptance criteria.
-- `deferred hardening`: useful non-blocking resilience, operability, observability, generalization, or cleanup work.
-- `question`: unresolved intent or uncertainty that needs an answer but is not yet a proven blocker.
+- an observable outcome and testable acceptance criteria;
+- important boundaries and non-goals;
+- represented dependencies;
+- material product decisions;
+- expected proof of outcome;
+- external-effect and human-authority constraints.
 
-Among review findings, only a `pre-edit blocker` prevents implementation from beginning. Uncertainty alone is not a pre-edit blocker. Resolve findings classified as `pre-merge blocker` before merge unless the orchestrator explicitly accepts the residual risk. Existing provenance, HITL, provider-authority, and destructive-action gates still apply.
+If those conditions hold, the worker begins. A compact execution note may add
+only volatile implementation facts such as the exact base and branch, first
+tracer or failing test, likely changed surfaces, runtime proof, and discovered
+divergence. It is evidence, not an approval artifact.
 
-## Scope And Evidence
+Use a separate planner before readiness when product meaning, acceptance
+criteria, foundational contracts, or irreversible data decisions remain
+unresolved. Minor technical uncertainty should be resolved with focused
+investigation, code, or tests rather than a replacement plan.
 
-- The issue acceptance criteria control scope. Reviewers may identify risks but must not silently expand the issue into unrelated production hardening.
-- New rollout canaries, generalized schedulers, control-plane attestation, elaborate reconciliation systems, broad observability platforms, and similar hardening require orchestrator approval unless a failing tracer or acceptance criterion proves they are necessary.
-- Route useful non-blocking work to an outcome-named follow-up issue.
-- Prefer executable evidence: realistic migration fixtures, measured operation counts, provider-free fakes and outbound-call traps, crash/replay and lifecycle tests, and the smallest vertical tracer. Open a draft PR as soon as that tracer works.
-- After implementation starts, review the working diff, tests, runtime evidence, and focused deltas. Do not return to whole-package architecture review.
+## Risk Tiers
 
-## Stall Detection
+Risk tier is an orchestrator judgment, not a new form or status.
 
-- If an In Progress issue completes two plan-review cycles with no source diff or draft PR, stop the planning loop and notify the human. Never respond by commissioning another complete plan.
-- Also notify when several hours pass after edit authority without a source diff, executable blocker, or draft PR.
-- Report the issue, elapsed time and cycle evidence, current blocker classification, and smallest available rescue tracer.
+- **Tier A — routine reversible work:** one worker begins immediately; no
+  pre-edit reviewer; build a tracer, gather physical proof, open a draft PR,
+  obtain one exact-head review, make one focused correction if needed, then
+  decide.
+- **Tier B — high-risk internal work:** migrations, privacy/security boundaries,
+  replay or idempotency, foundational public contracts, destructive cleanup,
+  auth, or hard-to-reverse data meaning may receive one focused, timeboxed
+  pre-edit review of the dangerous seam. It must allow the smallest safe tracer
+  or identify a genuine human/external blocker; it must not demand whole-package
+  completeness. Final review still targets the exact implementation head.
+- **Tier C — external or irreversible effects:** production/provider mutation,
+  real credentials or customer data, spend, publication, destructive cloud
+  actions, irreversible migration execution, or legal/policy decisions require
+  explicit human approval for the effect. Safe internal or provider-free proof
+  may continue when the issue separates it from the external outcome.
 
-## Worker Rules
+## Role Authority
 
-- Use a user-visible Codex worker thread for non-trivial implementation.
-- Use the exact-base worktree provisioned by the orchestrator and create the worker-owned topic branch there before planning.
-- Do not implement until the worker can report the isolated path, topic branch, fetched base commit, clean-state and equality proof, ahead/behind `0 0`, install result, and baseline check result or blocker.
-- Read the live Linear issue, parent Project/PRD, blockers, and comments before planning. Handoff context is orientation only.
-- Post a short plan before implementation.
-- Obtain one independent plan review, apply at most one targeted revision when needed, then proceed with a bounded reversible slice unless a classified `pre-edit blocker` remains. A third cycle requires explicit human approval.
-- Address concrete in-scope reviewer comments directly during PR/CI watch.
-- Stop for orchestrator input when reviewer feedback materially changes product scope or acceptance criteria, reveals a `pre-edit blocker`, or asks for work outside the worker's authority. Address `pre-merge blocker` findings through targeted code/tests and route `deferred hardening` to follow-up work.
-- Create follow-up Linear issues only for narrow, concrete work discovered during implementation or review. Link the source issue, explain why the work is out of scope, and leave prioritization to triage or the orchestrator.
-- Do not create speculative backlog items.
-- Run relevant checks before handing off.
-- Use the in-app Browser for user-visible behavior where practical.
-- Record evidence in the thread, Linear, and PR.
+### Worker
 
-## Reviewer Rules
+The worker owns implementation of one Ready issue. It may make in-scope
+technical decisions, use capability skills, write and revise tests, run physical
+probes, fix reproducible in-scope defects, simplify, update the draft PR, and
+address CI or review findings within scope without fresh authorization.
 
-The reviewer is detached and read-only. Before reviewing the worker's plan, it should independently prove its clean worktree is still at the dispatched, freshly fetched `origin/main` commit with ahead/behind `0 0`. It should read live Linear before reviewing the plan when possible and the final diff before approval. Plan review should catch overcomplication, scope drift, or missed constraints. It must classify every finding, request only targeted plan deltas, and release bounded edit authority when no `pre-edit blocker` remains.
+The worker stops when product meaning would change, the fix crosses issue
+scope, a destructive or external action lacks authority, credentials or real
+data are required, safe provenance cannot be established, or a genuine external
+dependency is unavailable.
 
-For user-visible changes, the reviewer should gather independent runtime evidence with the in-app Browser, preview target, or a focused test subset when practical. Use a cheap read-only subagent for this probe when useful. Check the changed route or flow for console errors, failed critical requests, loading state gaps, visible FOUC, layout shift, interaction jank, duplicate requests, and double submissions. If runtime verification is not practical, state the specific blocker or waiver.
+### Reviewer
 
-Reviewer output must include:
+The reviewer is read-only and normally begins when there is a working diff,
+draft PR, immutable head, and executable evidence. It checks acceptance,
+correctness, simplicity, tests, and physical proof; reports concrete findings,
+recommended disposition, confidence, and residual risk.
 
-- verdict: approve, approve with notes, changes requested, or blocked
-- review phase: initial plan, targeted revision, or working diff
-- edit authority: released, held for a `pre-edit blocker`, or awaiting explicit human approval for a third cycle
-- findings classified as `pre-edit blocker`, `pre-merge blocker`, `deferred hardening`, or `question`
-- spec adherence
-- simplicity and architecture
-- standards and skills
-- tests and verification
-- runtime verification for user-visible changes, or not-run reason
-- finding disposition and pre-merge resolution
-- residual risks
+The reviewer does not grant edit authority, control worker state, expand
+acceptance criteria, require replacement plans, merge, change Linear state, or
+create a governance cycle. A focused Tier B pre-edit review only assesses the
+named dangerous seam.
 
-Reviewers may leave GitHub PR review comments for concrete line-level findings. They must still post the final verdict and summary in the reviewer thread. PR comments carry code feedback, not merge authority or Linear state authority.
+### Orchestrator
 
-## Merge Authority
+The orchestrator selects Ready work and risk tier, assigns one owner, prevents
+duplicate workers/reviewers/watchers, interprets evidence, disposes findings,
+and owns the shipping decision when delegated. For each finding it chooses:
+fix before merge, accept as residual risk, create a follow-up, or ask the human.
 
-The orchestrator has final authority. Agents may merge only when that authority is delegated and all gates pass.
+“Wait for more review” is not a decision unless a specific evidence gap is
+named. The orchestrator does not implement product code by default.
 
-Required gates:
+### Human
 
-- acceptance criteria satisfied
-- reviewer approved or explicitly waived by orchestrator
-- CI green or failures explained and accepted
-- Browser/preview or focused runtime evidence for user-visible changes, including obvious FOUC, jank, or double-submit risks when relevant
-- no unresolved blockers or required PR comments
-- no unapproved scope creep, destructive action, or provider mutation
+The human is required for material product choices, production/provider or
+credential authority, destructive or irreversible effects, meaningful spend,
+legal or privacy-policy decisions, customer-data decisions, or risk acceptance
+beyond delegated orchestrator authority. Ordinary implementation defects,
+compiler errors, flaky local tools, and reviewer preferences are not human
+gates.
+
+## Finding Disposition
+
+Every material finding receives exactly one disposition:
+
+- **Fix before merge:** a concrete, reproducible acceptance failure; data loss
+  or corrupted durable evidence; privacy, credential, or security leak; unsafe
+  migration; duplicate paid/effectful work; uncontrolled retry or redispatch;
+  broken `outcomeUnknown` behavior; incorrect public lifecycle state;
+  destructive behavior; or claimed runtime behavior proven false.
+- **Residual risk:** the slice remains safe and useful, acceptance still holds,
+  and the limitation is understood and consciously accepted by the
+  orchestrator.
+- **Follow-up:** concrete generalized hardening, observability, resilience,
+  performance, cleanup, or adjacent improvement that does not belong in the
+  active issue.
+- **Human decision required:** product meaning, external authority, destructive
+  or irreversible choice, or risk beyond delegated authority is unresolved.
+
+Reserve `Blocked` for human decision required or a genuinely unavailable
+external dependency. A reproducible in-scope defect is fixed during Build or a
+focused correction pass; it does not restart planning.
+
+## Proof Of Outcome
+
+Physical proof begins during Build. Use the lowest-cost level that exercises the
+real changed seam, then broaden according to risk:
+
+1. focused unit, schema, property, or contract test;
+2. real boundary integration with disposable resources;
+3. smallest complete vertical tracer;
+4. actual local CLI, browser, process, server, worker, database, or artifact;
+5. failure, interruption, restart, replay, or retry proof when the contract
+   depends on it;
+6. fresh CI, preview, build artifact, or environment-specific evidence;
+7. external real-world acceptance only with required authority.
+
+Each material acceptance criterion maps concisely to automated proof,
+physical/runtime proof, or an explicit unproven external gate. Do not fake
+external success, and do not let a separable external gate invalidate a proven
+internal slice unless the acceptance criteria require the real effect now.
+
+## Watchers And Durable Evidence
+
+Only one active watcher owns a PR's next poll. It stores only the issue, owner,
+PR, current exact head, pending check or comment, next action, bounded retry/fix
+budget, stop condition, and last meaningful observation. It reports deltas,
+refreshes stale heads, fixes in-scope failures, and stops when green, merged,
+closed, or genuinely blocked.
+
+Do not run overlapping worker, orchestrator, and project watchers for the same
+event. Watchers do not replay approvals, invent authority, reopen planning, or
+replace Linear and GitHub as durable evidence stores.
+
+## Safety And Completion
+
+Preserve exact fetched-remote provenance for new lanes, isolated mutation
+ownership, non-destructive git handling, independent exact-head review,
+privacy and secret-safe evidence, destructive-action controls, explicit
+provider/deployment/publication authority, no duplicate paid/effectful work,
+`outcomeUnknown` and no-redispatch semantics where applicable, honest external
+limitations, and resource/watcher cleanup.
+
+An issue is ready for Decide when acceptance criteria map to evidence, the exact
+head and checks are current, material review findings have dispositions, and
+external gates and residual risks are explicit. The orchestrator records and
+makes the decision.

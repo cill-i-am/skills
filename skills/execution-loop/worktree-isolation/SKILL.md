@@ -1,108 +1,118 @@
 ---
 name: worktree-isolation
-description: Git worktree isolation with exact fetched-remote base provenance for agent work. Use when creating, validating, refreshing, or handing off worker and read-only reviewer worktrees, feature branches, parallel implementation, or experiments that must not disturb the current workspace.
+description: Create and validate clean Git worktrees from the exact fetched remote default. Use for worker lanes, reviewers when review begins, refreshes, parallel implementation, and experiments that must not disturb existing work.
 ---
 
 # Worktree Isolation
 
-Use this skill when an orchestrator, worker, or reviewer needs an isolated repository workspace. The goal is a clean, reproducible starting point with provable remote ancestry, not clever branch management.
+Create a clean, reproducible workspace with provable fetched-remote ancestry.
+Preserve unrelated user work and use non-destructive Git operations.
 
-## Non-Negotiable Base
+## Resolve The Base
 
-Never base new worker or reviewer worktrees on local `main`, the coordinator's current `HEAD`, or a SHA copied from handoff prose. Before every dispatch or base refresh, fetch the remote and resolve the exact fetched `origin/main` commit:
+Never base a new lane on local `main`, coordinator `HEAD`, or handoff prose.
+Fetch and resolve the remote default dynamically:
 
 ```sh
 git fetch --prune origin
-base_sha=$(git rev-parse --verify 'origin/main^{commit}')
-printf '%s\n' "$base_sha"
+remote_default=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD)
+base_sha=$(git rev-parse --verify "${remote_default}^{commit}")
+printf 'remote_default=%s\nbase_sha=%s\n' "$remote_default" "$base_sha"
 ```
 
-Create both the worker and paired reviewer worktrees from that same SHA. A Codex thread tool may provision the worktrees only when it can guarantee the exact fetched SHA. Otherwise, provision them manually before dispatch or stop and report the missing capability.
+If `origin/HEAD` is unavailable or ambiguous, stop and resolve the repository's
+actual remote default rather than guessing `main`.
 
 ## Coordinator Setup
 
-1. **Confirm git state.** Run `git rev-parse --show-toplevel`, `git branch --show-current`, and `git status --short`. If the coordinator tree has unrelated changes, do not move or clean them. Its state is not the base.
-2. **Choose the directory.** Prefer an existing ignored `.worktrees/`, then existing ignored `worktrees/`, then a global temp/worktree root outside the project. Read the nearest `AGENTS.md` for a local preference.
-3. **Verify ignore safety.** For project-local directories, run `git check-ignore -q .worktrees` or `git check-ignore -q worktrees` before creating the worktree. If the chosen directory is not ignored, add the ignore entry as part of the normal change or choose an external directory.
-4. **Fetch and resolve the base.** Run the commands in Non-Negotiable Base and record the exact `base_sha`. Do this once for the worker/reviewer pair so both start from identical remote provenance.
-5. **Create detached worktrees.** Use the resolved SHA, not a symbolic local branch or the coordinator's `HEAD`:
+1. Inspect the repository root, current branch, status, worktree list, and any
+   applicable `AGENTS.md`. Do not move, stash, clean, or overwrite unrelated
+   coordinator changes.
+2. Choose an existing ignored `.worktrees/` or `worktrees/` directory, or an
+   external worktree root. Verify project-local ignore safety.
+3. Fetch and resolve the exact base once for the lane being created.
+4. Create the worker detached at that exact SHA:
 
    ```sh
    git worktree add --detach <worker-path> "$base_sha"
-   git worktree add --detach <reviewer-path> "$base_sha"
    ```
 
-6. **Hand off role ownership.** The worker creates and owns `codex/<issue-key>-<slug>` from its detached base. The paired reviewer remains detached and read-only unless a separately authorized narrower task changes that role.
-7. **Install and verify baseline.** Follow repo instructions. In this bundle's default TypeScript projects, use pnpm. Run the smallest documented baseline check that proves the worktree starts usable.
-8. **Report the handoff.** State both worktree paths, fetched base SHA, worker branch expectation, reviewer detached/read-only state, install command, baseline command/result, and any setup blocker.
+5. The worker creates and owns its topic branch inside that worktree:
 
-## Worker Activation
+   ```sh
+   git switch -c codex/<issue-key>-<slug>
+   ```
 
-The worker, not the orchestrator or reviewer, creates the topic branch inside the pre-provisioned worker worktree:
+6. Install dependencies and run the smallest documented baseline.
+7. Report the path, remote default, base SHA, branch, install, baseline, and any
+   blocker.
 
-```sh
-git switch -c codex/<issue-key>-<slug>
-```
-
-Do not create that branch from a local checkout and then attach a worktree to it. The branch must begin at the fetched SHA already checked out in the worker worktree.
+Do not create an idle routine reviewer worktree at worker dispatch. When exact-
+head review begins, fetch the current remote default, create one detached
+reviewer worktree from it, fetch the requested immutable PR head, and inspect
+that head read-only. For a focused Tier B pre-edit review, create the reviewer
+only when the orchestrator names the dangerous seam.
 
 ## Provenance Proof
 
-Before planning, reviewing a plan, or editing, run this evidence set inside each worktree after a fresh `git fetch --prune origin`:
+After a fresh fetch, run inside a new worker lane before edits:
 
 ```sh
 git status --porcelain
 git branch --show-current
 git rev-parse HEAD
-git rev-parse origin/main
-git merge-base HEAD origin/main
-git rev-list --left-right --count HEAD...origin/main
+git rev-parse "$remote_default"
+git merge-base HEAD "$remote_default"
+git rev-list --left-right --count HEAD..."$remote_default"
 ```
 
-Required result:
+Required initial result:
 
-- `git status --porcelain` is empty;
-- worker branch is the expected `codex/<issue-key>-<slug>` and reviewer branch output is empty because the reviewer is detached;
-- `HEAD`, `origin/main`, and `merge-base` are the same exact SHA;
+- status is empty;
+- branch is the expected worker topic branch;
+- `HEAD`, fetched remote default, and merge-base are the same SHA;
 - ahead/behind is `0 0`.
 
-Handoff prose, a local `main` pointer, or an earlier fetch log is never sufficient evidence.
+For exact-head review, prove the reviewer stays detached, the working tree is
+empty, and `HEAD` equals the immutable requested review SHA. The reviewer need
+not equal the latest remote default; that remote is the comparison base, not the
+implementation head.
 
-## Remote Advance Before Edit Authority
+## Remote Advance
 
-If a fresh fetch moves `origin/main` before the worker has edit authority, hold both lanes. When both worktrees are clean and the worker branch has no divergent commits, incorporate the exact fresh SHA non-destructively:
+If the remote default advances before a worker has created commits, refresh only
+when the tree is clean and the topic branch can fast-forward:
 
 ```sh
 git fetch --prune origin
-fresh_base_sha=$(git rev-parse --verify 'origin/main^{commit}')
-
-# Worker topic branch: fast-forward only.
+remote_default=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD)
+fresh_base_sha=$(git rev-parse --verify "${remote_default}^{commit}")
 git merge --ff-only "$fresh_base_sha"
-
-# Reviewer worktree: remain detached.
-git switch --detach "$fresh_base_sha"
 ```
 
-If either operation cannot remain a clean fast-forward/detached switch, stop and report the divergence. Do not reset, force-move, or discard work. After refresh, repeat the full provenance proof, dependency install when needed, relevant baselines, existing-plan revalidation, and reviewer/orchestrator gate before edits. Update only plan deltas affected by the fresh base unless product scope or acceptance criteria materially changed.
-
-Completion criterion: both paths and the exact fetched `origin/main` SHA are recorded; the worker owns a topic branch created from that SHA; the reviewer is detached and read-only; clean/equality/ahead-behind proof passes; and the relevant baseline has passed or a blocker is explicit.
+Repeat the provenance proof and relevant baseline. Once implementation commits
+exist, do not automatically reset, rebase, or force-move them. Report divergence
+and let the orchestrator choose the repository's normal integration path.
 
 ## Guardrails
 
-- Do not create project-local worktrees in a tracked directory.
-- Do not use local `main`, coordinator `HEAD`, or handoff prose as base evidence.
-- Do not use `git reset --hard`, `git clean`, or checkout commands that would discard user changes unless the user explicitly asked for that operation.
-- Do not continue implementation from a baseline that fails without reporting whether the failure is pre-existing.
-- Do not run package managers other than pnpm in pnpm workspaces unless the repo explicitly uses a different manager.
-- Do not treat the worktree as cleanup-safe until pushed branches, PRs, temporary files, and running processes have been accounted for.
+- Do not use `git reset --hard`, `git clean`, forced branch movement, or any
+  checkout that discards useful work.
+- Do not continue from an unexplained failing baseline.
+- Do not use another package manager in a pnpm workspace unless instructed.
+- Reviewer lanes remain detached and read-only.
+- Remove a worktree only after proving it contains no uncommitted useful work
+  and no active process or branch/PR dependency still needs it.
 
 ## Cleanup
 
-When a worker is done and the branch/PR no longer needs the local workspace:
+After confirmation that cleanup is safe:
 
 ```sh
 git worktree remove <path>
 git worktree prune
 ```
 
-Only remove a worktree after confirming no uncommitted useful work remains in that worktree.
+Completion criterion: each active lane has one owner, exact fetched-remote or
+immutable-head provenance appropriate to its phase, a clean tree, and an honest
+baseline or blocker; no existing user work was disturbed.

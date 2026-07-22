@@ -1,14 +1,15 @@
 ---
 name: subagent-execution
-description: Delegate bounded support work to focused subagents without replacing user-visible worker/reviewer threads. Use inside worker or orchestrator sessions for parallel investigations, implementation subtasks, spec checks, or risk reviews.
+description: Delegate bounded support work without replacing the delivery owner or orchestrator. Use for focused investigations, implementation subtasks, runtime probes, spec checks, or exceptional risk review.
 ---
 
 # Subagent Execution
 
-Use subagents as support workers, not as the main project operating model. For
-non-trivial Linear implementation, user-visible Codex worker and reviewer/spec
-threads remain the default because the human and orchestrator can inspect and
-steer them directly.
+Use subagents as bounded support, not as authority owners. For non-trivial
+Linear implementation, one user-visible Codex worker remains the delivery
+owner. Create an independent reviewer task when exact-head evidence exists, or
+earlier only for a focused Tier B boundary; do not create idle routine reviewers
+at worker dispatch.
 
 ## Good Uses
 

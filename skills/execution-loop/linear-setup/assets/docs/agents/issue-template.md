@@ -2,12 +2,11 @@
 
 ## Title
 
-<Plain-language statement of the observable outcome. It should complete: "When
-this is done, it will be true that ...">
+<Plain-language observable outcome completing: “When this is done, it will be
+true that ...”>
 
-Do not put code symbols, file names, handlers, schemas, migrations, or internal
-implementation shorthand in the title unless that technical capability is the
-outcome readers need to track.
+Keep code symbols and implementation shorthand out of the title unless that
+technical capability is itself the tracked outcome.
 
 ## Hierarchy
 
@@ -18,11 +17,11 @@ Hierarchy role: parent outcome | delivery outcome
 
 ## Outcome
 
-What becomes observably true when this Issue is complete, and for whom?
+What becomes observably true, and for whom?
 
 ## Context
 
-Link the parent Project, PRD, docs, prior decisions, and blockers.
+Link the parent Project/PRD, durable decisions, source docs, and blockers.
 
 ## Scope
 
@@ -38,34 +37,34 @@ Out of scope:
 
 -
 
-## Verification Expectations
+## Proof Of Outcome
 
-- Tests or checks expected for this slice.
-- Browser, migration, auth, API, or CI evidence required if relevant.
+- Automated proof:
+- Physical/runtime proof through the real changed seam:
+- External proof or authority still required, if any:
 
-## Risk And Review
+## Risk And Authority
 
-- Risk: low | medium | high
-- Expected review stack: production-ready, code-review, simplify, and any
-  stack-specific skills relevant to the changed surfaces. Add review-swarm for
-  broad or high-risk changes.
+- Risk tier: A routine reversible | B high-risk internal | C external/irreversible
+- Dangerous seam for focused Tier B review, if any:
+- Human/external gates:
 
 ## Blockers
 
-- None - can start immediately
-- Or: blocked by <Linear issue>
+- None — can start immediately
+- Or: blocked by <Linear issue or genuine external dependency>
 
 ## Implementation Notes
 
-Name required skills, constraints, likely files, and internal technical work
-here. Do not move implementation shorthand into the title or over-prescribe the
-solution.
+Name relevant constraints, skills, likely surfaces, and technical context without
+over-prescribing the solution. A Ready issue should not require the worker to
+write a replacement plan.
 
 ## Handoff Notes
 
-Anything the worker or reviewer must know before starting.
+Anything the delivery owner needs before starting.
 
 ## Follow-Up Source
 
-If this issue was created as a follow-up, link the source issue and explain why
-the work was out of scope there.
+If created as a concrete follow-up, link the source issue and explain why it is
+outside that issue's acceptance criteria.

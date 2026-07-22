@@ -1,4 +1,4 @@
 interface:
   display_name: "Orchestrator"
   short_description: "Coordinate Linear worker threads."
-  default_prompt: "Use $orchestrator to reconcile a Linear project, dispatch Codex worker and reviewer threads, track blockers, and accept completed PRs."
+  default_prompt: "Use $orchestrator to reconcile a Linear project, dispatch one delivery owner per Ready issue, activate exact-head review when evidence exists, dispose findings, de-duplicate watchers, and make shipping decisions."

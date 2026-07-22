@@ -1,123 +1,85 @@
 ---
 name: production-ready
-description: Final evidence gate for Linear work or PRs. Use before worker completion, PR handoff, merge/done state, or when needing spec checks, review stacks, verification, PR updates, CI watch, and Linear evidence.
+description: Aggregate current delivery evidence for an orchestrator decision. Use to summarize exact-head scope, acceptance proof, physical/runtime evidence, CI, review findings, external gates, and residual risk without initiating another review stack.
 ---
 
 # Production Ready
 
-Evidence before completion. A worker may not claim done until this gate passes or reports a real blocker.
+This skill is an evidence aggregator and decision input. It does not grant
+authority, start a review stack, merge, or change Linear state. Use
+`docs/agents/execution-policy.md` for authority and dispositions.
 
-This skill is the coordinator for readiness. It invokes review, simplification, verification, PR, and CI-watch steps, but it does not replace them:
+## Read
 
-- `code-review` proves standards-backed findings on changed code.
-- `review-swarm` adds broad read-only review for risky or cross-boundary diffs.
-- `simplify` removes unnecessary complexity before handoff.
-- `ci-watch` owns PR checks and PR/comment follow-up after a PR exists.
-- The orchestrator owns final acceptance and merge authority.
+- live Linear issue, Project/PRD, blockers, comments, and linked PR;
+- exact implementation head and complete diff;
+- acceptance criteria and scope boundaries;
+- automated, physical/runtime, CI, preview, and external evidence;
+- exact-head reviewer findings and orchestrator dispositions;
+- current watcher owner and pending delta, if any.
 
-## Read First
+Treat handoff prose as orientation. Refresh the live sources before reporting.
 
-- `docs/agents/execution-policy.md`
-- `docs/agents/linear-workflow.md`
-- `docs/agents/triage-states.md`
-- the Linear issue, parent Project/PRD, and linked PR if one exists
+## Aggregate
 
-If `docs/agents/*` is absent because the project has not run `linear-setup` yet or this is a bundle simulation, read the matching templates from `../linear-setup/assets/docs/agents/*` when available and state that the target repo still needs `linear-setup`.
+### Outcome
 
-## Simulation Mode
+- What observable outcome was requested?
+- What exact head and scope implement it?
+- Did scope remain inside the Ready issue?
 
-Use Simulation Mode when the user asks for a no-code gate, handoff rehearsal, offline review, or expected production-ready evidence before implementation. In Simulation Mode, do not require a branch, PR, CI run, Linear mutation, or live GitHub comments. Produce the expected evidence checklist, likely verification commands, reviewer/spec requirements, completion blockers, and final report shape. Clearly label live checks as not run.
+### Proof
 
-## Gate
+Map each material acceptance criterion to:
 
-### 1. Spec Checklist
+- automated proof and fresh result;
+- physical/runtime proof through the real changed seam;
+- or an explicit unproven external gate.
 
-Read Linear fresh before every production-ready pass. Treat worker handoff context as orientation, not the operative source of truth. Check:
+Do not claim that types or unit tests alone prove a runtime or user-visible
+outcome. For UI, CLI, persistence, migration, replay, recovery, or workflow
+claims, name the actual interaction, disposable fixture, durable artifact, or
+failure/restart probe used.
 
-- acceptance criteria
-- parent PRD/Project intent
-- blockers and HITL decisions
-- out-of-scope boundaries
-- comments since worker assignment
+### Review And Findings
 
-The issue acceptance criteria control scope. Report gaps before running broad review. Fix only if the fix is within scope; route useful unrelated hardening to an outcome-named follow-up instead of silently expanding the issue.
+Record the immutable head reviewed, reviewer confidence, and every material
+finding with its canonical disposition: Fix before merge, residual risk,
+follow-up, or human decision required. Confirm focused corrections were verified
+against the necessary delta.
 
-### 2. Detect Review Scope
+`code-review` and `simplify` are Build capabilities. One independent exact-head
+review is the normal Verify step. `review-swarm` is exceptional and must be
+explicitly requested or justified by broad, security/privacy-sensitive,
+data-affecting, or cross-boundary risk. Do not recursively invoke them here.
 
-Inspect the actual product diff:
+### CI, Preview, And Watch
 
-- dirty working tree first: unstaged, staged, and untracked files
-- otherwise branch diff against `origin/main`/`main`
-- separate product code from agent instructions, generated lockfiles, and docs unless those files are the requested change
-- classify touched surfaces by behavior: API/backend, frontend/UI, persistence, auth/trust boundary, infra/provider, shared packages, tests, docs, or config
+Record current checks, preview state, comments, and head SHA. If something is
+pending, name exactly one `ci-watch` or heartbeat owner for the next poll. Do not
+duplicate polling or restate historic approvals.
 
-### 3. Run Required Review Stack
+### External Gates And Risk
 
-Load the relevant skill bodies before finalizing. Use the smallest review stack that covers the changed surfaces:
+State credentials, provider, production, publication, customer-data,
+destructive, spend, legal/policy, or irreversible gates precisely. Separate
+them from provider-free proof when the issue allows a safe bounded slice.
 
-- all changed code: `code-review`
-- broad, risky, security-sensitive, data-affecting, or cross-boundary diffs: `review-swarm`
-- cleanup before wrap-up: `simplify`
-- Effect code: `effect-ts`
-- persistence/database changes: external database skills when installed, otherwise nearest repo persistence docs and `code-review`
-- Better Auth/auth trust boundaries: external Better Auth skills when installed, otherwise nearest repo auth/security docs and `code-review`
-- TanStack Start/Router/Query/React: `tanstack-routing` and `tanstack-react-best-practices`
-- forms: `app-forms`
-- UI composition/design: external UI/design skills when installed, otherwise nearest repo UI docs and `code-review`
+## Decision Readout
 
-If a stack-specific skill is not present in the current project, use the nearest repo instructions and say what was unavailable. Do not invent old repo-only review skills.
+Return:
 
-Fix material issues unless the user or orchestrator requested review-only mode. Discard false positives with a short technical reason. Do not run `review-swarm` as a substitute for `code-review`; use it for additional breadth when the risk justifies it.
+- **Ready for decision:** acceptance-to-proof mapping is complete, exact-head
+  review and checks are current, findings have dispositions, and external gates
+  and residual risks are explicit.
+- **Pending evidence:** a named proof, check, comment, or exact-head review is
+  outstanding and has one owner and next action.
+- **Human decision required:** product meaning or an external/irreversible
+  authority choice cannot be delegated.
 
-Review the complete working diff before merge. Once implementation has begun, review the diff, tests, runtime evidence, and focused deltas; do not send the worker back through whole-package architecture or replacement-plan review. Classify every finding as exactly one of `pre-edit blocker`, `pre-merge blocker`, `deferred hardening`, or `question` using the execution policy definitions. Resolve concrete `pre-merge blocker` findings before merge unless the orchestrator explicitly accepts the residual risk. Deferred hardening and questions do not block readiness by themselves.
+Do not label an in-scope fixable technical defect as human-blocked. Name it as
+`Fix before merge` with the smallest correction and owning worker.
 
-### 4. Fresh Verification
-
-Run the narrowest relevant checks, then broaden when the change crosses packages or contracts:
-
-- focused package tests
-- package typecheck
-- browser/Playwright verification for UI workflows, including console/network errors, loading states, FOUC, layout shift, interaction jank, duplicate requests, and double-submit prevention when relevant
-- Drizzle migration generation/inspection for schema changes
-- `pnpm check-types`, `pnpm test`, `pnpm lint`, `pnpm format` for cross-package or handoff-ready changes
-
-Do not claim success without fresh command output. For user-visible changes, include concrete Browser, preview, or focused runtime test evidence, or explain why it could not be run. Treat blank screens, visible FOUC, incoherent layout shift, stuck loading states, console errors, failed critical requests, and duplicate submissions as material verification failures unless the orchestrator explicitly accepts the risk.
-
-### 5. PR And Linear Evidence
-
-Open or update the PR when code is ready. Use the Linear issue title as the PR title when it includes the issue key. Comment in Linear with:
-
-- PR URL
-- branch and commits
-- review stack used
-- verification commands and results
-- initial GitHub PR comment/review-thread status
-- CI/comment watcher automation if checks or comments are pending
-- known risks or blockers
-
-### 6. CI Watch
-
-After PR creation, run `ci-watch` before the worker final report. It owns PR checks, GitHub PR comments/review threads, new Linear comments, actionable CI/comment fixes, follow-up commits, automation handoff, and Linear CI evidence. Production-ready should not duplicate CI-watch polling logic; it only starts or resumes that loop and records the result.
-
-If CI or comments are still pending after a short inline watch, create or update a 2-3 minute heartbeat automation for the worker thread with the Codex app `automation_update` tool. The prompt must include the PR URL, Linear issue key, branch, head SHA, pending checks/comments, retry/fix budget, Linear update requirement, and stop condition. Reuse an existing watcher for the same PR.
-
-Do not move Linear to its completed state until CI is green or the orchestrator explicitly accepts a non-CI completion path.
-
-## Completion States
-
-- **Ready:** spec gate passed, review stack resolved, verification passed, PR is linked, CI/comments are green or accepted by the orchestrator, and Linear has evidence.
-- **Pending watch:** code/review/verification are ready, but CI or comments are still pending and `ci-watch` or its heartbeat owns the next check.
-- **Blocked:** missing credentials, provider state, failing baseline, unresolved HITL, a concrete unresolved `pre-merge blocker`, or external CI/provider failure prevents completion. Out-of-scope reviewer feedback is follow-up input, not a blocker by itself.
-
-## Completion Report
-
-Final output must include:
-
-- completion state: Ready, Pending watch, or Blocked
-- spec gate result
-- review stack used
-- verification evidence
-- PR URL
-- CI status
-- Linear update status
-- blockers or residual risk
+Completion criterion: the orchestrator can choose fix, accept residual risk,
+create a follow-up, or ask the human without starting another planning or review
+cycle.

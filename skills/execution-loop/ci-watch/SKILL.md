@@ -1,115 +1,78 @@
 ---
 name: ci-watch
-description: Watch GitHub PR checks and comments. Use after production-ready opens or updates a PR, or when asked to monitor CI, inspect failing checks/review threads, fix in-scope failures, push follow-up commits, and update Linear.
+description: Own one PR's next CI and comment poll. Use after a PR exists to refresh the exact head, report deltas, fix bounded in-scope failures, and stop cleanly when green, closed, merged, or genuinely blocked.
 ---
 
 # CI Watch
 
-Own PR checks and PR feedback until they are green/resolved or genuinely
-blocked.
-
-This skill starts only after a PR exists. `production-ready` decides whether a
-change is ready for PR handoff; `ci-watch` decides whether the PR remains green
-and comment-resolved after handoff.
+One watcher owns one PR's next poll. It observes deltas and prompts action; it
+does not decide readiness, replay governance history, or invent authority.
 
 ## Inputs
 
-- PR URL or current branch PR
-- Linear issue key and parent Project when available
-- issue scope and out-of-scope boundaries
-- current branch and head SHA when known
+- repository and PR URL;
+- owning issue and worker;
+- current branch and exact head;
+- pending check, review thread, or comment;
+- next action and bounded retry/fix budget;
+- stop condition and last meaningful observation.
 
-Use GitHub tooling for PR/check/log inspection. Use the GitHub `gh-fix-ci` skill
-or its bundled scripts when GitHub Actions checks fail.
+Before starting, find any active watcher for the same PR. Reuse, update, or stop
+it. Do not create overlapping worker, orchestrator, and project watchers for the
+same event.
 
-## Loop
+## Poll
 
-1. Resolve the PR from URL or current branch.
-2. Run `gh auth status`; stop if GitHub auth is unavailable.
-3. Record the current PR head SHA. Re-read it after every push or rerun so check
-   status is never reported for a stale commit.
-4. Refresh the live Linear issue and parent Project when available. Treat the
-   automation prompt or handoff as orientation, not the operative source of
-   truth.
-5. Check GitHub PR comments, review threads, review decisions, and new Linear
-   comments. Address actionable in-scope reviewer comments before claiming the
-   PR is ready; reply or update Linear when a comment is out of scope or
-   blocked. Stop for orchestrator input when feedback changes scope, product
-   behavior, architecture, data shape, or requires judgment.
-6. Check PR status with `gh pr checks`.
-7. If checks or review comments are pending:
-   - poll inline for a short window when useful
-   - if waiting would waste the worker session, create or update a 2-3 minute
-     heartbeat automation for the worker thread with `automation_update` and
-     continue this loop there
-   - verify the automation exists after creating or updating it
-   - update Linear with the watcher status and the current pending checks or
-     comments
-8. If a GitHub Actions check fails:
-   - inspect logs
-   - identify root cause using `systematic-debugging`
-   - fix only if the change stays inside the Linear issue/PR scope
-   - run relevant local verification
-   - commit and push
-   - update Linear with failure, fix, and verification evidence
-   - continue watching
-9. If all required checks pass and actionable comments are resolved:
-   - update Linear with green/comment-resolved status and evidence
-   - report ready for orchestrator acceptance
+1. Resolve the live PR and current head SHA. Never report checks for a stale
+   head.
+2. Refresh required checks, review decision, unresolved review threads, PR
+   comments, and new Linear comments.
+3. Compare with the last meaningful observation. Stay silent when nothing
+   changed.
+4. If an in-scope failure or concrete comment is actionable, diagnose it with
+   `systematic-debugging`, reproduce it when practical, make the smallest fix,
+   run relevant checks, commit/push if authorized, update the head, and continue
+   within the retry/fix budget.
+5. If the feedback changes product meaning, crosses issue scope, or needs
+   credentials/provider/production/destructive authority, return it to the
+   orchestrator with the concrete evidence and required decision.
+6. Update Linear only with the live delta: new head, failed/passed check,
+   resolved/new comment, fix, genuine gate, and next action.
+7. Stop when required checks and comments are resolved, the PR is merged or
+   closed, the budget is exhausted, or a genuine human/external dependency is
+   reached.
 
-## Block Conditions
+Use GitHub tooling and the `gh-fix-ci` workflow when GitHub Actions fails.
+A fixed-timeout test that passes promptly in isolation and on an unchanged full
+rerun under lower contention is evidence to record; do not automatically weaken
+the assertion, raise the timeout, or start a governance cycle.
 
-Stop and update Linear when:
+## Automation
 
-- failure is external/provider/credential related
-- failure is unrelated to the PR or already failing on base
-- repeated flake fails after one rerun or configured retry budget
-- fix requires out-of-scope files
-- PR review feedback changes scope, product behavior, architecture, data shape,
-  or requires judgment
-- GitHub auth/logs/comments are unavailable
-- CI failure requires human judgment or secrets
+When inline waiting would waste the worker session, use `automation_update` to
+create or update the single heartbeat for this PR. Include only the inputs
+above. Verify the automation exists and has the intended next run. Do not copy
+historic approvals, comment ID chains, full issue prose, or stale policy into
+the prompt.
 
-## Automation Prompt
-
-When creating an automation, include:
-
-- repo path
-- PR URL
-- Linear issue key
-- current branch
-- current head SHA
-- max retry/fix attempts
-- instruction to check GitHub checks, PR comments, review threads, review
-  decisions, and Linear comments
-- instruction to fix actionable in-scope failures/comments and push follow-up
-  commits
-- instruction to update Linear on green/failure/comment/block
-- instruction to stop when green or blocked
-
-Prefer a 2-3 minute heartbeat for an active worker PR. Use a longer or detached
-automation only when the user or environment requires it.
-
-Use the Codex app `automation_update` tool for create/update/view/delete. Do not
-write raw automation directives by hand. Do not create duplicate watchers for
-the same PR; update or reuse an existing automation when possible. The watcher
-should stay silent when no state changed, report only meaningful status changes,
-and stop when the PR is green, merged, closed, or blocked with evidence.
+On every wakeup, refresh the current head and replace obsolete instructions.
+Delete or stop the automation when its stop condition is met.
 
 ## Completion States
 
-- **Green:** required checks pass and actionable PR/Linear comments are resolved.
-- **Pending:** checks, review threads, or comments are still waiting; an inline
-  watch or heartbeat owns the next poll.
-- **Fixed and pushed:** an in-scope CI/comment fix was committed and pushed; the
-  loop continues against the new head SHA.
-- **Blocked:** the next move needs credentials, provider state, human judgment,
-  out-of-scope changes, or a base-branch/external fix.
+- **Green:** current-head required checks pass and actionable comments are
+  resolved; notify the orchestrator that Decide is ready.
+- **Pending:** one watcher owns the named next poll.
+- **Fixed:** an authorized in-scope correction was pushed; continue against the
+  new exact head.
+- **Decision required:** product meaning, scope, or external/irreversible
+  authority needs the orchestrator or human.
+- **External unavailable:** authentication, CI provider, or another genuine
+  dependency prevents the next poll or proof.
 
-Final output must include the completion state, PR URL, head SHA, check status,
-comment/review-thread status, Linear update status, fixes pushed, and blockers
-or residual risk.
+Final output names the PR, exact head, changed check/comment state, fixes,
+Linear delta, next action and owner, stop condition, and residual risk.
 
-Completion criterion: the reported state is for the current PR head SHA, all
-required checks and actionable comments have an owner, and Linear has the same
-status/evidence as the final report.
+Completion criterion: the report is current for the exact PR head, no second
+watcher owns the next poll, and the watcher has stopped or has one bounded next
+action.

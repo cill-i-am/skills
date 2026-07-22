@@ -42,21 +42,29 @@ RIGHT (vertical):
 
 ## Workflow
 
-### 1. Planning
+### 1. Select The First Behavior
 
 When exploring the codebase, read `CONTEXT.md` (if it exists) so that test names and interface vocabulary match the project's domain language, and respect ADRs in the area you're touching.
 
-Before writing any code:
+When a Ready issue or accepted spec exists, treat it as the product decision.
+Translate its acceptance criteria into an ordered list of observable behaviors;
+do not require another plan or user approval. Ask the orchestrator or user only
+when missing product meaning would materially change the public interface or
+acceptance criteria.
 
-- [ ] Confirm with user what interface changes are needed
-- [ ] Confirm with user which behaviors to test (prioritize)
+Before writing the first test:
+
+- [ ] Identify the public interface and outcome already selected by the issue or
+      user
+- [ ] Prioritize the smallest behavior that proves the vertical path
 - [ ] Identify opportunities for deep modules (small interface, deep implementation) — see `../coding-standards/DESIGNING_MODULES.md` for the vocabulary and testability checks
 - [ ] List the behaviors to test (not implementation steps)
-- [ ] Get user approval on the plan
 
-Ask: "What should the public interface look like? Which behaviors are most important to test?"
+If no accepted issue or spec exists, ask: “What should the public interface look
+like? Which behavior matters first?”
 
-**You can't test everything.** Confirm with the user exactly which behaviors matter most. Focus testing effort on critical paths and complex logic, not every possible edge case.
+**You can't test everything.** Focus on acceptance, critical paths, and complex
+logic, not every hypothetical edge case.
 
 ### 2. Tracer Bullet
 

@@ -1,51 +1,45 @@
 # Worker Thread Template
 
-Use this when dispatching a Codex worker thread.
+Use this to dispatch one delivery owner for a Ready issue.
 
 ## Mission
 
-Implement Linear issue: `{ISSUE_ID}`.
+Implement Linear issue `{ISSUE_ID}` through the smallest proven vertical slice.
 
 ## Required Context
 
 - Project or PRD: `{PROJECT_OR_PRD}`
 - Issue: `{ISSUE_LINK}`
-- Fetched `origin/main` base SHA: `{BASE_SHA}`
+- Risk tier: `{RISK_TIER}`
+- Exact fetched remote-default base SHA: `{BASE_SHA}`
 - Worker worktree: `{WORKTREE_PATH}`
-- Topic branch expectation: `codex/{ISSUE_ID}-{SLUG}`, created and owned by the worker
-- Required skills: worker, worktree-isolation, `{SKILLS}`
-
-## Scope
-
-In scope:
-
-- `{IN_SCOPE}`
-
-Out of scope:
-
-- `{OUT_OF_SCOPE}`
+- Topic branch: `codex/{ISSUE_ID}-{SLUG}`, created and owned by the worker
+- Relevant capability skills: `{SKILLS}`
+- Genuine human/external gates: `{EXTERNAL_GATES}`
 
 ## Requirements
 
-- Follow repo `AGENTS.md` and nested instructions.
-- Read the live Linear issue, parent Project/PRD, blockers, and comments before planning. Treat this handoff as orientation only.
-- Use the orchestrator-provisioned worktree created from the exact dispatched base SHA. Do not use local `main`, the coordinator's `HEAD`, or this handoff as base evidence.
-- Create and own the topic branch inside that worktree.
-- Before planning or editing, run a fresh fetch and report the isolated path, topic branch, `HEAD`, `origin/main`, merge-base, empty worktree status, ahead/behind `0 0`, install result, and baseline result or blocker.
-- If `origin/main` advances before edit authority, hold work and notify the orchestrator. Refresh only through the non-destructive procedure in `worktree-isolation`, then rerun relevant baselines, revalidate the existing plan against the fresh base, and repeat focused review for affected deltas.
-- Keep changes surgical and simple.
-- Post one compact plan covering material architecture decisions, scope and explicit boundaries, the smallest end-to-end tracer, intended tests and verification, known risks, and deferred questions. Do not pre-specify every table, query, retry, operation count, or hypothetical failure path. Keep high-risk planning within approximately 60-90 minutes by default.
-- Obtain one independent plan review. If changes are requested, make one targeted revision; do not replace the whole plan unless product scope or acceptance criteria materially changed.
-- Never enter a third plan-review cycle without explicit human approval.
-- Begin a bounded reversible implementation slice as soon as no classified `pre-edit blocker` remains. Build the smallest tracer, gather executable evidence, and open a draft PR as soon as it works.
-- Stop and report if scope or product intent is wrong.
-- Use Linear blockers for dependency issues.
-- Use Browser verification for user-visible changes where practical.
-
-## Verification
-
-Run relevant checks and report exact commands/results.
+- Follow `AGENTS.md`, `docs/agents/execution-policy.md`, and the live issue.
+- Treat this handoff as orientation. Refresh Linear, fetch/prune the remote,
+  dynamically resolve `origin/HEAD`, and prove the isolated tree and branch begin
+  clean at the exact dispatched SHA before editing.
+- Confirm the issue meets the Ready bar. If it does, begin; do not rewrite the
+  issue as a plan. Post at most one compact execution note with the base/branch,
+  first tracer or failing test, changed surfaces, intended physical proof, and
+  any newly discovered divergence.
+- Tier A has no pre-edit reviewer. Tier B may have one already named, focused,
+  timeboxed review of the dangerous seam. Tier C gates only the external or
+  irreversible effect when safe internal work is separable.
+- Build the smallest end-to-end tracer, use capability skills inside Build,
+  test through real seams, physically exercise the changed outcome, simplify,
+  and open a draft PR once the tracer works.
+- Fix reproducible in-scope implementation defects without requesting a new
+  planning or authorization cycle.
+- Stop for a material product change, scope expansion, unsafe provenance,
+  credentials/real data, or an unauthorized destructive/external action.
 
 ## Done Evidence
 
-Report changed files, verification, PR link, preview link if any, and residual risks.
+Report the exact head and changed scope, acceptance-to-proof mapping, commands
+and results, physical/runtime evidence, draft PR, external gates, and residual
+risks. The orchestrator activates exact-head review and owns the final decision.
