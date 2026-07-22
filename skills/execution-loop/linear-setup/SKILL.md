@@ -1,6 +1,6 @@
 ---
 name: linear-setup
-description: Set up or refresh this repo's Linear-native agent workflow docs and AGENTS.md pointers. Use before first use of to-prd, to-issues, triage, orchestrator, worker, production-ready, ci-watch, or when agent workflow or domain-doc rules change.
+description: Set up or refresh this repo's Linear-native agent workflow docs and AGENTS.md pointers. Use before first use of wayfinder, domain-modeling, to-prd, to-issues, triage, orchestrator, worker, production-ready, ci-watch, or when agent workflow or domain-doc rules change.
 ---
 
 # Linear Setup
@@ -46,6 +46,11 @@ skill needs them instead of persisting a second local mapping.
 `execution-policy.md` is the canonical authority owner. Preserve its semantics
 when adapting role templates; do not add project-local plan approval, reviewer
 edit authority, routine pre-edit review, or duplicate watcher requirements.
+
+In `domain.md`, record the repository's existing glossary and ADR locations or
+the nearest semantic owners used to resolve them. Do not force root
+`CONTEXT.md`, create empty ADR directories, or duplicate product intent merely
+to satisfy setup.
 
 Create missing files automatically. For existing files, patch conservatively by
 section and preserve project-specific decisions. If an existing file has drifted

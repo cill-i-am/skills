@@ -20,3 +20,8 @@ statuses, labels, and Initiatives in Linear as the source of truth.
 
 Role skills and these templates consume `execution-policy.md`; capability skills
 provide techniques inside a phase and must not invent authority transitions.
+
+Before a PRD exists, use `grilling` for focused decisions, `domain-modeling` for
+canonical language and qualifying ADRs, and `wayfinder` when the destination is
+known but the multi-session decision route is still foggy. Wayfinder hands to
+`to-prd`; it does not create delivery Issues or dispatch workers.

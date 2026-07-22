@@ -28,9 +28,10 @@ connect the Linear app before attempting to publish the PRD.
 ## Process
 
 1. **Gather context.** Use the current conversation, referenced docs, existing
-   Linear Initiative/Project/issues, and source code. Do not interview by
-   default; synthesize what is known. Ask only for decisions that cannot be
-   resolved from Linear, source, or architecture docs.
+   Linear Initiative/Project/issues, Wayfinder map and resolved decision Issues
+   when present, and source code. Do not interview by default; synthesize what
+   is known. Ask only for decisions that cannot be resolved from Linear, source,
+   or architecture docs.
 2. **Choose Linear container.**
    - Existing Initiative/Project: update it.
    - New product area: create or propose a Project under the right Initiative,
@@ -44,7 +45,9 @@ connect the Linear app before attempting to publish the PRD.
 5. **Write the PRD in Linear.** Prefer a Linear document attached to the Project
    when supported; otherwise use the Project description or a linked PRD issue.
 6. **Record unresolved ambiguity.** Mark open questions as HITL instead of
-   burying uncertainty.
+   burying uncertainty. If a Wayfinder map still has blocking decision Issues or
+   in-scope fog that would force this skill to invent intent, hand it back to
+   `wayfinder` rather than producing a falsely ready PRD.
 7. **Prepare for issue slicing.** End with the recommended next step: run
    `to-issues` on the Linear Project/PRD.
 
@@ -65,6 +68,8 @@ repo still needs setup.
 Completion criterion: the PRD has enough goals, non-goals, user outcomes,
 implementation decisions, verification expectations, risks, references, and
 HITL/open questions for `to-issues` to slice without inventing product intent.
+When input came from Wayfinder, settled product intent has one durable owner in
+the PRD and the map retains links rather than duplicate decision prose.
 
 ## Publishing Rules
 

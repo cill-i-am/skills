@@ -43,7 +43,10 @@ publishing. In Draft Mode:
 ## Process
 
 1. **Gather source material.** Read the PRD, Project, Initiative, linked issues,
-   comments, and current source/architecture docs where needed.
+   comments, and current source/architecture docs where needed. If the input is
+   still a Wayfinder map or contains unresolved decision issues, stop and route
+   it through `to-prd`. Do not reinterpret decision work as delivery work or
+   turn unresolved choices into implementation slices.
 2. **Derive the outcome hierarchy.** Name the overall Project outcome, then group
    work under a small set of parent capability outcomes. Keep technical
    decomposition out of the hierarchy unless it represents an independently

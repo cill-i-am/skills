@@ -1,0 +1,4 @@
+interface:
+  display_name: "Wayfinder"
+  short_description: "Map decisions before a PRD is ready."
+  default_prompt: "Use $wayfinder to create or work through a Linear-native decision map for a destination whose route is still too foggy for a trustworthy PRD."

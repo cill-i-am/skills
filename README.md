@@ -9,6 +9,7 @@ system for agents. It is not a random grab bag of skills. The core bundle
 encodes a way of working:
 
 - turn rough ideas into durable product context;
+- resolve multi-session decision fog and stabilize domain language before PRDs;
 - slice that context into small Linear issues;
 - dispatch visible worker and reviewer threads;
 - keep implementation narrow, typed, and testable;
@@ -71,7 +72,9 @@ The intended path from idea to merged work is:
 
 ```txt
 linear-setup
-  -> grilling / to-prd
+  -> grilling
+  -> wayfinder when the route is still foggy
+  -> to-prd
   -> to-issues
   -> orchestrator
   -> worker + reviewer
@@ -87,6 +90,8 @@ Use stack and infrastructure skills inside that loop as needed:
 
 - `coding-standards`, `tdd`, `tech-spec`, and `code-review` for core engineering
   quality.
+- `domain-modeling` for canonical language and minimal qualifying ADRs;
+  `wayfinder` for decision discovery before a PRD is ready.
 - `effect-ts`, `tanstack-routing`, `tanstack-react-best-practices`, and
   `app-forms` for the default TypeScript app stack.
 - `alchemy` for infrastructure, local dev, CI stages, and deployment.
@@ -108,7 +113,8 @@ calls for them:
   tech specs, and code review.
 - `skills/execution-loop/`: Linear setup, PRD slicing, orchestration, workers,
   reviewers, CI watch, production readiness, debugging, and worktree isolation.
-- `skills/planning/`: grilling for product and architecture interrogation.
+- `skills/planning/`: grilling, active domain modeling, and Wayfinder decision
+  discovery before PRDs.
 - `skills/stack/`: Effect, TanStack, React performance, and form guidance.
 - `skills/infrastructure/`: Alchemy v2 infrastructure guidance.
 - `skills/research/`: research briefs, cited research reports, and YouTube
@@ -160,4 +166,4 @@ find .agents/skills -name SKILL.md | wc -l
 find .agents/skills -path '*/agents/openai.yaml' | wc -l
 ```
 
-Expected result today: 34 skills and 34 metadata files.
+Expected result today: 36 skills and 36 metadata files.

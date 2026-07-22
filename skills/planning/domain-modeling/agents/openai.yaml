@@ -1,0 +1,4 @@
+interface:
+  display_name: "Domain Modeling"
+  short_description: "Sharpen domain language and durable decisions."
+  default_prompt: "Use $domain-modeling to challenge overloaded terms, stress-test concrete scenarios, reconcile language with code and docs, and record only qualifying glossary or ADR decisions."

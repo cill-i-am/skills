@@ -96,6 +96,12 @@ Possible artifacts:
 - PRD/design notes for product intent and acceptance criteria;
 - risk log for known tradeoffs, unknowns, and deferred choices.
 
+Use `../domain-modeling/` when the interview is actively changing canonical
+language, stress-testing domain boundaries, reconciling claims with code/docs,
+or considering an ADR. Grilling owns the interview rhythm; domain modeling owns
+the language and decision-record discipline. A separate grill-with-docs alias is
+unnecessary.
+
 Write files only when the user asks for files or the target workflow requires
 durable artifacts. Otherwise, keep the artifacts inline.
 
@@ -123,10 +129,14 @@ End with:
 - decisions made;
 - open questions;
 - recommended next slice;
-- whether the result is ready for `tech-spec`, `to-prd`, `to-issues`, or direct
-  implementation.
+- whether the route is still foggy enough for `wayfinder`, or the result is
+  ready for `tech-spec`, `to-prd`, `to-issues`, or direct implementation.
 
 Use `to-prd` when the decision ledger is stable enough to become a product
 source of truth. Use `to-issues` only after a PRD, feature brief, or equivalent
 work packet has clear goals, non-goals, user outcomes, readiness state, and
 known open questions.
+
+Use `../wayfinder/` before `to-prd` when the destination can be named but the
+decision route still spans multiple sessions, has blocker-dependent questions,
+or contains in-scope fog that cannot yet be stated precisely.

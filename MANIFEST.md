@@ -106,11 +106,23 @@ Current loop-tool assumptions:
 
 These help turn fuzzy ideas into durable plans and design decisions:
 
+- `domain-modeling`
 - `grilling`
+- `wayfinder`
 
 `grilling` owns both Interview Mode and Docs Mode. Do not keep separate
 one-line aliases for "grill me" or "grill with docs"; they create cognitive load
 without earning a distinct invocation path.
+
+`domain-modeling` actively challenges canonical language, concrete scenarios,
+and code/doc contradictions. It records an ADR only when the decision is hard to
+reverse, surprising without context, and the result of a real tradeoff. It
+resolves existing doc topology rather than forcing a root `CONTEXT.md`.
+
+`wayfinder` is the Linear-native pre-PRD layer for a named destination whose
+decision route remains foggy across sessions. Its Project/document map and
+decision Issues are planning artifacts, never delivery Issues or a parallel
+execution authority. The required handoff is `wayfinder -> to-prd -> to-issues`.
 
 ### Stack Skills
 
@@ -218,7 +230,8 @@ Before considering this bundle ready for broad reuse:
    to the target repo.
 5. The loop skills can bootstrap a blank repo by running `linear-setup` first.
 6. A fresh agent can run a simulated flow:
-   rough idea -> PRD -> issues -> worker handoff -> production-ready checklist.
+   rough idea -> grilling -> optional Wayfinder -> PRD -> issues -> worker
+   handoff -> production-ready checklist.
 
 Run `pnpm test` before committing bundle changes. It checks skill frontmatter,
 skill-name/path consistency, `agents/openai.yaml` prompt metadata, required
