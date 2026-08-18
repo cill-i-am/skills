@@ -1,193 +1,173 @@
 # Schema And Domain Modeling
 
-Use this file for domain values, DTOs, persisted rows, wire contracts, brands, variants, optional fields, and decoders.
+Use this file for domain values, DTOs, persisted rows, wire contracts, brands, variants, optional fields, classes, decoders, encoders, and compiler hoisting.
 
 ## Schema Is The Contract
 
-Define the runtime contract first, then derive the TypeScript type from it.
+Define the runtime contract first, then derive the TypeScript type from it:
 
 ```ts
-import { Schema } from "effect";
+import { Schema } from "effect"
 
 export const User = Schema.Struct({
   id: UserId,
   displayName: Schema.NonEmptyString,
   email: Schema.optionalKey(EmailAddress),
-});
+})
 
 export interface User extends Schema.Schema.Type<typeof User> {}
 ```
 
-Do not maintain a handwritten interface beside an equivalent schema. Reuse `.fields`, `Schema.fieldsAssign`, `mapFields`, transforms, or explicit adapters when related contracts encode the same concept differently.
-
-```ts
-export const CreateUser = Schema.Struct({
-  displayName: User.fields.displayName,
-  email: User.fields.email,
-});
-
-export const StoredUser = User.pipe(
-  Schema.fieldsAssign({
-    createdAt: Schema.DateTimeUtcFromString,
-  }),
-);
-```
+Do not maintain a handwritten interface beside an equivalent serializable Schema. Reuse fields, field-composition combinators, transformations, or explicit adapters when related contracts encode the same concept differently. Verify exact field-composition APIs against the target pin.
 
 ## Contract Ownership Across Packages
 
 Place a serializable contract's owning Schema in the lowest stable package that owns its meaning. Consumers import that Schema or a type derived from it; they do not reconstruct the same shape in a runtime, transport, CLI, UI, or test package.
 
 - A new independently parseable contract needs its own Schema.
-- A projection may reuse `.fields`, Schema combinators, or a type derived from the owning Schema when it does not invent a new runtime boundary.
-- Function-bearing services and adapters remain TypeScript capability interfaces; do not force executable values into data schemas.
-- Keep provider and framework DTOs private to their adapter when possible. Decode or explicitly translate them into owned domain contracts before returning them inward.
-- Persist and publish encoded serializable data, not class instances, errors, functions, clients, fibers, scopes, or platform handles.
-
-When a repository enforces these rules mechanically, follow `schema-enforcement.md` rather than relying on names, paths, or text matching.
+- A projection may reuse fields or derive a type when it does not invent a second runtime boundary.
+- Function-bearing services and adapters remain capability interfaces.
+- Keep provider and framework DTOs private to their adapters when possible.
+- Persist and publish encoded serializable data, not class instances, services, clients, fibers, Scopes, or platform handles unless the protocol explicitly defines them.
 
 ## Avoid Stringly Typed Domains
 
-Do not use raw `string` for distinct domain concepts merely because their encoded representation is text.
+Do not use raw `string` for distinct concepts merely because their encoding is text.
 
 Prefer Schema-backed types for:
 
-- entity, tenant, session, request, job, and correlation IDs
-- slugs, email addresses, URLs, currency codes, and provider keys
-- roles, states, modes, operations, event names, and bounded categories
-- storage keys, queue names, route names, feature names, and protocol handles
+- entity, tenant, session, request, job, and correlation IDs;
+- slugs, constrained URLs, currency codes, and provider keys;
+- roles, states, modes, operations, event names, and bounded categories;
+- storage keys, route names, feature names, and protocol handles.
 
-Raw strings are appropriate for:
+Raw strings remain appropriate for free-form user text, logs, diagnostics, descriptions, and provider wire data before decoding.
 
-- free-form user-authored text
-- logs and human-readable diagnostics
-- third-party wire formats before decoding or after encoding
-- genuinely unconstrained text fields such as descriptions or comments
-
-Decode a raw string at ingress, then carry the branded or finite type through the application.
+A brand is justified by meaningful validation or interchangeability risk, not by a goal to eliminate every string.
 
 ## Constrained Brands
 
-Put meaningful validation before the brand. Distinct concepts receive distinct brands even when both encode as strings.
+Put validation before the brand and use distinct brands for distinct concepts:
 
 ```ts
 export const UserId = Schema.String.pipe(
   Schema.check(Schema.isPattern(/^usr_[a-z0-9]+$/)),
   Schema.brand("UserId"),
-);
-export type UserId = typeof UserId.Type;
+)
+export type UserId = typeof UserId.Type
 
 export const OrganizationId = Schema.String.pipe(
   Schema.check(Schema.isPattern(/^org_[a-z0-9]+$/)),
   Schema.brand("OrganizationId"),
-);
-export type OrganizationId = typeof OrganizationId.Type;
-```
-
-This makes accidental interchange a type error:
-
-```ts
-interface UserRepository {
-  readonly findById: (
-    id: UserId,
-  ) => Effect.Effect<User, UserNotFound | PersistenceError>;
-}
+)
+export type OrganizationId = typeof OrganizationId.Type
 ```
 
 Rules:
 
-- Constrain before branding when the value has a real format or range.
-- Do not use `as UserId`, `as unknown as UserId`, or a brand-only cast.
-- Construct trusted values with `UserId.make(...)` only when the caller already owns the invariant.
-- Use `UserId.makeEffect(...)` or `Schema.decodeUnknownEffect(UserId)` when validation failure belongs in the error channel.
-- Do not brand free-form prose just to eliminate every textual type.
+- constrain before branding when the value has a real format or range;
+- do not use `as UserId`, `as unknown as UserId`, or structural brand spoofing;
+- use a trusted constructor only when the caller already owns the invariant;
+- decode untrusted data through the target pin's Effect or Result decoder;
+- do not brand unconstrained prose merely to create nominal noise.
 
-## Finite Strings Become Literals Or Variants
+## Finite Values And Variants
 
-Use literal schemas for small closed sets:
+Use literal schemas for small closed sets and a tagged union when variants cross a boundary, are persisted, or drive generated protocols. Use an internal tagged enum or small named union for purely local control flow.
 
-```ts
-export const AccountRole = Schema.Literals(["owner", "admin", "member"]);
-export type AccountRole = typeof AccountRole.Type;
-```
+Prefer public guards and matchers over reaching into Effect-owned internal tags. Direct `_tag` matching on your own tagged domain values is not inherently wrong; use exhaustive matching at important domain and public mapping boundaries.
 
-Use `Data.TaggedEnum` for internal control-flow states that do not cross a boundary:
+## Structural Schema Versus Schema Class
 
-```ts
-type DeliveryDecision = Data.TaggedEnum<{
-  Deliver: { readonly destination: EmailAddress };
-  Suppress: { readonly reason: SuppressionReason };
-}>;
+Prefer structural schemas for DTOs, persistence rows, protocol messages, commands, events, and values that should remain plain data.
 
-export const DeliveryDecision = Data.taggedEnum<DeliveryDecision>();
-```
+Use `Schema.Class` only when nominal class identity, methods, inheritance, or validated class construction is genuinely part of the domain model. Do not introduce a class merely to obtain a namespace, static constructor, or aesthetic grouping.
 
-Use `Schema.TaggedUnion` when variants are decoded, encoded, persisted, exposed through a protocol, or used for code generation:
+Do not adopt another repository's blanket class ban as universal Effect guidance. Conversely, do not make every schema a class.
 
-```ts
-export const JobEvent = Schema.TaggedUnion({
-  Queued: { jobId: JobId },
-  Started: { jobId: JobId, workerId: WorkerId },
-  Failed: { jobId: JobId, error: PublicJobError },
-});
-export type JobEvent = typeof JobEvent.Type;
-```
+## Schema-Backed Errors
 
-Use `Schema.tag(...)` plus `Schema.toTaggedUnion("type")` when an external contract uses a discriminator such as `type` or `kind`. Use `Schema.tagDefaultOmit(...)` only when the encoded contract intentionally omits the tag.
+Use the schema-backed tagged-error constructor exported by the target pin when an expected failure is serialized, public, persisted, or protocol-visible.
 
-Avoid `Schema.Class` and `Schema.TaggedClass` as default application data-modeling patterns. `Schema.TaggedErrorClass` is the intentional exception for typed errors.
+- Current v4 release-candidate lines use `Schema.TaggedError`.
+- Older v4 betas used `Schema.TaggedErrorClass`.
+
+Check the installed source and compile a probe before changing constructor spelling. Lightweight internal expected failures that never cross a boundary may use the target pin's Data tagged-error constructor.
 
 ## Decode At Boundaries
 
-Unknown values enter through HTTP, RPC, queues, files, environment variables, databases, SDKs, and persisted JSON. Decode them once before domain use.
+Unknown values enter through HTTP, RPC, queues, files, environment variables, databases, SDKs, and persisted JSON. Decode them once before domain use:
 
 ```ts
-export const decodeCreateUser = Schema.decodeUnknownEffect(CreateUser);
+const decodeCreateUser = Schema.decodeUnknownEffect(CreateUser)
 
 export const registerFromRequest = Effect.fn("Users.registerFromRequest")(
   function* (request: Request) {
     const body = yield* Effect.tryPromise({
       try: () => request.json(),
       catch: (cause) => new InvalidJson({ cause }),
-    });
-    const input = yield* decodeCreateUser(body);
-    return yield* registerUser(input);
+    })
+    const input = yield* decodeCreateUser(body)
+    return yield* registerUser(input)
   },
-);
+)
 ```
 
 Constructor and decoder chooser:
 
-- `schema.make(...)`: trusted construction where throwing is acceptable.
-- `schema.makeEffect(...)`: construction failure stays in Effect.
-- `Schema.decodeUnknownEffect(...)`: default for untrusted input.
-- `Schema.decodeUnknownResult(...)`: pure code needs explicit success/failure.
-- `Schema.decodeUnknownOption(...)`: details are deliberately discarded.
-- `Schema.decodeUnknownSync(...)`: startup, scripts, or tests where throw is intentional.
+- trusted construction where throwing is intentionally acceptable: the Schema's synchronous constructor;
+- construction failure belongs in Effect: the target pin's Effect constructor;
+- untrusted input: `Schema.decodeUnknownEffect(...)` or the exact installed equivalent;
+- pure code needs explicit success/failure: a Result decoder;
+- validation details are deliberately discarded: an Option decoder;
+- startup, scripts, or tests where throw is intentional: a synchronous decoder.
 
-For JSON text, use `Schema.fromJsonString(...)` or the v4 JSON schema helpers rather than `JSON.parse(...) as T`.
+For JSON text, use the target pin's Schema JSON codec rather than `JSON.parse(...) as T`.
 
 ## Optionality And Defaults
 
-- `Schema.optionalKey(S)`: the encoded object key may be absent.
-- `Schema.optional(S)`: the key may be absent and explicit `undefined` is part of the contract.
-- `Schema.NullOr`, `Schema.UndefinedOr`, or `Schema.NullishOr`: the encoded format genuinely carries those values.
-- Defaulted domain fields should be required after decoding; apply defaults in the codec or constructor.
+- optional key: the encoded object key may be absent;
+- optional value: absence and explicit `undefined` are both part of the contract;
+- null/undefined/nullish union: the wire format genuinely carries those values;
+- decoded domain defaults should normally be required after decoding.
 
-Do not make domain fields optional only to make object construction convenient.
+Do not make domain fields optional merely to simplify object construction.
 
 ## Transformations And Reuse
 
-- Use `.fields` and `Schema.fieldsAssign(...)` for semantically related contracts.
-- Use `Schema.encodeKeys(...)` when only encoded property names differ.
-- Use a schema transform when encoded and domain representations differ predictably.
-- Use an explicit Effect adapter when translation performs I/O, joins data, changes authority, or can fail for domain reasons.
-- Annotate schemas with identifiers when HttpApi, RPC, JSON Schema, OpenAPI, diagnostics, or code generation consumes them.
+- reuse fields for semantically related contracts;
+- use encoded-key transformations when only wire names differ;
+- use a Schema transform when encoded and domain representations differ predictably;
+- use an explicit Effect adapter when translation performs I/O, joins data, changes authority, or can fail for domain reasons;
+- annotate schemas with stable identifiers when HttpApi, RPC, JSON Schema, OpenAPI, diagnostics, or code generation consumes them.
 
-Reject:
+Do not force one oversized Schema to represent command, domain, row, and wire contracts when those boundaries have different authority or encoding.
 
-- `JSON.parse(raw) as Model`
-- `as unknown as Model`
-- repeated property probing after the ingress boundary
-- raw `string` IDs or finite states in public service contracts
-- duplicate interfaces and schemas for the same model
-- brands with no meaningful invariant where structural text is actually intended
+## Hoist Static Compilers
+
+Schema decoders, encoders, and guards are compiled functions. When the Schema is static and the operation is called repeatedly, hoist the compiler to module scope:
+
+```ts
+const decodeProfile = Schema.decodeUnknownEffect(ProfileResponse)
+const encodeProfile = Schema.encodeEffect(ProfileRequest)
+const isProfile = Schema.is(Profile)
+```
+
+Inline compilation is acceptable for one-off startup or test setup. Do not rebuild an inline Schema and compiler on every hot-path call.
+
+## Schema Versus Predicate
+
+Use Schema when a value crosses an authoritative boundary or needs encoding, diagnostics, code generation, persistence, or a reusable runtime contract.
+
+Use Effect's public Predicate utilities or a small named local guard for internal, non-load-bearing control flow. Do not force a full Schema decode for every local property check, and do not let repeated ad hoc probing replace one real ingress decoder.
+
+## Reject
+
+- `JSON.parse(raw) as Model`;
+- `as unknown as Model`;
+- duplicate interfaces and schemas for the same serializable model;
+- raw string IDs or finite states in public capability contracts;
+- brands without meaningful invariant or interchangeability risk;
+- repeated unknown-object probing after ingress;
+- class models used only for namespacing;
+- rebuilding static decoders and guards in repeated call sites.

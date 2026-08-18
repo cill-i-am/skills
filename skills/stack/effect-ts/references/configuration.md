@@ -1,123 +1,69 @@
 # Configuration
 
-Use this file for environment variables, platform bindings, secrets, `Config`, `ConfigProvider`, and app configuration services.
+Use this file for environment variables, platform bindings, secrets, Config, ConfigProvider, and stable application configuration services.
 
 ## Read Through Config
 
-Application logic should not read `process.env`, import platform globals, or parse configuration strings directly. Describe configuration with `Config`, decode into domain types, and acquire it in a Layer.
+Application logic should not read `process.env`, import platform bindings, or parse configuration strings directly. Describe values with Config, decode semantic values with Schema, and acquire them in a Layer.
 
-```ts
-export const DeploymentEnvironment = Schema.Literals([
-  "development",
-  "staging",
-  "production",
-]);
+Use `Config.redacted` or the installed equivalent for secrets. Keep Redacted values wrapped until the concrete adapter initializes a client.
 
-export const AppConfigLive = Layer.effect(
-  AppConfig,
-  Effect.gen(function* () {
-    const environment = yield* Config.schema(DeploymentEnvironment, "APP_ENV");
-    const databaseUrl = yield* Config.redacted("DATABASE_URL");
-    const requestTimeout = yield* Config.duration("REQUEST_TIMEOUT").pipe(
-      Config.withDefault(Duration.seconds(10)),
-    );
-    const emailEnabled = yield* Config.boolean("EMAIL_ENABLED").pipe(
-      Config.withDefault(false),
-    );
+Config constructor and provider APIs are exact-pin details; inspect the target package and compile a probe.
 
-    return AppConfig.of({
-      environment,
-      databaseUrl,
-      requestTimeout,
-      emailEnabled,
-    });
-  }),
-);
-```
+## Recipe Chooser
 
-Use `Config.redacted(...)` for credentials and secrets. Keep the resulting `Redacted` value intact until the adapter must initialize a client.
+Use the installed Config recipes for:
 
-## Config Recipe Chooser
+- primitive strings, booleans, numbers, integers, and durations;
+- Schema-backed brands, literals, and value objects;
+- semantic absence;
+- missing-value defaults that do not hide malformed input;
+- custom refinements;
+- grouped configuration objects;
+- deliberate fallback across providers.
 
-- `Config.string`, `boolean`, `number`, `integer`, `duration`: primitive encoded values
-- `Config.schema`: Schema-backed brand, literal, or value object
-- `Config.redacted`: secret text
-- `Config.option`: semantic absence
-- `Config.withDefault`: only missing data receives a default; malformed input still fails
-- `Config.mapOrFail`: custom refinement when no Schema recipe fits
-- `Config.unwrap`: materialize a wrapped config structure
-- `Config.orElse`: deliberate fallback for any parse failure, used sparingly
-
-Do not use `withDefault` to hide malformed production configuration. A process should fail acquisition with a useful config error when required config is invalid.
+Do not use a broad fallback or default to turn malformed production input into a valid configuration silently.
 
 ## Provider Boundaries
 
-The default provider reads environment variables. Replace or augment it at a composition root:
+The default provider commonly reads environment variables. Replace or augment it at a composition root with deterministic providers for tests, platform bindings, files, directories, or remote sources.
 
-```ts
-const TestConfigProvider = ConfigProvider.fromUnknown({
-  APP_ENV: "staging",
-  DATABASE_URL: "postgres://test",
-  REQUEST_TIMEOUT: "50 millis",
-  EMAIL_ENABLED: "true",
-});
+Provider precedence is product policy. Test which source wins, how absence differs from invalid presence, and whether a fallback catches source failure or only missing data according to the installed semantics.
 
-const TestLayer = AppConfigLive.pipe(
-  Layer.provide(ConfigProvider.layer(TestConfigProvider)),
-);
-```
-
-Provider chooser:
-
-- `ConfigProvider.fromEnv(...)`: environment variables
-- `ConfigProvider.fromUnknown(...)`: deterministic object-backed tests or host adapter input
-- `ConfigProvider.layer(...)`: replace the active provider
-- `ConfigProvider.layerAdd(...)`: add fallback or primary override behavior deliberately
-- provider nesting/casing transforms: map structured recipes to host naming conventions
-
-Keep `.env` loading, Cloudflare bindings, process environment access, and deployment-specific sources in adapters. Convert them to a provider or an app configuration service before business logic.
+Keep `.env` loading, Cloudflare bindings, process environment, and deployment-specific sources in adapters. Convert them into a ConfigProvider or decoded application service before business logic.
 
 ## App Config Service
 
-Wrap decoded runtime settings in a service when many workflows need a stable application-level contract:
+Wrap decoded settings in a `Context.Service` when many workflows need one stable application contract. Tests may provide the decoded value directly when parsing is outside the unit's concern.
 
-```ts
-export interface AppConfigShape {
-  readonly environment: DeploymentEnvironment;
-  readonly databaseUrl: Redacted.Redacted<string>;
-  readonly requestTimeout: Duration.Duration;
-  readonly emailEnabled: boolean;
-}
+Acquire runtime flags and settings once for the intended owner lifetime. Do not mutate `process.env`, global flags, or provider state after dependent Layers or ManagedRuntimes have been built and expect existing services to change.
 
-export class AppConfig extends Context.Service<AppConfig, AppConfigShape>()(
-  "@app/AppConfig",
-) {}
-```
+## Reusable Config-Service Generator
 
-This separates environment decoding from application consumption and lets tests provide a fully decoded value with `Layer.succeed` when config parsing is not under test.
+When a repository has many similarly shaped configuration services, a small helper may accept a record of Config definitions, derive the service shape, and expose:
 
-## Library Layer Options
+- a live Layer that parses the active ConfigProvider once;
+- a deterministic Layer for already-decoded test values.
 
-Libraries may expose concrete and config-backed constructors:
+Use this only after repetition is demonstrated. Do not introduce a generator for one settings object, and do not hide provider precedence or validation behavior inside it.
 
-```ts
-export const layer = (options: ClientOptions) =>
-  Layer.effect(Client, makeClient(options));
+## Library Constructors
 
-export const layerConfig = (options: Config.Wrap<ClientOptions>) =>
-  Layer.effect(Client, Config.unwrap(options).pipe(Effect.flatMap(makeClient)));
-```
+Libraries may expose both:
 
-Use concrete options in unit tests. Use `layerConfig` when the deployed application should read through the active provider.
+- a concrete-options Layer for direct composition and tests;
+- a Config-backed Layer for deployed applications.
+
+Keep the concrete service contract independent from how options were loaded.
 
 ## Secret Rules
 
-- Store credentials as `Redacted` in configuration and service construction.
-- Unwrap only at the adapter call that needs the raw secret.
-- Never attach secrets to logs, spans, errors, snapshots, or assertion messages.
-- Do not include raw provider responses in config errors.
-- Keep secret names stable and actionable without revealing values.
+- keep credentials Redacted through service construction;
+- unwrap only at the adapter call that needs the raw value;
+- never attach secrets to errors, logs, spans, snapshots, or assertions;
+- do not include full provider responses in Config errors;
+- keep secret key names actionable without revealing values.
 
 ## Verification
 
-Test missing required values, malformed branded or literal values, defaults, provider precedence, and secret redaction. Avoid mutating global environment state when `ConfigProvider.fromUnknown(...)` can express the test.
+Test missing required values, malformed brands/literals, defaults, provider precedence, source failure, secret redaction, and the lifetime at which configuration is captured. Prefer provider Layers over global environment mutation.

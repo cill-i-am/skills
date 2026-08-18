@@ -1,25 +1,25 @@
-# SQL And Persistence
+# SQL, Transactions, And Persistence
 
-Use this file for Effect SQL services, row schemas, repositories, transactions, resolvers, migrations, and persistence boundaries.
+Use this file for Effect SQL services, row schemas, repositories, transactions, foreign transaction callbacks, post-commit work, resolvers, migrations, and persistence boundaries.
 
 ## Repository Boundary
 
-Application and domain code depend on repository services whose contracts use domain types. The live Layer owns the SQL client and row translation.
+Application and domain code depend on repository capabilities whose contracts use domain values:
 
 ```ts
 export interface OrderRepositoryShape {
   readonly findById: (
     id: OrderId,
-  ) => Effect.Effect<Order, OrderNotFound | PersistenceError>;
-  readonly save: (order: Order) => Effect.Effect<void, PersistenceError>;
+  ) => Effect.Effect<Order, OrderNotFound | PersistenceError>
+  readonly save: (order: Order) => Effect.Effect<void, PersistenceError>
 }
 ```
 
-Do not expose SQL clients, driver errors, table row interfaces, or raw string IDs through this contract.
+Do not expose SQL clients, transaction handles, driver errors, table rows, or raw string IDs through this contract.
 
 ## Row Schema
 
-Persisted data is a boundary. Decode rows before domain use.
+Persisted data is a boundary. Decode rows before domain use:
 
 ```ts
 const OrderRow = Schema.Struct({
@@ -28,103 +28,128 @@ const OrderRow = Schema.Struct({
   status: OrderStatus,
   total_minor: Schema.Int,
   currency: CurrencyCode,
-  created_at: Schema.DateTimeUtcFromString,
-});
+  created_at: OrderCreatedAt,
+})
 
-const toOrder = (row: typeof OrderRow.Type): Order =>
-  Order.make({
-    id: row.id,
-    customerId: row.customer_id,
-    status: row.status,
-    total: Money.make({ minor: row.total_minor, currency: row.currency }),
-    createdAt: row.created_at,
-  });
+const decodeOrderRow = Schema.decodeUnknownEffect(OrderRow)
 ```
 
-Use explicit mapping when storage naming, joins, normalization, or domain invariants differ. Do not force one oversized schema to represent command, domain, row, and wire shapes.
+Use explicit mapping when storage naming, joins, normalization, or domain invariants differ. Do not force one oversized Schema to represent command, domain, row, and wire shapes.
+
+Hoist static row decoders and request encoders outside repeated repository calls.
 
 ## Effect SQL Schema Helpers
 
-Current v4 SQL modules provide Schema-aware helpers under unstable SQL paths. Prefer `SqlSchema.findAll`, `findOne`, `findOneOption`, or related helpers when they fit the query and target pin.
+Current v4 SQL modules provide Schema-aware helpers under unstable SQL paths. Use them when they fit the target pin and query shape, for example helpers that return all rows, one row, or an optional row.
 
-```ts
-const findByIdQuery = SqlSchema.findOne({
-  Request: Schema.Struct({ id: OrderId }),
-  Result: OrderRow,
-  execute: ({ id }) => sql`
-    SELECT id, customer_id, status, total_minor, currency, created_at
-    FROM orders
-    WHERE id = ${id}
-  `,
-});
-```
+Verify exact constructor names, option fields, transaction APIs, driver errors, and generated result types against installed source. Map empty results into the repository's domain not-found error rather than leaking a generic collection or driver error.
 
-Verify exact constructor names and option fields in the installed v4 source. Map `Option.none` or empty rows into the repository's domain not-found error.
+## Native Effect Transaction
 
-## Transactions
-
-Use a transaction for writes that must commit or roll back together:
+When the SQL client accepts an Effect transaction body, keep the body Effect-native:
 
 ```ts
 const completeOrder = Effect.fn("OrderRepository.complete")(function* (
   order: Order,
   outbox: OrderCompletedOutbox,
 ) {
-  const sql = yield* SqlClient.SqlClient;
+  const sql = yield* SqlClient.SqlClient
 
   yield* sql.withTransaction(
     Effect.gen(function* () {
-      yield* updateOrder(sql, order);
-      yield* insertOutbox(sql, outbox);
+      yield* updateOrder(sql, order)
+      yield* insertOutbox(sql, outbox)
     }),
-  );
-});
+  )
+})
 ```
 
-Check the exact transaction API for the installed driver and v4 beta.
+Check the exact transaction method for the installed driver and pin.
 
-Transaction rules:
+## Foreign Promise Transaction Callback
 
-- Keep network calls, email, provider SDK calls, and slow external work outside authoritative transactions.
-- Use an outbox, durable workflow, or post-commit action when external side effects must follow a committed write.
-- Keep transactions short and bounded.
-- Retry serialization failures only when the whole transaction body is safe to repeat.
-- Never swallow a transaction error and report success.
+Some database libraries supply the active transaction handle only inside a callback that must return a Promise. This is a legitimate local runtime boundary inside the persistence adapter.
+
+The bridge must:
+
+- run the Effect inside the callback because that callback owns the transaction;
+- preserve the active transaction in Effect context for nested repository calls;
+- inspect `Exit` rather than squashing every failure;
+- reject or signal the driver so every non-success exit rolls back;
+- reconstruct typed failure versus defect outside the callback;
+- preserve cancellation or document the driver's limitation;
+- remain private to the adapter while the public repository contract stays Effect-native.
+
+See `runtime-bridges.md` for the full pattern. Compile Cause and transaction APIs against the target pin and driver.
+
+## Ambient Active Transaction
+
+A `Context.Reference<Transaction | null>` can be appropriate when nested repository calls should automatically reuse an already active transaction while ordinary calls use the base client.
+
+Use it only for dynamic transaction context. The database capability itself remains a required `Context.Service`; do not hide persistence authority behind a default reference.
+
+Test concurrent transaction isolation and nested behavior.
+
+## Post-Commit Work
+
+External side effects must not run before the authoritative transaction commits.
+
+Use:
+
+- an outbox for durable asynchronous work;
+- a driver-supported after-commit hook;
+- an adapter-owned hook queue that runs only after the outermost commit;
+- a returned command/event that the caller executes after transaction success.
+
+Nested pass-through transactions must not run "after commit" work while an outer transaction can still roll back. Discard queued hooks on rollback. Decide whether post-commit observer failures are best-effort, retried, or surfaced.
+
+## Transaction Rules
+
+- keep network calls, email, provider SDK calls, and slow external work outside authoritative transactions;
+- keep transactions short and bounded;
+- retry serialization failures only when the whole body is safe to repeat;
+- preserve the same idempotency key across retried attempts;
+- never swallow a transaction error and report success;
+- classify begin/acquisition failures as part of the transaction contract;
+- preserve typed failures, defects, interruption, rollback, and post-commit ordering during migrations.
 
 ## Resolvers And Batching
 
-Use SQL resolvers when repeated keyed reads or writes can be grouped into real SQL batches. They can provide request deduplication and batching while retaining typed errors.
+Use SQL resolvers when repeated keyed reads or writes can be grouped into real SQL batches. They can provide deduplication and batching while retaining typed errors.
 
-- `SqlResolver.findById`: keyed reads
-- ordered or grouped resolvers: batch results must map reliably to requests
-- void resolvers: grouped writes with no per-item result
-- explicit batch size: respect database parameter and statement limits
-
-Do not adopt a resolver when the query cannot truthfully batch or when request ordering cannot be reconstructed safely.
+- keyed reads must associate every result with the correct request;
+- grouped writes must complete each request exactly once;
+- batch size must respect database parameter and statement limits;
+- ordering assumptions must be explicit;
+- a loop of per-item statements is not automatically a batch.
 
 ## Errors
 
-Map driver errors at the repository boundary into a small typed family such as:
+Map driver failures at the repository boundary into a small typed family such as:
 
-- unique conflict with a domain field or key
-- foreign-key or invariant conflict when callers can respond
-- not found
-- general persistence failure with bounded operation label
+- not found;
+- unique or invariant conflict with a domain key;
+- foreign-key conflict when a caller can respond;
+- general persistence failure with a bounded operation label.
 
 Keep raw driver causes in trusted diagnostics. Do not return SQL text, connection strings, filesystem paths, or database internals in public errors.
 
 ## Migrations And Startup
 
-Migrations, pool creation, extension checks, and connection validation belong in adapter or startup Layers. Decide whether migration failure should fail application acquisition. Do not run migrations from ordinary request workflows.
+Migrations, pool creation, extension checks, schema compatibility, and connection validation belong in adapter or startup Layers. Decide whether failure prevents application acquisition. Do not run migrations from ordinary request workflows.
 
 ## Verification
 
 Test repositories against a realistic database Layer where SQL semantics matter. Cover:
 
-- row decode and malformed persisted data
-- not found and uniqueness conflicts
-- commit and rollback
-- concurrent update policy
-- outbox atomicity where used
-- resolver batching and result association
-- Layer acquisition and pool finalization
+- row decode and malformed persisted data;
+- not found and uniqueness conflicts;
+- commit and rollback after typed failure and defect;
+- transaction begin/acquisition failure;
+- concurrent transaction isolation;
+- nested transaction reuse;
+- post-commit execution only after outer commit;
+- outbox atomicity;
+- safe retry and idempotency;
+- resolver batching and result association;
+- Layer acquisition and pool finalization.

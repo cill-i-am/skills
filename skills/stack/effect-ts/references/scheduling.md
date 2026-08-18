@@ -4,165 +4,60 @@ Use this file for retry, repeat, polling, timeout, backoff, jitter, pacing, dead
 
 ## Choose The Operation First
 
-- retry a failed effect: `Effect.retry` or `Effect.retryOrElse`
-- repeat a successful effect: `Effect.repeat`
-- poll until a condition: repeat plus a condition-aware Schedule or workflow state
-- delay one start: `Effect.delay`
-- enforce a deadline: `Effect.timeout`
-- model recurring values: Schedule, or Stream when downstream needs a multi-value pipeline
+- retry a failed Effect: retry or retry-or-else;
+- repeat a successful Effect: repeat;
+- poll until a condition: a condition-aware Schedule or explicit workflow state;
+- delay one start: delay;
+- enforce a deadline: timeout;
+- recurring values: Schedule or Stream when consumers need a many-valued pipeline.
 
-Use Schedule instead of `while (true)` plus manual sleeps.
+Use Schedule instead of `while (true)` plus manual sleeps for recurring policy. Exact Schedule metadata and combinator signatures are version-sensitive; compile a probe against the installed v4 pin.
 
 ## Core Semantics
 
-- The source effect runs once before the Schedule is stepped.
-- `Schedule.recurs(3)` permits three additional retries or repetitions.
-- `Schedule.spaced(...)` waits after an execution completes.
-- `Schedule.fixed(...)` aligns starts to a cadence.
-- `Schedule.exponential(...)` and `Schedule.fibonacci(...)` create backoff.
-- Add jitter to distributed retries to avoid synchronized storms.
-- Bound retry policies by attempts, elapsed time, or both.
-- Retry handles typed failures; defects and interruption are not ordinary retry input.
-- Repeat handles success; an unhandled failure stops repetition.
+Prove these for the target version instead of relying on memory:
+
+- whether the source runs before the first Schedule step;
+- how recurrence counts translate into total attempts;
+- whether spacing is measured after completion or on fixed boundaries;
+- how exponential/fibonacci delays are shaped;
+- how jitter, elapsed-time bounds, and input predicates compose;
+- what metadata is exposed to delay and observation functions.
 
 ## Bounded Retry
 
-Retry only the narrow adapter operation that is transient and proven idempotent.
+Retry only the narrow adapter operation that is transient and proven idempotent. Add jitter to distributed retries and bound attempts, elapsed time, or both.
 
-```ts
-const retryTransientProviderFailure: Schedule.Schedule<unknown, ProviderError> =
-  Schedule.exponential("100 millis").pipe(
-    Schedule.jittered,
-    Schedule.upTo({ times: 5 }),
-    Schedule.while(({ input }) => input.retryable),
-  );
+Do not retry an entire workflow when only one read is transient. Do not retry a non-idempotent write without an idempotency key or equivalent proof.
 
-export const fetchProfile = Effect.fn("Profiles.fetch")(function* (
-  id: ProfileId,
-) {
-  return yield* provider
-    .get(id)
-    .pipe(Effect.retry(retryTransientProviderFailure));
-});
-```
+## Exhaustion And Fallback
 
-Do not retry a whole workflow when only one read is transient. Do not retry non-idempotent writes unless the protocol provides an idempotency key or equivalent proof.
+Use retry-or-else only when exhaustion has a truthful fallback or final report. If the fallback cannot satisfy the same semantic contract, preserve the final typed error.
 
-## Exhaustion
+## Rate-Limit-Aware Policy
 
-Use `retryOrElse` when exhaustion needs a truthful fallback or final report:
+When a typed provider error carries retry timing, combine that bounded delay with normal backoff. Parse and validate header/provider values at the HTTP adapter boundary. Keep retry metadata typed rather than parsing messages.
 
-```ts
-const loadWithFallback = primary
-  .load(id)
-  .pipe(
-    Effect.retryOrElse(retryTransientProviderFailure, (error) =>
-      fallback
-        .load(id)
-        .pipe(
-          Effect.tap(() =>
-            Effect.logWarning("Profiles.primaryUnavailable", error),
-          ),
-        ),
-    ),
-  );
-```
+## Polling Workers
 
-If the fallback cannot satisfy the same semantic contract, let the final error remain visible.
-
-## Rate-Limit-Aware Retry
-
-When a typed provider error carries a retry delay, combine it with normal backoff:
-
-```ts
-interface RateLimited {
-  readonly retryAfterMs?: number;
-}
-
-const providerRetry: Schedule.Schedule<RateLimited, RateLimited> =
-  Schedule.exponential("200 millis").pipe(
-    Schedule.jittered,
-    Schedule.upTo({ times: 5 }),
-    Schedule.passthrough,
-    Schedule.modifyDelay(({ input, duration }) =>
-      Effect.succeed(
-        input.retryAfterMs === undefined
-          ? duration
-          : Duration.max(duration, Duration.millis(input.retryAfterMs)),
-      ),
-    ),
-  );
-```
-
-Keep `retryAfterMs` typed and validated when it enters from an HTTP header or SDK error.
-
-## Polling Worker
-
-Separate one pass from recurrence. Decide which pass failures may be logged and continued.
-
-```ts
-const runPass = Effect.fn("ProjectionWorker.pass")(function* () {
-  const batch = yield* source.nextBatch;
-  yield* Effect.forEach(batch, projectEvent, {
-    concurrency: 8,
-    discard: true,
-  });
-});
-
-const resilientPass = runPass().pipe(
-  Effect.tapError((error) =>
-    Effect.logError("ProjectionWorker.passFailed", error),
-  ),
-  Effect.ignore,
-);
-
-export const runProjectionWorker = resilientPass.pipe(
-  Effect.repeat(Schedule.spaced("1 second")),
-);
-```
-
-This policy continues after expected typed pass failures. Defects still reach supervision. Fork the recurring worker into its owning Layer scope.
+Separate one pass from recurrence. Decide which expected pass failures may be logged and continued, which should dead-letter, and which stop the worker. Defects remain visible to supervision. Fork the recurring worker into its owning Layer Scope.
 
 ## Per-Item Isolation
 
-Catch expected failures around each item only when skip, dead-letter, or later retry is the explicit policy:
+Catch expected failure around each item only when skip, dead-letter, or later retry is the explicit policy. Do not use `Effect.ignore` simply to keep a batch green when work may be lost.
 
-```ts
-yield *
-  Effect.forEach(
-    jobs,
-    (job) =>
-      processJob(job).pipe(
-        Effect.catchTag("InvalidJob", (error) =>
-          deadLetters.publish(job, error),
-        ),
-      ),
-    { concurrency: 5, discard: true },
-  );
-```
+## Deadlines And Clock
 
-Do not use `Effect.ignore` merely to keep a batch green. Persist or report the outcome when work may be lost.
+- use Effect time services rather than `Date.now()` or `new Date()` in Effect workflows;
+- use timeout when a caller has a real deadline and model timeout recovery explicitly;
+- use delay for one postponed start;
+- use sleep when sleeping is part of production behavior;
+- use TestClock in tests.
 
-## Deadlines And Sleeping
+## Race Versus Timeout
 
-- Use `Effect.timeout(...)` when the caller has a real deadline and model timeout recovery explicitly.
-- Use `Effect.delay(...)` to postpone one operation.
-- Use `Effect.sleep(...)` when sleeping is itself part of production behavior.
-- Use Clock-derived time in Effect workflows instead of `Date.now()`.
-- Use `TestClock` in tests; do not wait on wall-clock time.
-
-## Observability
-
-Annotate retries with stable operation, provider, attempt, and error-tag information. Avoid logging once per layer. Metrics should distinguish attempted, succeeded, exhausted, timed out, and cancelled outcomes without unbounded labels.
+Do not implement deadlines with an arbitrary race unless the race semantics are exactly what the product needs. Prefer-success and first-completion races differ materially. Use the dedicated timeout combinator when modeling a deadline.
 
 ## Verification
 
-Test:
-
-- initial attempt plus exact retry bound
-- non-retryable typed error exits immediately
-- idempotency behavior across repeated attempts
-- provider retry delay versus backoff
-- timeout and cancellation
-- polling continuation after expected pass failure
-- worker interruption when its owning scope closes
+Test the initial attempt, exact recurrence bound, non-retryable exit, exhaustion, idempotency, provider retry delay versus backoff, timeout, cancellation, polling continuation, worker interruption, and Clock behavior without wall-time waits.

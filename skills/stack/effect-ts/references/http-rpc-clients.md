@@ -1,51 +1,55 @@
-# HTTP, RPC, And Clients
+# HTTP, HttpApi, RPC, And Clients
 
-Use this file for outbound HTTP, Effect HttpClient, HttpApi, RPC, generated clients, status handling, decoding, retry, and transport adapters.
+Use this file for outbound HTTP, Effect HttpClient, HttpApi, RPC, generated clients, status handling, Schema decoding, retry, rate limiting, and transport adapters.
 
-## Version Gate
+## Exact-Pin Gate
 
-Effect v4 HTTP, HttpApi, RPC, and platform modules may live under unstable paths and change between beta releases. Inspect the target pin before choosing imports or copying APIs.
+Effect v4 HTTP, HttpApi, RPC, and platform modules often live under `effect/unstable/*` and can change between betas, release candidates, and stable releases.
 
-Current v4 source commonly exposes HTTP client modules under:
+Before choosing imports or copying an example:
 
-```ts
-import * as HttpClient from "effect/unstable/http/HttpClient";
-import * as HttpClientRequest from "effect/unstable/http/HttpClientRequest";
-import * as HttpClientResponse from "effect/unstable/http/HttpClientResponse";
-```
+1. inspect the target package and lockfile;
+2. read installed module exports, implementation, and tests;
+3. inspect nearby compiling project code;
+4. compile a narrow target-project probe;
+5. use current upstream only to clarify semantics.
 
-Do not add a v3 import fallback. Align package versions and use the API for the installed v4 beta.
+Do not add a v3 import fallback. Align package versions and use the API for the installed pin.
 
 ## Adapter Owns The Boundary
 
 A named client operation should:
 
-1. accept domain input
-2. encode the request contract
-3. attach base URL, auth, and required headers
-4. execute the request
-5. classify status
-6. decode the response with Schema
-7. map transport, status, and decode failures into typed adapter errors
-8. apply retry or rate-limit policy only when safe
+1. accept domain input;
+2. encode the request contract;
+3. attach base URL, auth, and required headers;
+4. execute the request;
+5. classify status;
+6. decode the response with Schema;
+7. map transport, status, and decode failures into typed adapter errors;
+8. apply retry or rate-limit policy only when safe.
 
 ```ts
+const encodeProfileId = Schema.encodeEffect(ProfileId)
+const decodeProfileResponse = Schema.decodeUnknownEffect(ProfileResponse)
+
 const getProfile = Effect.fn("ProfileProvider.get")(function* (id: ProfileId) {
-  const client = yield* HttpClient.HttpClient;
-  const encodedId = yield* Schema.encodeEffect(ProfileId)(id);
+  const client = yield* HttpClient.HttpClient
+  const encodedId = yield* encodeProfileId(id)
 
   return yield* client.get(`/profiles/${encodedId}`).pipe(
     Effect.flatMap(HttpClientResponse.filterStatusOk),
-    Effect.flatMap(HttpClientResponse.schemaBodyJson(ProfileResponse)),
+    Effect.flatMap((response) => response.json),
+    Effect.flatMap(decodeProfileResponse),
     Effect.mapError(
       (cause) => new ProfileProviderError({ operation: "getProfile", cause }),
     ),
     Effect.map(decodeProfileDomain),
-  );
-});
+  )
+})
 ```
 
-Use a Schema encoder or explicit adapter for branded IDs instead of relying on accidental string coercion.
+The response APIs above are illustrative; verify the target pin's JSON body helpers. Hoist static encoders and decoders rather than recompiling them per request.
 
 ## Configured Client Layer
 
@@ -53,81 +57,104 @@ Apply cross-cutting request transforms once when constructing the adapter:
 
 ```ts
 const makeProviderClient = Effect.gen(function* () {
-  const baseUrl = yield* Config.schema(ProviderBaseUrl, "PROVIDER_BASE_URL");
-  const token = yield* Config.redacted("PROVIDER_TOKEN");
-  const client = yield* HttpClient.HttpClient;
+  const baseUrl = yield* Config.schema(ProviderBaseUrl, "PROVIDER_BASE_URL")
+  const token = yield* Config.redacted("PROVIDER_TOKEN")
+  const client = yield* HttpClient.HttpClient
 
-  return client.pipe(
-    HttpClient.mapRequest(HttpClientRequest.prependUrl(baseUrl)),
-    HttpClient.mapRequest(HttpClientRequest.bearerToken(Redacted.value(token))),
-  );
-});
+  return configureProviderClient(client, { baseUrl, token })
+})
 ```
 
-Base URL, auth, common headers, telemetry, and standard status behavior belong in client construction. Domain-specific payload and error mapping stay in each operation.
+Base URL, auth, common headers, telemetry, cookies, redirect policy, and standard status behavior belong in client construction. Domain-specific payload and error mapping stay in each operation.
+
+Keep the token Redacted until the narrow request transform that needs the raw value.
 
 ## Request And Response Schemas
 
-- Use schema-backed JSON body encoders when the v4 module provides them.
-- Classify non-success status before decoding a success payload.
-- Decode unknown response bodies with Schema.
-- Model provider error bodies separately from success bodies.
-- Preserve only the provider evidence needed for diagnosis; redact tokens and private payloads.
-- Keep provider DTOs private and map them to domain types before returning from the adapter.
+- use Schema-backed body encoders where the target pin provides them;
+- classify non-success status before decoding a success payload;
+- decode unknown response bodies with Schema;
+- model provider error bodies separately from success bodies;
+- preserve only evidence needed for diagnosis and recovery;
+- keep provider DTOs private and map them to domain values before returning inward;
+- annotate shared schemas with stable identifiers for generated protocols and documentation.
+
+Do not let raw `Response`, unknown JSON, provider SDK payloads, or Promise errors escape the adapter.
 
 ## Retry And Rate Limits
 
-Use the current v4 `HttpClient.retryTransient(...)` for common transient transport and server failures when its policy fits. Use `HttpClient.withRateLimiter(...)` when proactive pacing and rate-limit headers should be handled at client level.
+Current v4 lines expose HTTP retry and rate-limiter helpers, but option shapes and semantics are exact-pin APIs. Compile the chosen policy.
 
-Use operation-level Schedule retry when policy depends on domain errors, provider-specific payloads, or idempotency. Do not retry non-idempotent requests without an idempotency key or equivalent guarantee.
+Use client-level policy for cross-cutting transport concerns when it fits. Use operation-level Schedule retry when policy depends on domain errors, provider-specific payloads, retry-after data, or idempotency.
 
-## HttpApi And RPC
+Do not retry non-idempotent requests without an idempotency key or equivalent guarantee. Test exhaustion, cancellation, and whether a 429 response is returned or retried.
 
-Keep one authoritative Schema-backed protocol contract. Derive handlers, clients, documentation, and wire error unions from it where the v4 packages support that workflow.
+## Protocol And Package Direction
 
-- handlers decode transport input and call application services
-- application services do not import server handler implementations
-- Effect clients depend on the protocol contract, not the server runtime
-- Promise clients, when required for consumers, derive from the same contract without duplicating models
-- generated files are regenerated, never hand-edited
-- public error variants have stable tags, status mapping, and redaction behavior
+Keep one authoritative Schema-backed protocol contract:
+
+```text
+Schema / domain contracts
+        ↓
+Protocol definitions and generated clients
+        ↓
+Core application services and client consumers
+        ↓
+Server handlers and host adapters
+```
+
+- handlers decode transport input and call application services;
+- application services do not import handler implementations;
+- Effect clients depend on protocol and Schema packages, not Core or Server implementation packages;
+- Promise facades, when needed, derive from the same contract rather than duplicating models;
+- generated files are regenerated, never hand-edited;
+- architecture tests should prevent the client package importing server or adapter internals;
+- public error variants have stable tags, status mapping, and redaction behavior.
 
 Handlers remain thin:
 
 ```ts
 const handler = Effect.fn("HttpApi.Users.get")(function* ({ path }) {
-  const users = yield* UserService;
-  return yield* users.get(path.userId);
-});
+  const users = yield* UserService
+  return yield* users.get(path.userId)
+})
 ```
-
-Use Schema for path, query, headers, request bodies, responses, and transport-visible errors. Verify exact v4 HttpApi or RPC constructors from the installed source.
 
 ## Raw Fetch Exception
 
-Raw `fetch` is acceptable only for a deliberate platform, browser, edge, or dependency-minimizing adapter where unstable Effect HTTP modules are unsuitable. Keep it inside an Effect service and preserve cancellation:
+Raw `fetch` is acceptable only for a deliberate platform, browser, edge, or dependency-minimizing adapter where the target pin's Effect HTTP modules are unsuitable.
+
+Keep it inside an Effect-native capability and preserve cancellation:
 
 ```ts
-const response =
-  yield *
-  Effect.tryPromise({
-    try: (signal) => fetch(url, { signal, headers }),
-    catch: (cause) =>
-      new ProviderTransportError({ operation: "request", cause }),
-  });
+const response = yield* Effect.tryPromise({
+  try: (signal) => fetch(url, { signal, headers }),
+  catch: (cause) =>
+    new ProviderTransportError({ operation: "request", cause }),
+})
 ```
 
-Then classify status and decode JSON with Schema. Do not let raw `Response`, unknown JSON, or Promise errors escape the adapter.
+Then classify status and decode the body with Schema. Scope any raw-fetch lint rule to packages where Effect HTTP is the intended abstraction; do not ban a reviewed host boundary globally.
 
-## Testing
+## HttpApi And RPC Tests
 
-Prefer a test HttpClient or local test-server Layer over global fetch monkeypatching. Test:
+For ordinary HttpApi handler tests, prefer the target pin's in-memory typed test client, such as `HttpApiTest`, when available. It can exercise request encoding, middleware, routing, handler execution, response decoding, and typed failures without a socket.
 
-- request path, encoded body, headers, and auth
-- success decoding
-- non-success status classification
-- malformed success and error payloads
-- cancellation and timeout
-- retry bounds and idempotency keys
-- rate-limit behavior
-- public protocol error encoding
+Use a live test server for actual transport behavior: streaming, sockets, TLS, redirects, proxies, platform adapters, deployment routing, or interoperability with an external client.
+
+For RPC, test both protocol encoding and the chosen transport separately. Regenerate clients after protocol changes and include a check that generated output is clean.
+
+## Verification
+
+Test:
+
+- request path, encoded body, query, headers, and auth;
+- success decoding and domain mapping;
+- non-success status classification;
+- malformed success and error payloads;
+- cancellation and timeout;
+- retry bounds, retry-after policy, and idempotency keys;
+- rate-limit behavior;
+- public protocol error encoding and redaction;
+- generated-client regeneration and package-direction checks;
+- in-memory handler behavior plus live transport only where needed.
