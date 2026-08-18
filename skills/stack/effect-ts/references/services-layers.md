@@ -1,141 +1,168 @@
 # Services, Layers, And Lifecycles
 
-Use this file for service contracts, implementations, Layer graphs, module surfaces, test replacement, and long-lived service work.
+Use this file for service contracts, implementation Layers, dependency graphs, runtime topology, lifetime classification, test replacement, and long-lived service work.
 
-## Service Contract
+## Type Ownership
 
-Use a service when callers need a runtime capability, substitution, dependency tracking, lifecycle, or authority boundary.
+Use three different policies rather than one universal style:
+
+1. **Serializable data:** derive the TypeScript type from its owning Schema.
+2. **Private implementation value with one factory:** infer with `ReturnType<typeof makeX>` when that keeps one source of truth.
+3. **Public capability or value with multiple implementations:** define an explicit stable interface.
+
+A service is appropriate when callers need a runtime capability, substitution, dependency tracking, lifecycle, or authority boundary.
 
 ```ts
-import { Context, Effect, Layer } from "effect";
-
 export interface UserRepositoryShape {
   readonly findById: (
     id: UserId,
-  ) => Effect.Effect<User, UserNotFound | PersistenceError>;
-  readonly save: (user: User) => Effect.Effect<void, PersistenceError>;
+  ) => Effect.Effect<User, UserNotFound | PersistenceError>
+  readonly save: (user: User) => Effect.Effect<void, PersistenceError>
 }
 
 export class UserRepository extends Context.Service<
   UserRepository,
   UserRepositoryShape
->()("@app/UserRepository") {}
+>()("@app/users/UserRepository") {}
 ```
 
-Guidance:
+Use package/path-qualified service identifiers. Reusing a runtime key for unrelated services is a correctness bug.
 
-- Service methods return Effect values, not Promises.
-- Use domain types in arguments and results; do not expose raw database rows, SDK payloads, or string IDs.
-- Keep the interface independent of the live implementation.
-- Export only intentional capabilities. Keep row codecs and adapter helpers private.
-- Follow an existing local module naming style. Do not require self-exporting namespace tricks.
+Service contracts should:
 
-## Live Layer
+- return Effect values rather than raw Promises;
+- use domain types rather than driver rows or SDK payloads;
+- remain independent of the live implementation;
+- expose only intentional capabilities;
+- preserve expected failures and requirements instead of executing or providing them internally.
 
-Build real implementations in Layers and return `Service.of(...)`.
+In ordinary orchestration, prefer `const service = yield* Service`. Use `.use(...)` for a compact accessor or bridge when it improves the local API, not to obscure the dependency graph.
+
+## Standard Service Module Shape
+
+A useful default module exports:
+
+- the service interface and `Context.Service` class;
+- the primary `layer` or a descriptive live Layer name;
+- variants such as `layerTest`, `layerMemory`, `layerConfig`, or `layerNoDeps` when they have real consumers;
+- private adapter helpers and row/provider codecs.
 
 ```ts
-export const UserRepositoryLive = Layer.effect(
+export const layer = Layer.effect(
   UserRepository,
   Effect.gen(function* () {
-    const sql = yield* SqlClient.SqlClient;
+    const sql = yield* SqlClient.SqlClient
 
     const findById = Effect.fn("UserRepository.findById")(function* (
       id: UserId,
     ) {
-      const rows = yield* sql<UserRow>`
-        SELECT id, display_name, email
-        FROM users
-        WHERE id = ${id}
-      `.pipe(
-        Effect.mapError(
-          (cause) => new PersistenceError({ operation: "findUserById", cause }),
-        ),
-      );
-
-      const row = rows[0];
-      if (row === undefined) {
-        return yield* new UserNotFound({ id });
-      }
-      return yield* Schema.decodeUnknownEffect(User)(row).pipe(
-        Effect.mapError(
-          (cause) =>
-            new PersistenceError({ operation: "decodeUserRow", cause }),
-        ),
-      );
-    });
+      const rows = yield* loadUserRows(sql, id)
+      const row = rows[0]
+      if (row === undefined) return yield* new UserNotFound({ id })
+      return yield* decodeUserRow(row)
+    })
 
     const save = Effect.fn("UserRepository.save")(function* (user: User) {
-      yield* persistUser(sql, user);
-    });
+      yield* persistUser(sql, user)
+    })
 
-    return UserRepository.of({ findById, save });
+    return UserRepository.of({ findById, save })
   }),
-);
+)
 ```
 
-Choose the Layer constructor by acquisition behavior:
+Use `Effect.fnUntraced` instead of named `Effect.fn` when a reusable generator wrapper does not deserve an independent span. Follow the target repository's established instrumentation policy.
+
+## Layer Constructor Chooser
+
+Verify the exact signatures against the installed Effect version.
 
 ```ts
-Layer.succeed(Service, implementation); // already built
-Layer.sync(Service, () => implementation); // lazy synchronous acquisition
-Layer.effect(Service, makeService); // effectful; acquisition may require Scope
+Layer.succeed(Service, implementation)       // already built
+Layer.sync(Service, () => implementation)    // lazy synchronous acquisition
+Layer.effect(Service, makeService)            // effectful acquisition
+Layer.effectContext(makeContext)              // deliberately provides several tags
+Layer.unwrap(selectLayer)                     // effect chooses a Layer
 ```
 
-Use `Layer.effectContext(...)` when one acquisition deliberately provides multiple tags. Use `Layer.unwrap(...)` when configuration or runtime discovery selects a Layer.
+A Layer may acquire scoped resources because Layer construction is scope-aware. Use `Effect.acquireRelease` inside the Layer when the implementation owns a closeable resource.
 
-## Application Service
+## Lifetime Taxonomy
 
-Application services orchestrate capabilities while leaving requirements visible.
+Every stateful service, resource, cache, runtime, and background fiber should be classified as one of:
+
+- process/global;
+- application runtime;
+- tenant/workspace/location;
+- request/session/job;
+- operation-local;
+- cache-entry.
+
+State the owner, sharing policy, invalidation trigger, and disposal path. Do not let a mutable singleton accidentally become process-global merely because it was declared at module scope.
+
+## Application Services
+
+Application workflows orchestrate capabilities while leaving requirements visible.
 
 ```ts
 export const registerUser = Effect.fn("Users.register")(function* (
   command: RegisterUser,
 ) {
-  const users = yield* UserRepository;
-  const identities = yield* IdentityProvider;
-  const notifications = yield* Notifications;
+  const users = yield* UserRepository
+  const identities = yield* IdentityProvider
+  const notifications = yield* Notifications
 
-  const identity = yield* identities.create(command.email);
+  const identity = yield* identities.create(command.email)
   const user = User.make({
     id: identity.userId,
     displayName: command.displayName,
     email: command.email,
-  });
+  })
 
-  yield* users.save(user);
-  yield* notifications.welcome(user);
-  return user;
-});
+  yield* users.save(user)
+  yield* notifications.welcome(user)
+  return user
+})
 ```
 
-Do not provide live Layers inside this workflow. Tests and alternate hosts must be able to replace each dependency at the composition root.
+Do not provide live Layers inside this workflow. Tests and alternate hosts must be able to replace each capability at the composition root.
 
-## Dependency Graphs
+## Layer Graph Progression
 
-Assemble named, topologically understandable subgraphs:
+Use the smallest graph representation that remains understandable.
+
+### Small Graph
+
+Use ordinary Layer composition and one application root.
 
 ```ts
-const PersistenceLive = UserRepositoryLive.pipe(Layer.provide(SqlLive));
-
-const IntegrationsLive = Layer.mergeAll(
-  IdentityProviderLive,
-  NotificationsLive,
-).pipe(Layer.provide(HttpClientLive));
+const PersistenceLive = UserRepositoryLive.pipe(Layer.provide(SqlLive))
+const IntegrationsLive = Layer.mergeAll(IdentityLive, NotificationsLive).pipe(
+  Layer.provide(HttpClientLive),
+)
 
 export const AppLayer = Layer.mergeAll(
   PersistenceLive,
   IntegrationsLive,
   AppConfigLive,
-);
+)
 ```
 
-- `Layer.provide(...)`: satisfy and hide an implementation dependency.
-- `Layer.provideMerge(...)`: satisfy it and intentionally keep it exposed.
-- `Layer.mergeAll(...)`: combine independent services that remain exposed.
-- `Layer.fresh(...)` or local provisioning: opt out of memoization only when isolated acquisition is required.
+### Medium Graph
 
-Do not use `mergeAll` or `provideMerge` as trial-and-error type-error fixes. Name large subgraphs by responsibility and keep authority-bearing dependencies visible.
+Name responsibility-based subgraphs and package-level composition roots. Replace whole capability Layers in tests rather than rebuilding transitive wiring at every call site.
+
+### Large Multi-Lifetime Graph
+
+Only after the ordinary graph becomes difficult to reason about, consider typed dependency metadata, cycle detection, replacement maps, and lifetime tags. OpenCode's LayerNode architecture is an example of this progression, not a universal Effect requirement.
+
+### Several Runtimes Sharing Acquisitions
+
+Separately created `ManagedRuntime` values do not share Layer acquisitions automatically. Use a deliberate shared `Layer.MemoMap` only when runtime identity and resource sharing are required. Isolation is the default for tests and tenant boundaries.
+
+### Keyed Resource Graphs
+
+Use `ScopedCache`, `LayerMap`, or another owned keyed-scope abstraction when each tenant/workspace/location key owns resources that require finalization. Do not cache a scoped resource in a plain Map or let it escape a closed scope.
 
 ## Long-Lived Work
 
@@ -144,70 +171,63 @@ A Layer that starts a listener, stream consumer, subscription, worker, or foreve
 ```ts
 export const ProjectionWorkerLive = Layer.effectDiscard(
   Effect.gen(function* () {
-    const events = yield* DomainEvents;
-    const projection = yield* UserProjection;
+    const events = yield* DomainEvents
+    const projection = yield* UserProjection
 
     yield* events.stream.pipe(
       Stream.runForEach(projection.apply),
       Effect.forkScoped,
-    );
+    )
   }),
-);
-```
-
-When acquisition owns a closeable resource, use a scoped Layer:
-
-```ts
-export const BrokerLive = Layer.effect(
-  Broker,
-  Effect.acquireRelease(connectBroker, (client) => client.close).pipe(
-    Effect.map((client) => Broker.of(makeBroker(client))),
-  ),
-);
+)
 ```
 
 Lifecycle rules:
 
-- Use `Effect.forkScoped`, `FiberSet`, or `FiberMap` for owned background work.
-- Do not run a never-ending effect inline during Layer acquisition.
-- Do not detach fibers with an unowned `runFork` from service code.
-- Do not expose `start` and `stop` methods unless manual lifecycle control is a real domain capability.
-- Finalizers should be idempotent and tolerate partial acquisition where the API requires it.
+- use `Effect.forkScoped`, `FiberSet`, or `FiberMap` for owned background work;
+- do not run a never-ending effect inline during Layer acquisition;
+- do not detach a fiber with host-level `runFork` merely to escape ownership;
+- keep finalizers idempotent and tolerant of partial acquisition where necessary;
+- expose manual `start` and `stop` only when lifecycle control is a real domain capability.
+
+A service implementation may contain a foreign Promise/callback bridge when the adapter protocol demands it, but the public service contract remains Effect-native. Follow `runtime-bridges.md`.
 
 ## Runtime Ownership
 
 Build the Layer graph once for the lifetime intended by the host:
 
-- process or server: one managed runtime for the process
-- Durable Object or actor: one runtime for the actor lifetime
-- CLI: one scoped runtime for the command
-- test: one scoped runtime or test-provided Layer per test
+- process/server: one managed runtime for the process;
+- Durable Object/actor: one runtime for the actor lifetime;
+- tenant/workspace/location: one keyed scoped acquisition;
+- CLI: one scoped runtime for the command;
+- test: one isolated scoped runtime or test Layer per test unless sharing is explicit.
 
-Do not create a managed runtime per repository call or ordinary request. Execute application programs through the owner runtime at the host edge.
+Do not create a managed runtime per repository call or ordinary request. The owner must dispose a long-lived runtime.
 
 ## Test Services
 
-Reusable stateful fakes should implement the same production interface and may expose a separate control tag for tests.
+A reusable stateful fake should implement the production contract and may expose a separate control tag.
 
 ```ts
 export interface NotificationTestShape extends NotificationShape {
-  readonly sent: Effect.Effect<ReadonlyArray<Notification>>;
-  readonly failNext: (error: NotificationError) => Effect.Effect<void>;
+  readonly sent: Effect.Effect<ReadonlyArray<Notification>>
+  readonly failNext: (error: NotificationError) => Effect.Effect<void>
 }
 
 export class NotificationTest extends Context.Service<
   NotificationTest,
   NotificationTestShape
->()("@app/Notification/Test") {}
+>()("@app/notifications/NotificationTest") {}
 ```
 
-Use `Layer.effectContext(...)` so the same object backs both the production tag and test-control tag. Production code depends only on the production tag.
+Use `Layer.effectContext(...)` when the same object intentionally backs both the production tag and the test-control tag. Production code depends only on the production tag.
 
 ## Red Flags
 
 - Service methods return Promises or accept raw string IDs.
-- A domain workflow calls `Effect.runPromise` or chooses its own live Layer.
-- An adapter leaks SDK clients or database rows through the service interface.
-- Layer acquisition never completes because it runs the worker inline.
+- A workflow chooses its own live Layer or runtime.
+- A service key is a vague global name reused across packages.
+- Layer acquisition never completes because it runs a worker inline.
 - A runtime is allocated per operation without a genuine isolation requirement.
-- `Context.Reference` hides credentials, persistence, transports, or authority behind defaults.
+- Several runtimes accidentally acquire duplicate clients that should be shared.
+- `Context.Reference` hides required authority, persistence, credentials, or transports behind defaults.

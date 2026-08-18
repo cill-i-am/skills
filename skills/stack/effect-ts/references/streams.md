@@ -1,58 +1,49 @@
 # Streams
 
-Use this file for event sources, async iterables, queues, pubsubs, pagination, backpressure, transformation, and long-lived consumers.
+Use this file for event sources, async iterables, queues, pubsubs, pagination, backpressure, transformation, long-lived consumers, and callback adapters.
 
 ## Mental Model
 
-`Stream<A, E, R>` is a lazy, effectful, many-valued source. It emits `A`, fails with expected `E`, requires `R`, supports interruption, and is naturally backpressured by its consumer.
+`Stream<A, E, R>` is a lazy, effectful, many-valued source. It emits `A`, fails with expected `E`, requires `R`, supports interruption, and is pull-based with backpressure.
 
-Use Stream for:
+Use Stream for event sources, subscriptions, paginated APIs, files, stdin, sockets, provider callbacks, scheduled values, and pipelines that filter, batch, buffer, throttle, or process values concurrently.
 
-- event and message sources
-- subscriptions and provider callbacks
-- paginated APIs
-- file, stdin, socket, or platform streams
-- scheduled values or ticks that feed a pipeline
-- filtering, batching, buffering, throttling, or bounded concurrent processing
-
-For one recurring action that emits no meaningful values, use `Effect.repeat` plus Schedule.
+For one recurring action that emits no meaningful values, use Effect repeat plus Schedule.
 
 ## Source Chooser
 
-- in-memory values: `Stream.make(...)` or `Stream.fromIterable(...)`
-- callback producer: private Queue plus `Stream.fromQueue(...)`
-- broadcast source: PubSub plus `Stream.fromPubSub(...)`
-- current state and updates: `SubscriptionRef`
-- scheduled values: `Stream.fromSchedule(...)`
-- paginated API: `Stream.paginate(...)`
-- async iterable: `Stream.fromAsyncIterable(...)`
-- Effect that acquires a Stream: `Stream.unwrap(...)`
+- in-memory values: stream constructors from values or iterables;
+- callback producer: private Queue plus `Stream.fromQueue`;
+- broadcast source: PubSub plus `Stream.fromPubSub`;
+- current state and updates: SubscriptionRef;
+- scheduled values: Stream from Schedule;
+- paginated API: `Stream.paginate`;
+- async iterable: `Stream.fromAsyncIterable`;
+- Effect that acquires a Stream: `Stream.unwrap`.
 
-Service contracts should expose the Stream, not the implementation's producer handle:
+Service contracts expose the Stream, not the producer handle:
 
 ```ts
 export interface DomainEventsShape {
-  readonly events: Stream.Stream<DomainEvent, EventSourceError>;
+  readonly events: Stream.Stream<DomainEvent, EventSourceError>
 }
 ```
 
-Keep Queue, PubSub, callback registration, and mutable refs private to the adapter Layer.
+Keep Queue, PubSub, callback registration, mutable refs, and SDK handles private to the adapter Layer.
 
 ## Callback Adapter
 
-Bridge an external callback into an owned Queue, then expose a Stream:
+Bridge an external callback into an owned Queue and scoped callback runner:
 
 ```ts
 export const ProviderEventsLive = Layer.effect(
   ProviderEvents,
   Effect.gen(function* () {
-    const queue = yield* Queue.bounded<ProviderEvent>(256);
-    const provider = yield* ProviderSdk;
+    const queue = yield* Queue.bounded<ProviderEvent>(256)
+    yield* Effect.addFinalizer(() => Queue.shutdown(queue).pipe(Effect.asVoid))
 
-    yield* Effect.addFinalizer(() => Queue.shutdown(queue).pipe(Effect.asVoid));
-
-    const fibers = yield* FiberSet.make<void>();
-    const runFork = yield* FiberSet.runtime(fibers)();
+    const runFork = yield* FiberSet.makeRuntime()
+    const provider = yield* ProviderSdk
 
     yield* Effect.acquireRelease(
       Effect.sync(() =>
@@ -64,98 +55,116 @@ export const ProviderEventsLive = Layer.effect(
                 Effect.logError("ProviderEvents.invalidEvent", error),
               ),
             ),
-          );
+          )
         }),
       ),
       (unsubscribe) => Effect.sync(unsubscribe),
-    );
+    )
 
-    return ProviderEvents.of({
-      events: Stream.fromQueue(queue),
-    });
+    return ProviderEvents.of({ events: Stream.fromQueue(queue) })
   }),
-);
+)
 ```
 
-The `FiberSet` runtime is the host callback bridge, and the Layer scope owns every callback fiber. Scope closure unsubscribes the provider, interrupts callback work, and shuts down the Queue.
+Verify `FiberSet.makeRuntime` against the target pin. Use an explicit FiberSet when the service must inspect or join callback fibers.
+
+State the malformed-input policy explicitly: log and drop, fail the stream, dead-letter, or stop the source. A callback adapter must also restore any required non-Effect ambient context and define behavior after disposal.
 
 ## Transformation Chooser
 
-- pure one-to-one: `Stream.map`
-- effectful one-to-one: `Stream.mapEffect`
-- bounded concurrent mapping: `Stream.mapEffect(fn, { concurrency })`
-- order irrelevant: add `unordered: true`
-- zero or many outputs: `Stream.flatMap`
-- predicate: `Stream.filter` or `Stream.filterEffect`
-- stateful transform: `Stream.mapAccum` or `Stream.mapAccumEffect`
-- debounce quiet periods: `Stream.debounce`
-- shape throughput: `Stream.throttle` or `Stream.throttleEffect`
+- pure one-to-one: map;
+- effectful one-to-one: effectful map;
+- bounded concurrent mapping: effectful map with explicit concurrency;
+- order irrelevant: opt into unordered execution when supported;
+- zero or many outputs: flatMap;
+- predicate: filter or effectful filter;
+- stateful transform: map-accumulate;
+- quiet-period control: debounce;
+- throughput shaping: throttle.
 
-Use `Stream.paginate(...)` for pull pagination. Its step is effectful and returns the emitted chunk plus an optional next cursor.
+Verify exact option objects and concurrency signatures against the target pin.
+
+## Pagination
+
+At current v4 RC lines, `Stream.paginate` expects an Effect producing an array of values plus an `Option` next state:
 
 ```ts
 const pages = Stream.paginate(initialCursor, (cursor) =>
-  provider
-    .listPage(cursor)
-    .pipe(Effect.map((page) => [page.items, page.nextCursor] as const)),
-);
+  provider.listPage(cursor).pipe(
+    Effect.map((page) => [
+      page.items,
+      Option.fromNullable(page.nextCursor),
+    ] as const),
+  ),
+)
 ```
 
-Use branded cursor types when cursors are application-visible or persisted. Keep opaque provider cursor strings inside the adapter when only the provider interprets them.
+Older betas may differ. Compile the exact step signature against the target installation.
+
+Use a branded cursor when it is persisted or application-visible. Keep opaque provider cursors private to the adapter when only the provider interprets them.
 
 ## Consumption Chooser
 
-- perform an effect for each value: `Stream.runForEach`
-- run and ignore elements: `Stream.runDrain`
-- collect a known finite stream: `Stream.runCollect`
-- collect first N in tests: `Stream.take(n)` then `runCollect`
-- fold to one value: `Stream.runFold`
-- long-lived Layer consumer: `runForEach` then `Effect.forkScoped`
+- perform an Effect for each value: run-for-each;
+- run and ignore elements: run-drain;
+- collect a known finite stream: run-collect;
+- collect the first N in tests: take then collect;
+- fold to one value: run-fold;
+- long-lived Layer consumer: consume then `Effect.forkScoped`.
 
-Never `runCollect` an unbounded production stream.
+Never collect an unbounded production stream.
 
 ## Long-Lived Consumer
 
 ```ts
 export const UserProjectionWorkerLive = Layer.effectDiscard(
   Effect.gen(function* () {
-    const events = yield* DomainEvents;
-    const projection = yield* UserProjection;
+    const events = yield* DomainEvents
+    const projection = yield* UserProjection
 
     yield* events.events.pipe(
-      Stream.filter(JobEvent.guards.Finished),
       Stream.mapEffect(projection.apply, { concurrency: 8 }),
       Stream.runDrain,
       Effect.forkScoped,
-    );
+    )
   }),
-);
+)
 ```
 
-The Layer owns the consumer. Preserve typed stream failures unless this supervision boundary has an explicit continue, restart, or dead-letter policy.
+The Layer owns the consumer. Preserve typed source failures unless the supervision boundary has an explicit restart, continue, dead-letter, or shutdown policy.
 
 ## Backpressure
 
 Prefer natural pull backpressure. Add buffering only when producer and consumer must decouple.
 
-- suspend strategy: producers wait when full
-- dropping strategy: discard new values when full
-- sliding strategy: preserve newest values by dropping old ones
-- unbounded: only when an external invariant proves bounded growth
+- suspend: producers wait and completeness matters;
+- dropping: discard new values;
+- sliding: keep newest values by discarding old pending values;
+- unbounded: only when an external invariant proves bounded growth.
 
-Select the strategy from product semantics. Audit events usually require suspend; presence or UI refresh events may tolerate sliding.
+Audit events usually require suspend; presence or UI refresh events may tolerate sliding.
 
 ## Keyed Processing
 
-When values for one key must remain ordered but different keys can run concurrently, use a named helper backed by `FiberMap`, keyed queues, or a keyed semaphore. Do not scatter maps of mutable Promises or fibers through stream consumers.
+When values for one key must remain ordered while different keys run concurrently, use a named helper backed by FiberMap, keyed queues, or a keyed semaphore. State the policy:
 
-State the policy explicitly:
+- queue every value per key;
+- coalesce to latest pending value;
+- cancel and replace current work;
+- reject while already running.
 
-- queue every value per key
-- coalesce to the latest pending value
-- cancel and replace current work
-- reject when already running
+Do not scatter maps of mutable Promises or fibers through consumers.
 
 ## Verification
 
-Test finite transformations with `Stream.fromIterable`. For interactive sources, use a test-owned Queue. Verify backpressure strategy, source failure, consumer failure, ordering, cancellation, shutdown, and long-lived scope cleanup without arbitrary sleeps.
+Test:
+
+- finite transformations with an in-memory source;
+- callback decode success and malformed-input policy;
+- backpressure strategy under pressure;
+- source and consumer failure;
+- ordering and keyed concurrency;
+- cancellation and shutdown;
+- callback work after owner disposal;
+- long-lived Scope cleanup without arbitrary sleeps;
+- pagination termination and target-pin cursor signature.

@@ -1,131 +1,118 @@
-# Source Lookup
+# Source Lookup And Compatibility Proof
 
-Use live source for API spelling and semantics. Do not create or commit a vendored `.repos/effect` tree.
+Use live source for API spelling and semantics. Reference repositories teach architecture; the target installation proves compatibility.
 
-## Priority Order
+## Evidence Priority
 
-1. Target project's package pin, lockfile, local Effect guidance, and nearby code.
-2. Installed `effect` and `@effect/*` source for that exact v4 beta.
-3. Current upstream Effect v4 source and tests.
-4. Kit Langton's Effect skill for concise production patterns.
-5. Exemplar application repositories for architecture, adapters, and runtime ownership.
+1. Target repository instructions, package manifest, lockfile, compiler settings, and nearby compiling code.
+2. The exact installed `effect` and `@effect/*` package guidance, declarations, implementation, and adjacent tests.
+3. A narrow scratch probe compiled with the target project's own typecheck command.
+4. Current upstream Effect source and tests for semantic clarification.
+5. Exemplar compiling source, tests, and enforced lint configuration at a pinned revision.
+6. Exemplar prose, migration notes, and embedded skills.
+7. Website posts or remembered examples for conceptual orientation only.
 
-An exemplar never overrides the target pin. Do not copy v3 fallback code into a v4 project.
+Compiling code and enforcement outrank checked-in prose when they disagree. An exemplar never overrides the target pin.
 
-## Resolve Source
+## Resolve The Target Pin
 
-Installed Effect:
+Inspect the manifest and lockfile rather than trusting a semver range alone:
 
-```bash
+```sh
+rg -n '"effect"|"@effect/' package.json pnpm-lock.yaml yarn.lock package-lock.json bun.lock
+```
+
+When the project supports it, resolve installed source with its package manager or a source tool such as:
+
+```sh
 pnpm exec opensrc path --cwd . effect
 ```
 
-Exemplar repositories:
+Also inspect shipped package-level agent guidance, AI docs, cookbooks, declarations, source, and tests. Package layouts vary by release.
 
-```bash
-pnpm exec opensrc path --cwd . kitlangton/skills
-pnpm exec opensrc path --cwd . anomalyco/opencode
-pnpm exec opensrc path --cwd . UsefulSoftwareCo/executor
-```
+## Compile A Probe
 
-If `opensrc` cannot resolve a repository, clone it read-only under `/tmp`. Record its commit SHA in the investigation or `source-study.md`; do not vendor it into the target repository.
+For a version-sensitive API, create a disposable TypeScript file in the repository and compile it with the project's normal command. Include the real imports and the smallest representative call shape. Delete the probe afterward.
 
-## Effect v4 Routes
+A matching symbol name is not enough. Prove its type parameters, option fields, return/error/service channels, and runtime semantics where relevant.
 
-Start with the module implementation and its adjacent tests:
+Probe especially:
+
+- Schema classes, brands, error constructors, decoders, encoders, and optionality;
+- `Effect.fn`, `fnUntraced`, race, timeout, and callback constructors;
+- Layer, Scope, ManagedRuntime, MemoMap, Cache, and ScopedCache;
+- Schedule metadata and combinators;
+- FiberSet/FiberMap runtime constructors;
+- Stream pagination and callback sources;
+- unstable HTTP, HttpApi, RPC, SQL, workflow, platform, observability, and reactivity modules;
+- test framework helpers and automatic Scope behavior.
+
+## Upstream Routes
+
+Start with the installed module and adjacent tests. Current upstream commonly contains:
 
 - `packages/effect/src/Effect.ts`
-- `packages/effect/src/Context.ts`
-- `packages/effect/src/Layer.ts`
-- `packages/effect/src/Scope.ts`
-- `packages/effect/src/ManagedRuntime.ts`
-- `packages/effect/src/Schema.ts`
-- `packages/effect/src/Config.ts`
-- `packages/effect/src/ConfigProvider.ts`
-- `packages/effect/src/Schedule.ts`
-- `packages/effect/src/Cache.ts`
-- `packages/effect/src/ScopedCache.ts`
-- `packages/effect/src/Stream.ts`
-- `packages/effect/src/FiberSet.ts`
-- `packages/effect/src/FiberMap.ts`
-- `packages/effect/src/testing/TestClock.ts`
-- `packages/effect/src/unstable/http/**`
-- `packages/effect/src/unstable/httpapi/**`
-- `packages/effect/src/unstable/rpc/**`
-- `packages/effect/src/unstable/sql/**`
-- nearby `packages/effect/test/**` files for the API under review
+- `Context.ts`, `Layer.ts`, `Scope.ts`, `ManagedRuntime.ts`
+- `Schema.ts`, `Config.ts`, `ConfigProvider.ts`
+- `Schedule.ts`, `Cache.ts`, `ScopedCache.ts`, `Stream.ts`
+- `FiberSet.ts`, `FiberMap.ts`
+- `testing/TestClock.ts`
+- `unstable/http/**`, `httpapi/**`, `rpc/**`, `sql/**`, and workflow/platform modules
+- nearby `packages/effect/test/**` and typetests
 
-Read exports, type signatures, doc examples, implementation, and tests. A matching symbol name alone is not proof that semantics match an older example.
+Verify that a route exists at the target revision before presenting it as current.
 
-## Kit Langton Routes
+## Reference Architectures
 
-Use Kit's skill for task routing and compact production patterns:
+Pin exemplars read-only and record their revision. Useful routes include:
 
-- `skills/effect/SKILL.md`
-- `skills/effect/references/SCHEMA.md`
-- `skills/effect/references/SERVICES_LAYERS.md`
-- `skills/effect/references/CONFIG.md`
-- `skills/effect/references/SCHEDULING.md`
-- `skills/effect/references/CACHING.md`
-- `skills/effect/references/STREAMS.md`
-- `skills/effect/references/HTTP_CLIENTS.md`
-- `skills/effect/references/TESTING.md`
-
-Pay particular attention to Schema v4 modeling, Layer constructor choice, scoped long-lived work, Effect.fn transforms, ConfigProvider, exit-aware cache TTL, Stream source/consumer selection, and deterministic tests.
-
-Do not copy Kit's optional self-exporting module namespace convention unless the target repository has deliberately adopted it.
-
-## opencode Routes
-
-Use opencode for application runtime and resumable workflow patterns:
+### OpenCode
 
 - `.opencode/skills/effect/SKILL.md`
-- `packages/opencode/src/effect/app-runtime.ts`
-- `packages/opencode/src/effect/runner.ts`
-- `packages/opencode/src/effect/instance-state.ts`
-- `packages/opencode/test/lib/effect.ts`
+- application and service runtimes under `packages/opencode/src/effect/`
 - `packages/core/src/effect/layer-node.ts`
-- `packages/core/src/effect/service-use.ts`
 - `packages/core/src/effect/keyed-mutex.ts`
-- `packages/protocol/src/api.ts`
-- `packages/client/src/effect.ts`
+- location service maps and keyed lifetimes
+- custom Effect test harness
+- Protocol and generated Effect client packages
 
-Use these for runtime memoization, Scope ownership, Deferred/Fiber state machines, keyed concurrency, and contract-derived clients. Re-verify API names against the target v4 pin.
+Use it for runtime topology, Layer graph scaling, context propagation, keyed resources, resumable workflows, and package direction.
 
-## executor Routes
+### Executor
 
-Use executor for SDK, Cloudflare, and host callback boundaries:
+- Effect-aware lint configuration and custom rules
+- SDK contracts and typed errors
+- transaction/runtime bridges
+- execution state machines and race regressions
+- host composition roots and Cloudflare/browser boundaries
+- Effect test suites and protocol tests
 
-- `.agents/skills/wrdn-effect-schema-boundaries/SKILL.md`
-- `.agents/skills/wrdn-effect-typed-errors/SKILL.md`
-- `.agents/skills/wrdn-effect-raw-fetch-boundary/SKILL.md`
-- `.agents/skills/wrdn-effect-vitest-tests/SKILL.md`
-- `.skills/effect-use-pattern/SKILL.md`
-- `.skills/effect-http-testing/SKILL.md`
-- `packages/core/sdk/src/client.ts`
-- `packages/core/sdk/src/errors.ts`
-- `packages/core/execution/src/engine.ts`
-- `packages/hosts/cloudflare/src/mcp/agent-session-durable-object.ts`
-- `packages/hosts/mcp/src/tool-server.ts`
-- `e2e/src/services.ts`
+Use it for boundary discipline, host exceptions, error mapping, enforcement by package role, and behavior-preserving migrations.
 
-Use these for boundary decoding, error mapping, raw-fetch exceptions, callback bridges, resumable work, and test Layers.
+Do not copy a version-specific API blacklist or repository-local policy globally.
 
-## Search Commands
+## Search Pass
 
-Repository convention pass:
-
-```bash
+```sh
 rg -n 'from "effect"|from "effect/|@effect/' .
-rg -n 'Context\.Service|Layer\.|Effect\.fn|Schema\.|TaggedError|ManagedRuntime|runPromise|HttpClient|Deferred|Queue|Fiber|Schedule\.' .
+rg -n 'Context\.Service|Layer\.|Effect\.fn|fnUntraced|Schema\.|ManagedRuntime|runPromise|HttpClient|Deferred|Queue|Fiber|Schedule\.' .
+rg -n 'Promise<|async |try\s*\{|Date\.now|new Date|JSON\.parse|fetch\(' packages src
 ```
 
-Source API pass:
+Classify findings by package role before calling them violations.
 
-```bash
-effect_root="$(pnpm exec opensrc path --cwd . effect)"
-symbol='makeWith'
-rg -n "export (const|function|class|interface|type) ${symbol}|${symbol}" "$effect_root/src" "$effect_root/test"
+## Evidence Record
+
+For source-backed advice or a change involving unstable/non-trivial APIs, record:
+
+```md
+Effect evidence
+- target version and lockfile: ...
+- installed files inspected: ...
+- upstream revision, if consulted: ...
+- exemplar revision and files: ...
+- compile/typecheck probe: ...
+- focused tests: ...
 ```
 
-Record the source version or SHA and the files actually inspected before calling advice source-backed.
+Do not vendor large reference repositories into the target project. Use a temporary read-only checkout or source resolver and keep the revision in the investigation record.
