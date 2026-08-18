@@ -1,136 +1,87 @@
 # Caching, Memoization, And Request Dedupe
 
-Use this file for memoizing effects, keyed TTL caches, concurrent lookup deduplication, cached resources, and request batching.
+Use this file for memoizing Effect results, keyed TTL caches, concurrent lookup deduplication, cached resources, request batching, and Layer acquisition sharing.
 
 ## Select By Shape
 
-- one Effect result, no key: `Effect.cached(...)` or `Effect.cachedWithTTL(...)`
-- keyed values with capacity and TTL: `Cache`
-- keyed resources that require finalization: `ScopedCache`
-- many distinct keys and a real batch endpoint: `Effect.request` plus `RequestResolver`
-- many distinct keys with only per-item API calls: bounded `Effect.forEach`, optionally through `Cache`
+- one Effect result, no key: the installed cached/cached-with-TTL helpers;
+- keyed values with capacity and TTL: `Cache`;
+- keyed resources that require finalization: `ScopedCache`;
+- many distinct keys with a real batch endpoint: `Effect.request` plus a RequestResolver;
+- many distinct keys with only per-item calls: bounded `Effect.forEach`, optionally through Cache;
+- shared service acquisition across Layer builds/runtimes: `Layer.MemoMap`, not Cache.
 
-Do not hand-roll Map, timestamp, prune-loop, or in-flight-promise machinery when an Effect cache fits.
+Do not hand-roll Map, timestamp, prune-loop, or in-flight-Promise machinery when an Effect primitive fits.
 
 ## Keyed Cache In A Layer
 
-Construct the cache once in the service Layer. Use branded keys in the service contract.
+Construct the cache once in the owning service Layer. Acquire clients before constructing the lookup so cache misses do not rebuild provider Layers.
 
 ```ts
 export const ProfileCacheLive = Layer.effect(
   ProfileCache,
   Effect.gen(function* () {
-    const profiles = yield* ProfileProvider;
+    const profiles = yield* ProfileProvider
     const cache = yield* Cache.make({
       capacity: 1_000,
       timeToLive: "10 minutes",
       lookup: (id: ProfileId) => profiles.get(id),
-    });
+    })
 
     return ProfileCache.of({
-      get: Effect.fn("ProfileCache.get")((id: ProfileId) =>
-        Cache.get(cache, id),
-      ),
-      invalidate: Effect.fn("ProfileCache.invalidate")((id: ProfileId) =>
-        Cache.invalidate(cache, id),
-      ),
-    });
+      get: (id) => Cache.get(cache, id),
+      invalidate: (id) => Cache.invalidate(cache, id),
+    })
   }),
-);
+)
 ```
 
-Concurrent gets for the same missing key share one pending lookup. Do not add a second in-flight map.
+Concurrent gets for the same missing key should share one pending lookup according to the installed Cache semantics. Do not add a second in-flight map.
+
+## Service Capture Timing
+
+Some v4 Cache constructors distinguish services captured during cache construction from services required when each lookup runs. This can matter for request-local identity, transactions, or test overrides. Treat options such as `requireServicesAt` as exact-pin APIs and compile a probe.
+
+Default to construction-time capture for long-lived provider clients. Choose lookup-time requirements only when the varying context is intentional and its lifetime outlives the lookup.
 
 ## Exit-Aware TTL
 
-Use `Cache.makeWith(...)` when success, stable failure, transient failure, or degraded fallback need different TTLs.
+Use the installed dynamic-TTL constructor when success, stable not-found, transient failure, or degraded fallback need different lifetimes.
 
-```ts
-const cache =
-  yield *
-  Cache.makeWith((id: ProfileId) => loadProfile(id), {
-    capacity: 1_000,
-    timeToLive: (exit) => {
-      if (Exit.isSuccess(exit)) return "10 minutes";
-      return exit.cause.pipe(
-        Cause.findErrorOption,
-        Option.match({
-          onNone: () => Duration.zero,
-          onSome: (error) =>
-            error._tag === "ProfileNotFound" ? "30 seconds" : Duration.zero,
-        }),
-      );
-    },
-  });
-```
+- cache successful stable values for their product TTL;
+- use a short negative TTL for stable not-found only when it protects an upstream truthfully;
+- use zero or near-zero TTL for transient failures and degraded values;
+- never cache interruption as an ordinary failure.
 
-Return zero TTL for transient failures or degraded values that should not be cached. A short negative-cache TTL may protect an upstream from repeated stable not-found lookups.
+Cause and Cache APIs are version-sensitive; verify exact signatures.
 
-Verify exact `Cache.makeWith` and Cause APIs against the target v4 beta pin before copying an exit-aware example.
+## Ownership
 
-## Acquisition And Ownership
+A cache created per request or per call rarely provides useful cross-call caching. Put it in the Layer whose lifetime matches the consistency policy.
 
-A cache cannot repair an expensive lookup that acquires a client on every miss.
+Use `ScopedCache` for clients, handles, subscriptions, or other values with finalizers. Its owner must outlive entries and close on eviction and shutdown.
 
-Bad:
-
-```ts
-const lookup = (id: ProfileId) =>
-  provider.get(id).pipe(Effect.provide(ProviderClientLive));
-```
-
-Good:
-
-```ts
-const client = yield * ProviderClient;
-const cache =
-  yield *
-  Cache.make({
-    capacity: 1_000,
-    timeToLive: "10 minutes",
-    lookup: client.get,
-  });
-```
-
-Acquire clients and caches in the owning Layer. A cache created per request or per call does not provide useful cross-call caching.
-
-Use `ScopedCache` when cached values own resources such as clients, handles, or subscriptions. Its scope must outlive entries and close cleanly when the service shuts down.
+A shared `Layer.MemoMap` solves a different problem: preventing duplicate Layer acquisition. Use it only when separate Layer builds or ManagedRuntimes intentionally share service identity.
 
 ## Invalidation
 
-- `Cache.invalidate(cache, key)`: evict a known stale entry
-- `Cache.refresh(cache, key)`: recompute it
-- `Cache.has(cache, key)`: inspect without triggering a lookup
-- invalidate after authoritative writes when read-your-write behavior requires it
-- prefer versioned keys when immutable versions are natural
+Centralize write-plus-invalidate policy in the service that owns consistency.
 
-Do not scatter invalidation through unrelated domain code. Put write-plus-invalidate policy in the service that owns consistency.
+- invalidate after authoritative writes when read-your-write behavior requires it;
+- refresh when callers need recomputation without an empty window;
+- use versioned keys for naturally immutable versions;
+- do not scatter invalidation through unrelated workflows.
 
 ## Request Batching
 
-Use `Effect.request` and a `RequestResolver` only when the backend can answer several distinct keys in one call, such as SQL `IN (...)` or a batch provider endpoint.
+Use Request/RequestResolver only when the backend can answer several distinct keys in one operation, such as SQL `IN (...)` or a batch provider endpoint. Complete every request exactly once and bound the batch size.
 
-```ts
-class GetProfile extends Request.TaggedClass("GetProfile")<
-  { readonly id: ProfileId },
-  Profile,
-  ProfileProviderError
-> {}
-```
+Looping over a per-item REST endpoint inside a resolver is not batching. Use bounded concurrency instead.
 
-The resolver receives pending requests and must complete each request exactly once. Bound provider batch size with the current v4 resolver combinators.
+## Schema At Cache Boundaries
 
-Do not call a per-item REST endpoint in a loop inside a resolver and call it batching. Use bounded `Effect.forEach` instead.
+Hoist static row/provider decoders used by lookup functions. The cache should store decoded domain values or a deliberate adapter result, not unknown provider payloads.
 
 ## Verification
 
-Test:
-
-- hit, miss, expiration, invalidation, and refresh
-- concurrent same-key calls execute one lookup
-- different keys can execute concurrently as intended
-- transient failures are not accidentally cached
-- stable negative results use the intended TTL
-- capacity eviction
-- ScopedCache releases values on eviction and scope close
-- TestClock drives TTL tests without wall-clock sleeping
+Test hit, miss, expiration, invalidation, refresh, capacity eviction, concurrent same-key deduplication, cross-key concurrency, failure TTL, service capture timing, ScopedCache finalization, and shared Layer memoization. Drive TTL tests with TestClock.
