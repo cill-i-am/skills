@@ -32,6 +32,13 @@ Do not ask for scope if code inspection can answer it.
 
 Completion criterion: the scan scope is explicit, either from the user, inferred from repository structure, or chosen after one question.
 
+Before broad exploration, define what evidence will cover that scope: the named
+areas or representative call paths to inspect. When each has concrete evidence
+or a recorded coverage gap, proceed to form and rank candidates. Do not widen
+the scope or repeat broad searches merely to claim exhaustiveness. For a
+whole-repository scan, divide the repository into named areas and preserve any
+uninspected area as an explicit coverage gap.
+
 ## 2. Load standards and local context
 
 Read the core standards:
