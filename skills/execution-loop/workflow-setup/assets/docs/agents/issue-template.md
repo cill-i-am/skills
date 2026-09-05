@@ -8,11 +8,17 @@ true that ...”>
 Keep code symbols and implementation shorthand out of the title unless that
 technical capability is itself the tracked outcome.
 
+## Record
+
+Stable identifier: <project convention>
+Kind: delivery | decision | aggregate outcome
+State: <project vocabulary>
+Owner: <when assigned>
+
 ## Hierarchy
 
-Linear Project/PRD: <link>
+Canonical plan/PRD: <link>
 Parent outcome Issue: <link or omit when this is the parent outcome>
-Initiative: <link or omit>
 Hierarchy role: parent outcome | delivery outcome
 
 ## Outcome
@@ -52,7 +58,7 @@ Out of scope:
 ## Blockers
 
 - None — can start immediately
-- Or: blocked by <Linear issue or genuine external dependency>
+- Or: blocked by <work item or genuine external dependency>
 
 ## Implementation Notes
 
@@ -68,3 +74,7 @@ Anything the delivery owner needs before starting.
 
 If created as a concrete follow-up, link the source issue and explain why it is
 outside that issue's acceptance criteria.
+
+## Delivery Evidence
+
+Concise acceptance-to-proof results, known implementation commit, PR/check links, material decisions, residual risks, and the confirmed acceptance event when complete. Omit pending results rather than implying success.

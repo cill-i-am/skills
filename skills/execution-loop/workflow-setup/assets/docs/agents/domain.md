@@ -4,7 +4,7 @@ Use domain docs to preserve product intent that should outlive one issue or PR.
 
 ## Where Durable Intent Lives
 
-- Product goals and accepted behavior live in Linear Project or PRD documents.
+- Product goals and accepted behavior live in the Project or PRD at the declared canonical location.
 - Canonical domain language lives in the repository's existing glossary or the
   nearest semantic owner for that bounded context.
 - Architecture decisions that pass the ADR threshold live in the repository's

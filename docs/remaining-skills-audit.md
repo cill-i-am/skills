@@ -2,7 +2,7 @@
 
 Date: 2026-09-05. Repository: `cill-i-am/skills`. Baseline: `e6072592f3d64c411af81f1e07a653e38a1f1140`.
 
-This is a recommendation-only audit of the 19 skills outside the 17-skill port. No audited skill, template, global configuration, memory, external service, or repository script was changed or executed by this pass. These recommendations are future work, not additional conditions for the current PR.
+This records the original recommendation-only audit of the 19 skills outside the initial 17-skill port at the immutable baseline above. The later approved workflow extension applies the relevant planning, source-selection, authority, and validation recommendations. See the [current change report](skill-guidance-audit.md) and [inventory](skill-guidance-inventory.json) for applied scope. Findings below remain descriptions of the baseline, not assertions that all of them still exist.
 
 The review applies the guidance in [Eric Provencher's post](https://x.com/pvncher/status/2095991462416490862): assume a capable model, give a short discriminating trigger, reveal supporting material when relevant, specify outcomes and genuine constraints, and allow already-authorized work to continue. The recommendations below are judgments from the audited files, not claims that reducing their length has already improved model performance.
 

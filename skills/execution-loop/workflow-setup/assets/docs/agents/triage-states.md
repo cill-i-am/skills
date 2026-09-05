@@ -19,7 +19,7 @@ Before marking an issue `Ready`, verify:
 
 - observable outcome and testable acceptance criteria;
 - explicit scope boundaries and non-goals;
-- dependencies represented as Linear blockers;
+- dependencies represented in the selected source;
 - material product decisions already made;
 - a first vertical tracer can be identified;
 - proof-of-outcome expectations name the real seam;

@@ -1,17 +1,18 @@
 {
   "baseline": "e6072592f3d64c411af81f1e07a653e38a1f1140",
   "skills": 36,
-  "updated": 17,
+  "updated": 28,
+  "auditOnly": 8,
   "entrypointTotals": {
     "before": {
-      "lines": 2190,
-      "words": 15734,
-      "descriptionCharacters": 3975
+      "lines": 3315,
+      "words": 23166,
+      "descriptionCharacters": 6473
     },
     "after": {
-      "lines": 352,
-      "words": 3744,
-      "descriptionCharacters": 1428
+      "lines": 812,
+      "words": 8023,
+      "descriptionCharacters": 2964
     }
   },
   "inventory": [
@@ -121,69 +122,54 @@
       }
     },
     {
-      "name": "linear-setup",
-      "path": "skills/execution-loop/linear-setup/SKILL.md",
-      "status": "audited, recommendations only",
-      "before": {
-        "lines": 82,
-        "words": 420,
-        "descriptionCharacters": 267
-      },
-      "after": {
-        "lines": 82,
-        "words": 420,
-        "descriptionCharacters": 267
-      }
-    },
-    {
       "name": "orchestrator",
       "path": "skills/execution-loop/orchestrator/SKILL.md",
-      "status": "audited, recommendations only",
+      "status": "updated",
       "before": {
         "lines": 128,
         "words": 897,
         "descriptionCharacters": 212
       },
       "after": {
-        "lines": 128,
-        "words": 897,
-        "descriptionCharacters": 212
+        "lines": 26,
+        "words": 398,
+        "descriptionCharacters": 94
       }
     },
     {
       "name": "production-ready",
       "path": "skills/execution-loop/production-ready/SKILL.md",
-      "status": "audited, recommendations only",
+      "status": "updated",
       "before": {
         "lines": 85,
         "words": 473,
         "descriptionCharacters": 241
       },
       "after": {
-        "lines": 85,
-        "words": 473,
+        "lines": 87,
+        "words": 497,
         "descriptionCharacters": 241
       }
     },
     {
       "name": "reconcile-project",
       "path": "skills/execution-loop/reconcile-project/SKILL.md",
-      "status": "audited, recommendations only",
+      "status": "updated",
       "before": {
         "lines": 80,
         "words": 508,
         "descriptionCharacters": 201
       },
       "after": {
-        "lines": 80,
-        "words": 508,
-        "descriptionCharacters": 201
+        "lines": 82,
+        "words": 539,
+        "descriptionCharacters": 208
       }
     },
     {
       "name": "review-swarm",
       "path": "skills/execution-loop/review-swarm/SKILL.md",
-      "status": "audited, recommendations only",
+      "status": "updated",
       "before": {
         "lines": 75,
         "words": 640,
@@ -191,7 +177,7 @@
       },
       "after": {
         "lines": 75,
-        "words": 640,
+        "words": 646,
         "descriptionCharacters": 245
       }
     },
@@ -213,15 +199,15 @@
     {
       "name": "subagent-execution",
       "path": "skills/execution-loop/subagent-execution/SKILL.md",
-      "status": "audited, recommendations only",
+      "status": "updated",
       "before": {
         "lines": 73,
         "words": 462,
         "descriptionCharacters": 197
       },
       "after": {
-        "lines": 73,
-        "words": 462,
+        "lines": 68,
+        "words": 464,
         "descriptionCharacters": 197
       }
     },
@@ -243,62 +229,78 @@
     {
       "name": "to-issues",
       "path": "skills/execution-loop/to-issues/SKILL.md",
-      "status": "audited, recommendations only",
+      "status": "updated",
       "before": {
         "lines": 115,
         "words": 807,
         "descriptionCharacters": 275
       },
       "after": {
-        "lines": 115,
-        "words": 807,
-        "descriptionCharacters": 275
+        "lines": 20,
+        "words": 278,
+        "descriptionCharacters": 98
       }
     },
     {
       "name": "to-prd",
       "path": "skills/execution-loop/to-prd/SKILL.md",
-      "status": "audited, recommendations only",
+      "status": "updated",
       "before": {
         "lines": 86,
         "words": 647,
         "descriptionCharacters": 187
       },
       "after": {
-        "lines": 86,
-        "words": 647,
-        "descriptionCharacters": 187
+        "lines": 18,
+        "words": 242,
+        "descriptionCharacters": 93
       }
     },
     {
       "name": "triage",
       "path": "skills/execution-loop/triage/SKILL.md",
-      "status": "audited, recommendations only",
+      "status": "updated",
       "before": {
         "lines": 125,
         "words": 792,
         "descriptionCharacters": 235
       },
       "after": {
-        "lines": 125,
-        "words": 792,
-        "descriptionCharacters": 235
+        "lines": 20,
+        "words": 270,
+        "descriptionCharacters": 105
       }
     },
     {
       "name": "worker",
       "path": "skills/execution-loop/worker/SKILL.md",
-      "status": "audited, recommendations only",
+      "status": "updated",
       "before": {
         "lines": 98,
         "words": 646,
         "descriptionCharacters": 179
       },
       "after": {
-        "lines": 98,
-        "words": 646,
-        "descriptionCharacters": 179
+        "lines": 22,
+        "words": 333,
+        "descriptionCharacters": 84
       }
+    },
+    {
+      "name": "workflow-setup",
+      "path": "skills/execution-loop/workflow-setup/SKILL.md",
+      "status": "updated",
+      "before": {
+        "lines": 82,
+        "words": 420,
+        "descriptionCharacters": 267
+      },
+      "after": {
+        "lines": 20,
+        "words": 301,
+        "descriptionCharacters": 91
+      },
+      "previousName": "linear-setup"
     },
     {
       "name": "worktree-isolation",
@@ -333,7 +335,7 @@
     {
       "name": "anti-sleep",
       "path": "skills/personal/anti-sleep/SKILL.md",
-      "status": "audited, recommendations only",
+      "status": "audited-only",
       "before": {
         "lines": 96,
         "words": 508,
@@ -348,7 +350,7 @@
     {
       "name": "cyber-audit",
       "path": "skills/personal/cyber-audit/SKILL.md",
-      "status": "audited, recommendations only",
+      "status": "audited-only",
       "before": {
         "lines": 99,
         "words": 408,
@@ -363,7 +365,7 @@
     {
       "name": "handoff",
       "path": "skills/personal/handoff/SKILL.md",
-      "status": "audited, recommendations only",
+      "status": "audited-only",
       "before": {
         "lines": 67,
         "words": 348,
@@ -378,7 +380,7 @@
     {
       "name": "setup-help",
       "path": "skills/personal/setup-help/SKILL.md",
-      "status": "audited, recommendations only",
+      "status": "audited-only",
       "before": {
         "lines": 41,
         "words": 241,
@@ -393,7 +395,7 @@
     {
       "name": "teach",
       "path": "skills/personal/teach/SKILL.md",
-      "status": "audited, recommendations only",
+      "status": "audited-only",
       "before": {
         "lines": 79,
         "words": 434,
@@ -408,7 +410,7 @@
     {
       "name": "domain-modeling",
       "path": "skills/planning/domain-modeling/SKILL.md",
-      "status": "audited, recommendations only",
+      "status": "audited-only",
       "before": {
         "lines": 95,
         "words": 590,
@@ -438,16 +440,16 @@
     {
       "name": "wayfinder",
       "path": "skills/planning/wayfinder/SKILL.md",
-      "status": "audited, recommendations only",
+      "status": "updated",
       "before": {
         "lines": 178,
         "words": 1140,
         "descriptionCharacters": 259
       },
       "after": {
-        "lines": 178,
-        "words": 1140,
-        "descriptionCharacters": 259
+        "lines": 22,
+        "words": 311,
+        "descriptionCharacters": 80
       }
     },
     {
@@ -468,7 +470,7 @@
     {
       "name": "research-prompt",
       "path": "skills/research/research-prompt/SKILL.md",
-      "status": "audited, recommendations only",
+      "status": "audited-only",
       "before": {
         "lines": 56,
         "words": 465,
@@ -483,7 +485,7 @@
     {
       "name": "youtube-transcript",
       "path": "skills/research/youtube-transcript/SKILL.md",
-      "status": "audited, recommendations only",
+      "status": "audited-only",
       "before": {
         "lines": 61,
         "words": 344,

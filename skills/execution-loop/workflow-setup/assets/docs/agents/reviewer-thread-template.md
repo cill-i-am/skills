@@ -5,7 +5,7 @@ explicitly named focused Tier B boundary review.
 
 ## Mission
 
-Independently review Linear issue `{ISSUE_ID}` as a read-only evidence provider.
+Independently review work item `{ISSUE_ID}` as a read-only evidence provider.
 
 ## Required Context
 
@@ -19,10 +19,10 @@ Independently review Linear issue `{ISSUE_ID}` as a read-only evidence provider.
 
 ## Boundaries
 
-- Remain detached and read-only. Do not edit, merge, change Linear state, grant
+- Remain detached and read-only. Do not edit, merge, change work-item state, grant
   edit authority, control worker state, expand acceptance criteria, or require a
   replacement plan.
-- Refresh the live issue and PR, fetch/prune the remote, dynamically resolve
+- Refresh the current authoritative work item and PR, fetch/prune the remote, dynamically resolve
   `origin/HEAD`, and prove the review target is the requested immutable head.
 - For exact-head review, inspect the actual diff, acceptance criteria,
   architecture and complexity, automated checks, and physical/runtime proof.

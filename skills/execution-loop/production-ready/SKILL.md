@@ -5,13 +5,15 @@ description: Aggregate current delivery evidence for an orchestrator decision. U
 
 # Production Ready
 
+Resolve [workflow selection](../workflow-setup/references/workflow-selection.md) and read only the chosen mode's guide. Use its freshness, ownership, and publication rules for current records.
+
 This skill is an evidence aggregator and decision input. It does not grant
-authority, start a review stack, merge, or change Linear state. Use
-`docs/agents/execution-policy.md` for authority and dispositions.
+authority, start a review stack, merge, or change work-item state. Use
+the project's declared execution policy for authority and dispositions.
 
 ## Read
 
-- live Linear issue, Project/PRD, blockers, comments, and linked PR;
+- current authoritative issue, Project/PRD, blockers, comments, and linked PR;
 - exact implementation head and complete diff;
 - acceptance criteria and scope boundaries;
 - automated, physical/runtime, CI, preview, and external evidence;

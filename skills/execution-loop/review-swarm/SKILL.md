@@ -20,7 +20,7 @@ Prefer the smallest clear scope:
 3. branch diff against the target branch
 4. recently touched files only if no better scope exists
 
-Read the closest repo instructions and the relevant spec/Linear issue before reviewing. State any inferred intent.
+Read the closest repo instructions and the relevant spec or authoritative work item before reviewing. State any inferred intent.
 
 ## Review Lenses
 
@@ -34,7 +34,7 @@ Use subagents in parallel when available and useful; otherwise run the same lens
 
 Every reviewer is read-only. Findings should include file/line or symbol, issue,
 proof, impact, recommended fix, confidence, and one recommended disposition
-from `docs/agents/execution-policy.md`: Fix before merge, residual risk,
+from the project's execution policy: Fix before merge, residual risk,
 follow-up, or human decision required.
 
 Assign each subagent one lens or one clearly bounded scope. Do not run several agents with the same broad prompt unless you explicitly want independent confirmation of a high-risk area.

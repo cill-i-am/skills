@@ -4,13 +4,15 @@ Date: 2026-09-05. Baseline: `cill-i-am/skills@e6072592f3d64c411af81f1e07a653e38a
 
 ## Decision and scope
 
-Keep all 36 shared capabilities. This change ports the improvements to 17 existing skills from [Meal Planner PR #206](https://github.com/cill-i-am/meal-planner/pull/206), adapting them to the shared repository rather than copying project architecture or deleting shared workflow skills. The other 19 skills are audited with recommendations only; their files and the Linear workflow templates are unchanged.
+Keep all 36 capabilities, with `linear-setup` renamed to `workflow-setup`. The initial pass ports improvements to 17 existing skills from [Meal Planner PR #206](https://github.com/cill-i-am/meal-planner/pull/206) in a portable form. The subsequent approved change makes planning and delivery work with either Linear or versioned repository files. In total, 28 skill directories are updated and eight remain audit-only.
+
+The user's source choice applies to the receiving project, not to this bundle's consumers automatically. This PR does not migrate Meal Planner, edit global skill installations, or move any live tracker records.
 
 The review uses Eric Provencher's [Rethinking skills and prompts for GPT-6 Astra](https://x.com/pvncher/status/2095991462416490862) as a design lens: concise selection descriptions, useful outcomes and constraints, conditional detail, proportional verification, and continued work within existing authorization. The post motivates review; it is not empirical proof that fewer words improve every task or model.
 
 ## Applied changes
 
-Across the 17 updated `SKILL.md` files, entrypoint words fall from **15,734 to 3,744** (76.2%) and description characters from **3,975 to 1,428** (64.1%). Lines fall from 2,190 to 352. These are whitespace word counts and character counts, not model tokens; supporting references are separate. The [inventory](skill-guidance-inventory.json) records all 36 skills and before/after measurements.
+Across the initial 17 ported `SKILL.md` files, entrypoint words fall from **15,734 to 3,744** (76.2%) and description characters from **3,975 to 1,428** (64.1%). Lines fall from 2,190 to 352. These are whitespace word counts and character counts, not model tokens; supporting references are separate. The [inventory](skill-guidance-inventory.json) records all 36 skills and current before/after measurements, including the workflow extension.
 
 | Skill | Entrypoint words | Result |
 | --- | --- | --- |
@@ -39,7 +41,7 @@ Across the 17 updated `SKILL.md` files, entrypoint words fall from **15,734 to 3
 - Make Effect ownership conditional on an Effect-based subsystem, TanStack Query advice conditional on its use, and separate API-service ownership conditional on that architecture.
 - Remove household-specific storage wording. Native Durable Object SQL and an established ORM are both valid choices when they fit the actual subsystem.
 - Retain conditional routes from grilling to domain modeling and wayfinder. The shared planning skills remain useful; they are not prerequisites for every clear request.
-- Keep all shared Linear roles, templates, and capability directories. Removing a project-local worker skill does not establish that a shared worker capability is redundant.
+- Retain shared planning and delivery capabilities. Removing a project-local worker skill does not establish that a shared worker capability is redundant. Generalize the setup and workflow assumptions instead of maintaining duplicate role skills.
 
 ### Supporting references and correctness
 
@@ -49,20 +51,31 @@ Two React examples receive specific corrections. Effect Events intentionally cha
 
 The persistence-test reference now chooses a representative database dialect. An in-memory SQLite test can be suitable for a SQLite adapter; it does not establish PostgreSQL or MySQL behavior simply because the application uses Drizzle. [Drizzle supports multiple dialects](https://orm.drizzle.team/docs/overview).
 
-## Audit of the remaining 19
+## Project Source Choice
 
-The [remaining-skills audit](remaining-skills-audit.md) records per-skill findings, baseline locations, retained value, and proposed changes. Its recommendations are not applied in this PR. The most useful next pass is to simplify shared workflow entrypoints and template authority wording together while preserving ownership, review evidence, and external-action boundaries.
+`workflow-setup` preserves an existing declaration or asks once when a source choice is missing. It writes one durable owner for the choice and canonical locations, linked from `AGENTS.md`. Templates are optional defaults for missing documents that the requested workflow needs. Existing project policies and authorization take precedence over the templates.
 
-Some unchanged references and workflow templates still contain broad reading lists, exact output forms, or absolute preferences. This is a targeted port plus a documented audit, not a claim that the entire reference library has been rewritten or behaviorally certified.
+The shared planning and delivery skills read the selection reference, then only `linear.md` or `repo.md`. Descriptions and UI prompts no longer presume Linear. No parallel copies of `to-prd`, `to-issues`, `triage`, `worker`, or `orchestrator` are introduced.
+
+- Linear mode uses current Project/PRD records, issues, and native blockers. It preserves existing locations and live state vocabulary. Missing access leaves a dependent operation unverified; it does not create a repository backlog.
+- Repository mode uses versioned Markdown at declared locations. It covers stable identifiers, grouping versus dependencies, decision versus delivery records, readiness, ownership, branch concurrency, evidence, and completion. Local proposals remain distinguishable from published shared records.
+- Repository completion follows the declared acceptance event. A pre-merge record cannot truthfully include a future merge result; a coordinator may need a small authorized record update afterward. The guide makes that pending publication explicit.
+- Code, domain language, ADRs, and PR/check evidence retain their natural authoritative homes. Each planning or delivery record has one owner, with links elsewhere.
+- Source changes require an explicit migration request. The guide calls for verifying the new owner and retiring superseded records rather than maintaining two writable trackers.
+
+The extension also corrects authority wording in the affected templates and roles: generic orchestration does not grant permission to create user-owned tasks or automations; subagent context depends on the actual tool; a read-only request does not inherit publishing steps.
+
+## Baseline Audit Follow-Up
+
+The [19-skill audit](remaining-skills-audit.md) remains an immutable-baseline assessment. The workflow extension addresses its relevant planning, storage, authority, and validation findings. Eight capability directories remain unchanged: `anti-sleep`, `cyber-audit`, `handoff`, `setup-help`, `teach`, `domain-modeling`, `research-prompt`, and `youtube-transcript`. Their recommendations remain future work. Other partially updated skills can still have unapplied recommendations; this is not a claim that the entire reference library has been rewritten.
 
 ## Verification
 
-- `pnpm test` passes. Metadata, source/template checks, and the existing scripted policy/discovery scenarios pass.
-- The updated validator checks actual local Markdown reference targets outside output templates. A disposable copy accepted the valid bundle and rejected an injected missing reference.
-- The obsolete grilling wording assertions were removed: conditional discovery routing should not require a fixed phrase or mandatory sequence. Other existing policy wording assertions are retained and their limitations recorded below.
-- A real clean install using the cached `skills` CLI 1.5.23 and this checkout found and installed **36 skills and 36 metadata files** with `--full-depth --copy --agent codex`.
-- All **207 installed skill files** matched their source bytes; all **72 local Markdown reference links** checked outside templates resolved after installation. Frontmatter and UI metadata were parsed as YAML.
-- Executing the documented before/after array snippets confirmed equivalent filtering for empty, absent, falsy, active, and inactive values.
-- No live cloud deployment, provider mutation, external message, or application runtime test was needed for this guidance change.
+- `pnpm test` passes. The validator checks metadata, workflow resources, and local Markdown links in both the categorized source tree and a flattened installation layout.
+- Disposable negative checks reject a missing local reference, a reference that works only before installation, a missing repository-mode guide, and an empty description followed by other metadata.
+- A clean install using the cached `skills` CLI 1.5.23 finds all 36 skills and 36 metadata files. Installed file bytes are compared with the reviewed source.
+- Independent agents exercise realistic requests with only the relevant skill and raw project artifacts. Repository setup/planning writes actual local Markdown at custom paths. A read-only Linear request follows an existing declaration at a custom path and produces unpublished slices from the supplied snapshot. Each loads only its selected mode guide.
+- Repository acceptance and publication are exercised against a disposable local Git origin; [workflow validation](workflow-choice-validation.md) records the requests, observed artifacts, and limits of all three model evaluations.
+- The initial port's React example checks and representative-database source checks remain applicable.
 
-The repository's scripted scenarios evaluate small hardcoded functions; they do not invoke a model using these skills. Passing those checks is static consistency evidence, not proof of agent decisions. Installation verifies packaging and reference availability. The React and database source checks support the specific corrections above; they do not validate every version-sensitive example in the bundle.
+The old policy/discovery scripts matched prose and tested handwritten scenario functions that did not invoke a model. They are replaced by real packaging integrity checks and bounded independent agent evaluations. These evaluations support the exercised cases; they do not certify all agent behavior. Linear live writes and hosted merge APIs are not exercised, and no live tracker records or provider resources are changed.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Workflow Setup"
+  short_description: "Choose the project's work record source."
+  default_prompt: "Use $workflow-setup to configure this project's choice of Linear or repository files for plans and delivery state."

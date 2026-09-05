@@ -1,17 +1,19 @@
 ---
 name: reconcile-project
-description: Repair meaningful drift between Linear, Codex tasks, branches, PRs, CI, reviewers, and watchers. Use before dispatch, acceptance, or when live evidence conflicts; do not reconstruct ceremonial history.
+description: Repair meaningful drift between work records, active tasks, branches, PRs, CI, reviewers, and watchers. Use before dispatch, acceptance, or when live evidence conflicts; do not reconstruct ceremonial history.
 ---
 
 # Reconcile Project
 
+Resolve [workflow selection](../workflow-setup/references/workflow-selection.md) and read only the chosen mode's guide. Use its freshness, ownership, and publication rules for current records.
+
 Make live execution state truthful enough for the orchestrator's next decision.
-Use `docs/agents/execution-policy.md` for authority; absence of ceremonial
+Use the project's declared execution policy for authority; absence of ceremonial
 packages or approval comments is not drift.
 
 ## Read
 
-- live Linear Project/PRD, outcome hierarchy, blockers, comments, and statuses;
+- current authoritative Project/PRD, outcome hierarchy, blockers, comments, and statuses;
 - active Codex worker/reviewer tasks;
 - fetched remote-default SHA, branches, PRs, exact heads, checks, and comments;
 - current acceptance proof, finding dispositions, and watcher ownership.
@@ -29,10 +31,10 @@ Find and repair or report:
 - new worker lane based on local or stale state rather than the exact fetched
   remote default;
 - active worker without executable movement or a concrete blocker;
-- draft PR or exact head missing from Linear;
+- draft PR or exact head missing from the authoritative work item;
 - review requested before a concrete implementation head exists for routine
   work, or exact-head review missing when evidence is ready;
-- reviewer controlling edit, merge, or Linear state;
+- reviewer controlling edit, merge, or work-item state;
 - material finding without one canonical disposition;
 - fixable in-scope defect misclassified as human-blocked;
 - acceptance claim without automated or physical/runtime proof;
@@ -52,7 +54,7 @@ chains, or complete governance narratives.
 
 ## Actions
 
-Use Linear and task/watcher tools only within delegated authority to:
+Use the selected record store and task/watcher tools only within delegated authority to:
 
 - correct blockers, links, outcome-equivalent titles, hierarchy, and state;
 - reuse or steer the existing owner and archive obsolete idle tasks;

@@ -4,7 +4,7 @@ Use this to dispatch one delivery owner for a Ready issue.
 
 ## Mission
 
-Implement Linear issue `{ISSUE_ID}` through the smallest proven vertical slice.
+Implement work item `{ISSUE_ID}` through the smallest proven vertical slice.
 
 ## Required Context
 
@@ -19,8 +19,8 @@ Implement Linear issue `{ISSUE_ID}` through the smallest proven vertical slice.
 
 ## Requirements
 
-- Follow `AGENTS.md`, `docs/agents/execution-policy.md`, and the live issue.
-- Treat this handoff as orientation. Refresh Linear, fetch/prune the remote,
+- Follow `AGENTS.md`, the declared execution policy, and the current authoritative work item.
+- Treat this handoff as orientation. Refresh the declared work records, fetch/prune the remote,
   dynamically resolve `origin/HEAD`, and prove the isolated tree and branch begin
   clean at the exact dispatched SHA before editing.
 - Confirm the issue meets the Ready bar. If it does, begin; do not rewrite the
@@ -36,7 +36,7 @@ Implement Linear issue `{ISSUE_ID}` through the smallest proven vertical slice.
 - Fix reproducible in-scope implementation defects without requesting a new
   planning or authorization cycle.
 - Stop for a material product change, scope expansion, unsafe provenance,
-  credentials/real data, or an unauthorized destructive/external action.
+  an unauthorized use of credentials/real data, or an unauthorized destructive/external action.
 
 ## Done Evidence
 

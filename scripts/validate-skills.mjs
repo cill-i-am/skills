@@ -1,173 +1,102 @@
-import { access, readdir, readFile } from "node:fs/promises";
+import { access, cp, mkdtemp, readdir, readFile, rm } from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 
-const root = process.cwd();
-const skillsRoot = path.join(root, "skills");
-const requiredAgentTemplates = [
-  "README.md",
-  "domain.md",
-  "execution-policy.md",
-  "issue-template.md",
-  "linear-workflow.md",
-  "prd-template.md",
-  "reviewer-thread-template.md",
-  "triage-states.md",
-  "worker-thread-template.md",
+const sourceRoot = path.join(process.cwd(), "skills");
+const templates = [
+  "README.md", "workflow.md", "domain.md", "execution-policy.md",
+  "issue-template.md", "prd-template.md", "reviewer-thread-template.md",
+  "triage-states.md", "worker-thread-template.md",
 ];
-const requiredAgentInterfaceFields = [
-  "display_name",
-  "short_description",
-  "default_prompt",
-];
+const modeReferences = ["workflow-selection.md", "linear.md", "repo.md"];
 
-const errors = [];
-
-async function* walk(directory) {
+async function filesUnder(directory) {
+  const files = [];
   for (const entry of await readdir(directory, { withFileTypes: true })) {
-    const entryPath = path.join(directory, entry.name);
-
-    if (entry.isDirectory()) {
-      yield* walk(entryPath);
-      continue;
-    }
-
-    yield entryPath;
+    const file = path.join(directory, entry.name);
+    if (entry.isDirectory()) files.push(...await filesUnder(file));
+    else files.push(file);
   }
+  return files;
 }
 
-function parseFrontmatter(filePath, content) {
-  if (!content.startsWith("---\n")) {
-    errors.push(`${filePath}: missing frontmatter block`);
-    return undefined;
-  }
-
-  const endIndex = content.indexOf("\n---", 4);
-  if (endIndex === -1) {
-    errors.push(`${filePath}: unterminated frontmatter block`);
-    return undefined;
-  }
-
-  const fields = new Map();
-  for (const line of content.slice(4, endIndex).split("\n")) {
-    const separatorIndex = line.indexOf(":");
-    if (separatorIndex === -1) {
-      continue;
+async function validate(skillsRoot) {
+  const errors = [];
+  const skills = new Map();
+  const files = await filesUnder(skillsRoot);
+  for (const file of files.filter((file) => path.basename(file) === "SKILL.md")) {
+    const label = path.relative(skillsRoot, file);
+    const content = await readFile(file, "utf8");
+    const frontmatter = content.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/)?.[1];
+    const name = frontmatter?.match(/^name:[ \t]*([^\r\n]+)$/m)?.[1]?.trim();
+    const description = frontmatter?.match(/^description:[ \t]*([^\r\n]+)$/m)?.[1]?.trim();
+    const directory = path.dirname(file);
+    if (!name || name !== path.basename(directory) || !/^[a-z0-9-]+$/.test(name)) {
+      errors.push(`${label}: skill name missing or inconsistent with its directory`);
     }
-
-    fields.set(
-      line.slice(0, separatorIndex).trim(),
-      line.slice(separatorIndex + 1).trim(),
-    );
-  }
-
-  return fields;
-}
-
-function hasYamlField(content, fieldName) {
-  const pattern = new RegExp(`^\\s{2}${fieldName}:\\s*.+$`, "m");
-  return pattern.test(content);
-}
-
-for await (const filePath of walk(skillsRoot)) {
-  const relativePath = path.relative(root, filePath);
-  const content = await readFile(filePath, "utf8");
-
-  if (path.basename(filePath) === "SKILL.md") {
-    const frontmatter = parseFrontmatter(relativePath, content);
-    const skillDirectoryName = path.basename(path.dirname(filePath));
-    const name = frontmatter?.get("name");
-    const description = frontmatter?.get("description");
-    const agentMetadataPath = path.join(
-      path.dirname(filePath),
-      "agents",
-      "openai.yaml",
-    );
-
-    if (name === undefined || name.length === 0) {
-      errors.push(`${relativePath}: missing name`);
-    } else if (name !== skillDirectoryName) {
-      errors.push(
-        `${relativePath}: name "${name}" does not match directory "${skillDirectoryName}"`,
-      );
-    }
-
-    if (description === undefined || description.length === 0) {
-      errors.push(`${relativePath}: missing description`);
-    }
-
+    if (!description) errors.push(`${label}: missing description`);
+    if (skills.has(name)) errors.push(`${label}: duplicate skill name ${name}`);
+    if (name) skills.set(name, directory);
     try {
-      await readFile(agentMetadataPath, "utf8");
+      const metadata = await readFile(path.join(directory, "agents/openai.yaml"), "utf8");
+      if (!/^interface:\s*$/m.test(metadata)) errors.push(`${label}: missing interface block`);
+      for (const field of ["display_name", "short_description", "default_prompt"]) {
+        const value = metadata.match(new RegExp(`^  ${field}:[ \\t]*([^\\r\\n]+)$`, "m"))?.[1]?.trim();
+        if (!value) errors.push(`${label}: missing interface.${field}`);
+        if (field === "default_prompt" && !value?.includes("$" + name)) {
+          errors.push(`${label}: default prompt must invoke $${name}`);
+        }
+      }
     } catch {
-      errors.push(
-        `${relativePath}: missing agents/openai.yaml metadata`,
-      );
+      errors.push(`${label}: missing agents/openai.yaml`);
     }
   }
 
-  // Validate actual local reference targets, not a skill's choice of wording.
-  // Templates describe paths in the receiving project, so their links are not bundle-relative.
-  if (path.extname(filePath) === ".md" && !relativePath.split(path.sep).includes("assets")) {
-    const prose = content.replace(/```[\s\S]*?```/g, "");
+  for (const file of files.filter((file) => file.endsWith(".md"))) {
+    // Asset templates can describe receiving-project paths; these are checked after setup.
+    // The template index itself links bundled assets and can be checked here.
+    if (file.split(path.sep).includes("assets") && path.basename(file) !== "README.md") continue;
+    const prose = (await readFile(file, "utf8")).replace(/```[\s\S]*?```/g, "");
     for (const match of prose.matchAll(/\[[^\]]*\]\(([^\s)]+)(?:\s+[^)]*)?\)/g)) {
       const reference = match[1];
       if (/^(?:[a-zA-Z][a-zA-Z\d+.-]*:|#|\/)/.test(reference)) continue;
       const target = reference.split("#")[0];
       try {
-        await access(path.resolve(path.dirname(filePath), target));
+        await access(path.resolve(path.dirname(file), decodeURIComponent(target)));
       } catch {
-        errors.push(`${relativePath}: missing local reference: ${reference}`);
+        errors.push(`${path.relative(skillsRoot, file)}: missing local reference: ${reference}`);
       }
     }
   }
 
-  if (content.includes("list_projects")) {
-    errors.push(`${relativePath}: stale list_projects thread-tool reference`);
-  }
-
-  if (
-    path.extname(filePath) === ".yaml" &&
-    path.basename(path.dirname(filePath)) === "agents"
-  ) {
-    const skillName = path.basename(path.dirname(path.dirname(filePath)));
-
-    if (!/^interface:\s*$/m.test(content)) {
-      errors.push(`${relativePath}: missing interface block`);
-    }
-
-    for (const fieldName of requiredAgentInterfaceFields) {
-      if (!hasYamlField(content, fieldName)) {
-        errors.push(`${relativePath}: missing interface.${fieldName}`);
+  const setup = skills.get("workflow-setup");
+  if (!setup) errors.push("workflow-setup is missing");
+  else {
+    for (const resource of [
+      ...templates.map((name) => path.join("assets/docs/agents", name)),
+      ...modeReferences.map((name) => path.join("references", name)),
+    ]) {
+      try {
+        await access(path.join(setup, resource));
+      } catch {
+        errors.push(`workflow-setup: missing resource ${resource}`);
       }
     }
-
-    if (!content.includes(`$${skillName}`)) {
-      errors.push(
-        `${relativePath}: interface.default_prompt must mention $${skillName}`,
-      );
-    }
   }
+  if (skills.size === 0) errors.push("No skills found");
+  if (errors.length) throw new Error(errors.join("\n"));
+  return skills;
 }
 
-const templateRoot = path.join(
-  skillsRoot,
-  "execution-loop",
-  "linear-setup",
-  "assets",
-  "docs",
-  "agents",
-);
-
-for (const templateName of requiredAgentTemplates) {
-  try {
-    await readFile(path.join(templateRoot, templateName), "utf8");
-  } catch {
-    errors.push(`linear-setup template missing: ${templateName}`);
+const installedRoot = await mkdtemp(path.join(os.tmpdir(), "skills-flat-validation-"));
+try {
+  const skills = await validate(sourceRoot);
+  for (const [name, directory] of skills) {
+    await cp(directory, path.join(installedRoot, name), { recursive: true });
   }
+  await validate(installedRoot);
+  console.log(`Validated ${skills.size} skills: metadata, workflow resources, and local links in source and flat layouts.`);
+  console.log("Packaging checks only; agent behavior requires separate evaluation.");
+} finally {
+  await rm(installedRoot, { recursive: true, force: true });
 }
-
-if (errors.length > 0) {
-  console.error(errors.join("\n"));
-  process.exit(1);
-}
-
-console.log("Skill bundle validation passed.");
