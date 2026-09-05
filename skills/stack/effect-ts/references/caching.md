@@ -21,26 +21,26 @@ Construct the cache once in the owning service Layer. Acquire clients before con
 export const ProfileCacheLive = Layer.effect(
   ProfileCache,
   Effect.gen(function* () {
-    const profiles = yield* ProfileProvider
+    const profiles = yield* ProfileProvider;
     const cache = yield* Cache.make({
       capacity: 1_000,
       timeToLive: "10 minutes",
       lookup: (id: ProfileId) => profiles.get(id),
-    })
+    });
 
     return ProfileCache.of({
       get: (id) => Cache.get(cache, id),
       invalidate: (id) => Cache.invalidate(cache, id),
-    })
+    });
   }),
-)
+);
 ```
 
 Concurrent gets for the same missing key should share one pending lookup according to the installed Cache semantics. Do not add a second in-flight map.
 
 ## Service Capture Timing
 
-Some v4 Cache constructors distinguish services captured during cache construction from services required when each lookup runs. This can matter for request-local identity, transactions, or test overrides. Treat options such as `requireServicesAt` as exact-pin APIs and compile a probe.
+Some v4 Cache constructors distinguish services captured during cache construction from services required when each lookup runs. This can matter for request-local identity, transactions, or test overrides. Verify options such as `requireServicesAt` against the installed version and exercise the chosen capture lifetime; use a probe only when ordinary compilation or tests leave it uncertain.
 
 Default to construction-time capture for long-lived provider clients. Choose lookup-time requirements only when the varying context is intentional and its lifetime outlives the lookup.
 

@@ -1,4 +1,4 @@
 interface:
-  display_name: "Build Intent Layer"
-  short_description: "Build nested repo intent layers"
-  default_prompt: "Use $build-intent-layer to inspect this repo and build or repair its instruction topology."
+  display_name: "Repository Instructions"
+  short_description: "Keep repository guidance small and clear"
+  default_prompt: "Use $build-intent-layer to remove stale guidance and place durable constraints at the scope that owns them."

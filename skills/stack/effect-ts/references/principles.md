@@ -15,15 +15,12 @@ An Effect value is a lazy description. It does nothing until a runtime executes 
 Keep a total synchronous calculation as a plain function when its whole contract is input to output:
 
 ```ts
-const normalizeDisplayName = (value: string): string => value.trim()
+const normalizeDisplayName = (value: string): string => value.trim();
 
-export const renameUser = Effect.fn("Users.rename")(function* (
-  id: UserId,
-  displayName: string,
-) {
-  const users = yield* UserRepository
-  return yield* users.rename(id, normalizeDisplayName(displayName))
-})
+export const renameUser = Effect.fn("Users.rename")(function* (id: UserId, displayName: string) {
+  const users = yield* UserRepository;
+  return yield* users.rename(id, normalizeDisplayName(displayName));
+});
 ```
 
 Do not turn a pure leaf into `Effect.sync` merely to make it look Effectful. Wrap it when laziness, typed failure, requirements, tracing, interruption, or resource ownership becomes part of its real contract.
@@ -52,24 +49,24 @@ Use the shape that communicates the operation's role:
 - **Named `Effect.fn("Domain.operation")`:** a caller- or operator-meaningful action that deserves stable tracing metadata.
 
 ```ts
-const parseHeader = (value: string) => value.trim().toLowerCase()
+const parseHeader = (value: string) => value.trim().toLowerCase();
 
 const loadRows = Effect.fnUntraced(function* (id: UserId) {
-  const repository = yield* UserRepository
-  return yield* repository.loadRows(id)
-})
+  const repository = yield* UserRepository;
+  return yield* repository.loadRows(id);
+});
 
 export const completeCheckout = Effect.fn("Checkout.complete")(function* (
   command: CompleteCheckout,
 ) {
-  const inventory = yield* Inventory
-  const payments = yield* Payments
-  const orders = yield* Orders
+  const inventory = yield* Inventory;
+  const payments = yield* Payments;
+  const orders = yield* Orders;
 
-  yield* inventory.reserve(command.items)
-  const payment = yield* payments.capture(command.payment)
-  return yield* orders.complete(command, payment)
-})
+  yield* inventory.reserve(command.items);
+  const payment = yield* payments.capture(command.payment);
+  return yield* orders.complete(command, payment);
+});
 ```
 
 Pass policies that apply to the entire call—error classification, retry, timeout, annotations, or local provisioning—as additional transforms to `Effect.fn` where the target pin supports that shape. Keep branch-specific behavior in the generator body. Do not pipe the function value as though it were an Effect.
@@ -77,7 +74,7 @@ Pass policies that apply to the entire call—error classification, retry, timeo
 Use `return yield*` for terminal failures, interruption, or other effects that cannot return:
 
 ```ts
-if (!user) return yield* new UserNotFound({ id })
+if (!user) return yield * new UserNotFound({ id });
 ```
 
 Do not use JavaScript `try` / `catch` inside `Effect.gen`. Use `Effect.try`, `Effect.tryPromise`, `Effect.result`, `catchTag`, `catch`, or Cause-level APIs at the appropriate boundary.
@@ -135,4 +132,4 @@ Effect v4 APIs can move between betas, release candidates, stable releases, and 
 - unstable HTTP, HttpApi, RPC, SQL, workflow, AI, and platform modules;
 - Cache, Stream, Schedule, Scope, FiberSet, FiberMap, and test helpers.
 
-Read installed source and compile a narrow target-project probe. Never respond to an API mismatch by adding v3 compatibility branches or unchecked casts.
+Read the relevant installed source and validate through normal compilation or focused tests; add a scratch probe only when uncertainty remains. Never respond to an API mismatch by adding v3 compatibility branches or unchecked casts.

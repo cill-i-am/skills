@@ -1,4 +1,4 @@
 interface:
   display_name: "Alchemy"
-  short_description: "Alchemy v2 infrastructure and applications"
-  default_prompt: "Use $alchemy to build, review, debug, or audit a production Alchemy v2 project across Cloudflare, AWS, APIs, databases, testing, CI, containers, and custom Effect infrastructure."
+  short_description: "Build and review Alchemy infrastructure"
+  default_prompt: "Use $alchemy for the requested infrastructure change, checking the installed APIs and actual deployment effects."

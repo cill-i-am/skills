@@ -17,7 +17,6 @@ const files = {
     "skills/planning/domain-modeling/references/adr-guidance.md",
   wayfinder: "skills/planning/wayfinder/SKILL.md",
   wayfinderAgent: "skills/planning/wayfinder/agents/openai.yaml",
-  grilling: "skills/planning/grilling/SKILL.md",
   toPrd: "skills/execution-loop/to-prd/SKILL.md",
   toIssues: "skills/execution-loop/to-issues/SKILL.md",
   domainTemplate:
@@ -43,7 +42,6 @@ const [
   domainPlacement,
   adrGuidance,
   wayfinder,
-  grilling,
   toPrd,
   toIssues,
   domainTemplate,
@@ -53,7 +51,6 @@ const [
   read(files.domainPlacement),
   read(files.adrGuidance),
   read(files.wayfinder),
-  read(files.grilling),
   read(files.toPrd),
   read(files.toIssues),
   read(files.domainTemplate),
@@ -95,11 +92,6 @@ requireText("wayfinder", wayfinder, [
   "Read-only discovery works without Linear access",
   "Do not pre-slice fog into implementation work",
   "to-prd` owns consolidation into product truth",
-]);
-requireText("grilling", grilling, [
-  "Use `../domain-modeling/`",
-  "A separate grill-with-docs alias is\nunnecessary",
-  "Use `../wayfinder/` before `to-prd`",
 ]);
 requireText("to-prd", toPrd, [
   "Wayfinder map and resolved decision Issues",

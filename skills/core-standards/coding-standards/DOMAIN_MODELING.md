@@ -16,7 +16,7 @@ Model domain concepts so illegal states are hard to create and legal operations 
 
 ## Apply this file
 
-A domain-modeling pass is complete when every touched concept has been checked for:
+When a change affects domain semantics, use the relevant questions:
 
 - construction or parsing invariants;
 - required vs optional values;
@@ -25,7 +25,7 @@ A domain-modeling pass is complete when every touched concept has been checked f
 - exhaustive handling of closed variants;
 - persistence constraints or guarded writes when the invariant is persisted.
 
-If one check cannot be fully applied without broader migration, name the compatibility constraint and improve the changed path.
+If a proposed improvement requires unrelated migration, keep the current task scoped and explain any material unresolved invariant. Preserve real data and compatibility contracts; follow the repository’s approval requirements for changes to them.
 
 ## Non-negotiables
 
@@ -186,7 +186,11 @@ Prefer legal states by construction:
 
 ```ts
 type Invoice =
-  | { readonly _tag: "Draft"; readonly id: InvoiceId; readonly lines: NonEmptyArray<LineItem> }
+  | {
+      readonly _tag: "Draft";
+      readonly id: InvoiceId;
+      readonly lines: NonEmptyArray<LineItem>;
+    }
   | { readonly _tag: "Sent"; readonly id: InvoiceId; readonly sentAt: Instant }
   | { readonly _tag: "Paid"; readonly id: InvoiceId; readonly paidAt: Instant };
 ```

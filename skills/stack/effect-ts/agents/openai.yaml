@@ -1,9 +1,4 @@
 interface:
   display_name: "Effect TS"
-  short_description: "Exact-pin Effect v4 architecture and implementation."
-  default_prompt: >-
-    Use $effect-ts to implement or review an application against its exact
-    installed Effect v4 version. Verify unstable APIs from installed source and
-    a compile probe; model boundaries with Schema, capabilities with services
-    and Layers, resources with explicit Scope ownership, failures with typed
-    errors, and tests with deterministic Effect test services.
+  short_description: "Implement against the installed Effect version"
+  default_prompt: "Use $effect-ts for the requested change, using the installed version and relevant contract, failure, and lifecycle guidance."

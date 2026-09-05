@@ -110,11 +110,7 @@ Generate invalid boundary inputs when testing rejection, but do not label them v
 
 When correctness depends on SQL, schema constraints, transactions, migrations, or query semantics, use a representative local database.
 
-For Drizzle persistence tests that do not depend on Cloudflare runtime semantics:
-
-- use in-memory `better-sqlite3`;
-- run the real Drizzle migrations before the suite;
-- exercise the production External Adapter Module through its service-facing interface.
+Match the database dialect and driver to the production contract. For SQLite adapters whose claims do not depend on Cloudflare runtime semantics, an in-memory `better-sqlite3` database can be appropriate. PostgreSQL or MySQL semantics need a representative instance of that engine. Run the real migrations and exercise the production adapter through its service-facing interface. Drizzle supports multiple dialects; its presence alone does not justify SQLite. See the [Drizzle overview](https://orm.drizzle.team/docs/overview).
 
 A hand-written in-memory fake is not proof of SQL/schema/transaction behavior.
 

@@ -4,12 +4,12 @@ Use this file before choosing how Alchemy runtimes communicate. The protocol dec
 
 ## Decision Table
 
-| Situation | Default |
-| --- | --- |
-| Worker, Durable Object, Container, Lambda, or MicroVM calls another resource in the same controlled system | Schemaless RPC |
-| Browser or external Effect/TypeScript client crosses a trust boundary | Effect RPC |
-| Browser, partner, webhook, or non-Effect consumer needs ordinary HTTP semantics | Effect HTTP |
-| Public API needs API keys, stages, usage plans, or AWS-native gateway controls | AWS API Gateway, often in front of Lambda |
+| Situation                                                                                                  | Default                                   |
+| ---------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| Worker, Durable Object, Container, Lambda, or MicroVM calls another resource in the same controlled system | Schemaless RPC                            |
+| Browser or external Effect/TypeScript client crosses a trust boundary                                      | Effect RPC                                |
+| Browser, partner, webhook, or non-Effect consumer needs ordinary HTTP semantics                            | Effect HTTP                               |
+| Public API needs API keys, stages, usage plans, or AWS-native gateway controls                             | AWS API Gateway, often in front of Lambda |
 
 One host can expose schemaless methods and a `fetch` handler. Keep the platform host thin; domain services and API contracts should remain host-agnostic where possible.
 
@@ -27,22 +27,22 @@ export default class Accounts extends Cloudflare.Worker<Accounts>()(
   { main: import.meta.url },
   Effect.gen(function* () {
     return {
-      getDisplayName: (accountId: string) =>
-        Effect.succeed(`account:${accountId}`),
+      getDisplayName: (accountId: string) => Effect.succeed(`account:${accountId}`),
       fetch: Effect.succeed(HttpServerResponse.text("ok")),
     };
   }),
 ) {}
 ```
 
-When another resource binds `Accounts`, the bound class is the typed client. No duplicated route strings or schema declarations are needed.
+When another resource binds `Accounts`, the bound class is the typed client. Keep that native transport; domain schemas still own reconstruction of values crossing runtime boundaries.
 
 Rules:
 
 - Use it only when both caller and callee are deployed and versioned together or otherwise mutually trusted.
 - Return Effect or Stream values so failures, interruption, and streaming remain typed.
-- Prefer branded domain identifiers internally when raw strings could be mixed up, even though wire validation is intentionally absent.
-- Do not add Schema merely to recreate types already guaranteed by the bound class.
+- Prefer branded domain identifiers internally when raw strings could be mixed up.
+- Static types do not preserve class instances or prove values across serialization. Apply the owning domain schema at runtime ingress where reconstruction or validation is required, including trusted internal RPC.
+- Reuse the canonical contract; do not replace native RPC with an unnecessary transport or duplicate schema layer.
 
 ## Effect RPC
 
@@ -61,10 +61,9 @@ export class Account extends Schema.Class<Account>("Account")({
   displayName: Schema.NonEmptyString,
 }) {}
 
-export class AccountNotFound extends Schema.TaggedClass<AccountNotFound>()(
-  "AccountNotFound",
-  { id: AccountId },
-) {}
+export class AccountNotFound extends Schema.TaggedClass<AccountNotFound>()("AccountNotFound", {
+  id: AccountId,
+}) {}
 
 const getAccount = Rpc.make("getAccount", {
   payload: { id: AccountId },

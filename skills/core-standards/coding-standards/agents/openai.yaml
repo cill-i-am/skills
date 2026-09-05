@@ -1,4 +1,4 @@
 interface:
   display_name: "Coding Standards"
-  short_description: "Apply portable TypeScript standards."
-  default_prompt: "Use $coding-standards to write or review TypeScript against the portable standards for boundaries, errors, modules, tests, and contracts."
+  short_description: "Apply portable TypeScript conventions"
+  default_prompt: "Use $coding-standards for the changed code and consult only the references relevant to its boundaries."

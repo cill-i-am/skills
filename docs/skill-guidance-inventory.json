@@ -1,0 +1,559 @@
+{
+  "baseline": "e6072592f3d64c411af81f1e07a653e38a1f1140",
+  "skills": 36,
+  "updated": 17,
+  "entrypointTotals": {
+    "before": {
+      "lines": 2190,
+      "words": 15734,
+      "descriptionCharacters": 3975
+    },
+    "after": {
+      "lines": 352,
+      "words": 3744,
+      "descriptionCharacters": 1428
+    }
+  },
+  "inventory": [
+    {
+      "name": "build-intent-layer",
+      "path": "skills/core-standards/build-intent-layer/SKILL.md",
+      "status": "updated",
+      "before": {
+        "lines": 228,
+        "words": 1378,
+        "descriptionCharacters": 238
+      },
+      "after": {
+        "lines": 18,
+        "words": 212,
+        "descriptionCharacters": 65
+      }
+    },
+    {
+      "name": "code-review",
+      "path": "skills/core-standards/code-review/SKILL.md",
+      "status": "updated",
+      "before": {
+        "lines": 187,
+        "words": 1372,
+        "descriptionCharacters": 208
+      },
+      "after": {
+        "lines": 18,
+        "words": 245,
+        "descriptionCharacters": 79
+      }
+    },
+    {
+      "name": "coding-standards",
+      "path": "skills/core-standards/coding-standards/SKILL.md",
+      "status": "updated",
+      "before": {
+        "lines": 97,
+        "words": 1182,
+        "descriptionCharacters": 285
+      },
+      "after": {
+        "lines": 28,
+        "words": 273,
+        "descriptionCharacters": 86
+      }
+    },
+    {
+      "name": "improve-codebase-architecture",
+      "path": "skills/core-standards/improve-codebase-architecture/SKILL.md",
+      "status": "updated",
+      "before": {
+        "lines": 220,
+        "words": 1654,
+        "descriptionCharacters": 262
+      },
+      "after": {
+        "lines": 14,
+        "words": 160,
+        "descriptionCharacters": 83
+      }
+    },
+    {
+      "name": "tdd",
+      "path": "skills/core-standards/tdd/SKILL.md",
+      "status": "updated",
+      "before": {
+        "lines": 130,
+        "words": 802,
+        "descriptionCharacters": 203
+      },
+      "after": {
+        "lines": 14,
+        "words": 167,
+        "descriptionCharacters": 85
+      }
+    },
+    {
+      "name": "tech-spec",
+      "path": "skills/core-standards/tech-spec/SKILL.md",
+      "status": "updated",
+      "before": {
+        "lines": 270,
+        "words": 1394,
+        "descriptionCharacters": 240
+      },
+      "after": {
+        "lines": 22,
+        "words": 204,
+        "descriptionCharacters": 91
+      }
+    },
+    {
+      "name": "ci-watch",
+      "path": "skills/execution-loop/ci-watch/SKILL.md",
+      "status": "updated",
+      "before": {
+        "lines": 80,
+        "words": 570,
+        "descriptionCharacters": 200
+      },
+      "after": {
+        "lines": 14,
+        "words": 220,
+        "descriptionCharacters": 79
+      }
+    },
+    {
+      "name": "linear-setup",
+      "path": "skills/execution-loop/linear-setup/SKILL.md",
+      "status": "audited, recommendations only",
+      "before": {
+        "lines": 82,
+        "words": 420,
+        "descriptionCharacters": 267
+      },
+      "after": {
+        "lines": 82,
+        "words": 420,
+        "descriptionCharacters": 267
+      }
+    },
+    {
+      "name": "orchestrator",
+      "path": "skills/execution-loop/orchestrator/SKILL.md",
+      "status": "audited, recommendations only",
+      "before": {
+        "lines": 128,
+        "words": 897,
+        "descriptionCharacters": 212
+      },
+      "after": {
+        "lines": 128,
+        "words": 897,
+        "descriptionCharacters": 212
+      }
+    },
+    {
+      "name": "production-ready",
+      "path": "skills/execution-loop/production-ready/SKILL.md",
+      "status": "audited, recommendations only",
+      "before": {
+        "lines": 85,
+        "words": 473,
+        "descriptionCharacters": 241
+      },
+      "after": {
+        "lines": 85,
+        "words": 473,
+        "descriptionCharacters": 241
+      }
+    },
+    {
+      "name": "reconcile-project",
+      "path": "skills/execution-loop/reconcile-project/SKILL.md",
+      "status": "audited, recommendations only",
+      "before": {
+        "lines": 80,
+        "words": 508,
+        "descriptionCharacters": 201
+      },
+      "after": {
+        "lines": 80,
+        "words": 508,
+        "descriptionCharacters": 201
+      }
+    },
+    {
+      "name": "review-swarm",
+      "path": "skills/execution-loop/review-swarm/SKILL.md",
+      "status": "audited, recommendations only",
+      "before": {
+        "lines": 75,
+        "words": 640,
+        "descriptionCharacters": 245
+      },
+      "after": {
+        "lines": 75,
+        "words": 640,
+        "descriptionCharacters": 245
+      }
+    },
+    {
+      "name": "simplify",
+      "path": "skills/execution-loop/simplify/SKILL.md",
+      "status": "updated",
+      "before": {
+        "lines": 51,
+        "words": 340,
+        "descriptionCharacters": 174
+      },
+      "after": {
+        "lines": 12,
+        "words": 121,
+        "descriptionCharacters": 91
+      }
+    },
+    {
+      "name": "subagent-execution",
+      "path": "skills/execution-loop/subagent-execution/SKILL.md",
+      "status": "audited, recommendations only",
+      "before": {
+        "lines": 73,
+        "words": 462,
+        "descriptionCharacters": 197
+      },
+      "after": {
+        "lines": 73,
+        "words": 462,
+        "descriptionCharacters": 197
+      }
+    },
+    {
+      "name": "systematic-debugging",
+      "path": "skills/execution-loop/systematic-debugging/SKILL.md",
+      "status": "updated",
+      "before": {
+        "lines": 70,
+        "words": 476,
+        "descriptionCharacters": 233
+      },
+      "after": {
+        "lines": 14,
+        "words": 169,
+        "descriptionCharacters": 90
+      }
+    },
+    {
+      "name": "to-issues",
+      "path": "skills/execution-loop/to-issues/SKILL.md",
+      "status": "audited, recommendations only",
+      "before": {
+        "lines": 115,
+        "words": 807,
+        "descriptionCharacters": 275
+      },
+      "after": {
+        "lines": 115,
+        "words": 807,
+        "descriptionCharacters": 275
+      }
+    },
+    {
+      "name": "to-prd",
+      "path": "skills/execution-loop/to-prd/SKILL.md",
+      "status": "audited, recommendations only",
+      "before": {
+        "lines": 86,
+        "words": 647,
+        "descriptionCharacters": 187
+      },
+      "after": {
+        "lines": 86,
+        "words": 647,
+        "descriptionCharacters": 187
+      }
+    },
+    {
+      "name": "triage",
+      "path": "skills/execution-loop/triage/SKILL.md",
+      "status": "audited, recommendations only",
+      "before": {
+        "lines": 125,
+        "words": 792,
+        "descriptionCharacters": 235
+      },
+      "after": {
+        "lines": 125,
+        "words": 792,
+        "descriptionCharacters": 235
+      }
+    },
+    {
+      "name": "worker",
+      "path": "skills/execution-loop/worker/SKILL.md",
+      "status": "audited, recommendations only",
+      "before": {
+        "lines": 98,
+        "words": 646,
+        "descriptionCharacters": 179
+      },
+      "after": {
+        "lines": 98,
+        "words": 646,
+        "descriptionCharacters": 179
+      }
+    },
+    {
+      "name": "worktree-isolation",
+      "path": "skills/execution-loop/worktree-isolation/SKILL.md",
+      "status": "updated",
+      "before": {
+        "lines": 118,
+        "words": 599,
+        "descriptionCharacters": 219
+      },
+      "after": {
+        "lines": 34,
+        "words": 280,
+        "descriptionCharacters": 76
+      }
+    },
+    {
+      "name": "alchemy",
+      "path": "skills/infrastructure/alchemy/SKILL.md",
+      "status": "updated",
+      "before": {
+        "lines": 114,
+        "words": 941,
+        "descriptionCharacters": 243
+      },
+      "after": {
+        "lines": 32,
+        "words": 305,
+        "descriptionCharacters": 72
+      }
+    },
+    {
+      "name": "anti-sleep",
+      "path": "skills/personal/anti-sleep/SKILL.md",
+      "status": "audited, recommendations only",
+      "before": {
+        "lines": 96,
+        "words": 508,
+        "descriptionCharacters": 260
+      },
+      "after": {
+        "lines": 96,
+        "words": 508,
+        "descriptionCharacters": 260
+      }
+    },
+    {
+      "name": "cyber-audit",
+      "path": "skills/personal/cyber-audit/SKILL.md",
+      "status": "audited, recommendations only",
+      "before": {
+        "lines": 99,
+        "words": 408,
+        "descriptionCharacters": 277
+      },
+      "after": {
+        "lines": 99,
+        "words": 408,
+        "descriptionCharacters": 277
+      }
+    },
+    {
+      "name": "handoff",
+      "path": "skills/personal/handoff/SKILL.md",
+      "status": "audited, recommendations only",
+      "before": {
+        "lines": 67,
+        "words": 348,
+        "descriptionCharacters": 237
+      },
+      "after": {
+        "lines": 67,
+        "words": 348,
+        "descriptionCharacters": 237
+      }
+    },
+    {
+      "name": "setup-help",
+      "path": "skills/personal/setup-help/SKILL.md",
+      "status": "audited, recommendations only",
+      "before": {
+        "lines": 41,
+        "words": 241,
+        "descriptionCharacters": 239
+      },
+      "after": {
+        "lines": 41,
+        "words": 241,
+        "descriptionCharacters": 239
+      }
+    },
+    {
+      "name": "teach",
+      "path": "skills/personal/teach/SKILL.md",
+      "status": "audited, recommendations only",
+      "before": {
+        "lines": 79,
+        "words": 434,
+        "descriptionCharacters": 251
+      },
+      "after": {
+        "lines": 79,
+        "words": 434,
+        "descriptionCharacters": 251
+      }
+    },
+    {
+      "name": "domain-modeling",
+      "path": "skills/planning/domain-modeling/SKILL.md",
+      "status": "audited, recommendations only",
+      "before": {
+        "lines": 95,
+        "words": 590,
+        "descriptionCharacters": 271
+      },
+      "after": {
+        "lines": 95,
+        "words": 590,
+        "descriptionCharacters": 271
+      }
+    },
+    {
+      "name": "grilling",
+      "path": "skills/planning/grilling/SKILL.md",
+      "status": "updated",
+      "before": {
+        "lines": 142,
+        "words": 851,
+        "descriptionCharacters": 289
+      },
+      "after": {
+        "lines": 14,
+        "words": 195,
+        "descriptionCharacters": 90
+      }
+    },
+    {
+      "name": "wayfinder",
+      "path": "skills/planning/wayfinder/SKILL.md",
+      "status": "audited, recommendations only",
+      "before": {
+        "lines": 178,
+        "words": 1140,
+        "descriptionCharacters": 259
+      },
+      "after": {
+        "lines": 178,
+        "words": 1140,
+        "descriptionCharacters": 259
+      }
+    },
+    {
+      "name": "deep-research",
+      "path": "skills/research/deep-research/SKILL.md",
+      "status": "updated",
+      "before": {
+        "lines": 74,
+        "words": 424,
+        "descriptionCharacters": 239
+      },
+      "after": {
+        "lines": 14,
+        "words": 167,
+        "descriptionCharacters": 87
+      }
+    },
+    {
+      "name": "research-prompt",
+      "path": "skills/research/research-prompt/SKILL.md",
+      "status": "audited, recommendations only",
+      "before": {
+        "lines": 56,
+        "words": 465,
+        "descriptionCharacters": 286
+      },
+      "after": {
+        "lines": 56,
+        "words": 465,
+        "descriptionCharacters": 286
+      }
+    },
+    {
+      "name": "youtube-transcript",
+      "path": "skills/research/youtube-transcript/SKILL.md",
+      "status": "audited, recommendations only",
+      "before": {
+        "lines": 61,
+        "words": 344,
+        "descriptionCharacters": 237
+      },
+      "after": {
+        "lines": 61,
+        "words": 344,
+        "descriptionCharacters": 237
+      }
+    },
+    {
+      "name": "app-forms",
+      "path": "skills/stack/app-forms/SKILL.md",
+      "status": "updated",
+      "before": {
+        "lines": 56,
+        "words": 488,
+        "descriptionCharacters": 231
+      },
+      "after": {
+        "lines": 14,
+        "words": 163,
+        "descriptionCharacters": 84
+      }
+    },
+    {
+      "name": "effect-ts",
+      "path": "skills/stack/effect-ts/SKILL.md",
+      "status": "updated",
+      "before": {
+        "lines": 123,
+        "words": 1233,
+        "descriptionCharacters": 207
+      },
+      "after": {
+        "lines": 34,
+        "words": 305,
+        "descriptionCharacters": 104
+      }
+    },
+    {
+      "name": "tanstack-react-best-practices",
+      "path": "skills/stack/tanstack-react-best-practices/SKILL.md",
+      "status": "updated",
+      "before": {
+        "lines": 155,
+        "words": 1356,
+        "descriptionCharacters": 243
+      },
+      "after": {
+        "lines": 25,
+        "words": 241,
+        "descriptionCharacters": 91
+      }
+    },
+    {
+      "name": "tanstack-routing",
+      "path": "skills/stack/tanstack-routing/SKILL.md",
+      "status": "updated",
+      "before": {
+        "lines": 75,
+        "words": 674,
+        "descriptionCharacters": 261
+      },
+      "after": {
+        "lines": 31,
+        "words": 317,
+        "descriptionCharacters": 75
+      }
+    }
+  ]
+}

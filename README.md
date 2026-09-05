@@ -153,17 +153,22 @@ pnpm test
 
 The validator checks skill frontmatter, name/path consistency,
 `agents/openai.yaml` metadata, `$skill-name` default prompts, required
-`linear-setup` templates, and stale thread-tool references.
+`linear-setup` templates, local Markdown reference targets, and stale thread-tool references. These are static packaging and policy checks. The scripted scenarios do not execute a model and do not prove that an agent follows the guidance.
 
-Before publishing changes, also do a clean install smoke test:
+Before publishing changes, also do a clean install smoke test against the checkout being reviewed:
 
 ```sh
-tmpdir=$(mktemp -d)
-cd "$tmpdir"
+skills_source="$PWD"
+skills_smoke_dir=$(mktemp -d)
+cd "$skills_smoke_dir"
 git init -q
-npx skills add https://github.com/cill-i-am/skills --skill '*' --agent codex --full-depth --copy -y
-find .agents/skills -name SKILL.md | wc -l
-find .agents/skills -path '*/agents/openai.yaml' | wc -l
+npx skills add "$skills_source" --skill '*' --agent codex --full-depth --copy -y
+rg --files --hidden .agents/skills -g SKILL.md | wc -l
+rg --files --hidden .agents/skills -g openai.yaml | wc -l
 ```
 
 Expected result today: 36 skills and 36 metadata files.
+
+## Guidance Audit
+
+See the [2026-09-05 guidance audit](docs/skill-guidance-audit.md) for the portable updates, per-skill recommendations, and verification limits.

@@ -2,7 +2,6 @@
 
 Cloudflare platform objects are infrastructure. Keep raw bindings at composition seams, cross runtime hops with explicit DTOs/context, and make stateful objects own coordination rather than accidental global compute.
 
-
 ## Vocabulary
 
 **Cloudflare Composition Seam** — The outer Worker/DO/Agent/composition location where raw `Env`, execution context, and bindings become app-level dependencies.
@@ -126,7 +125,7 @@ namespace.idFromName(`room:${name.toLowerCase()}`);
 
 Use stable prefixes when they clarify identity and avoid collisions: `user:${userId}`, `tenant:${tenantId}`, `doc:${documentId}`.
 
-A stateful object with meaningful durable identity stores an `_identity` row/table or equivalent local record with canonical ID/name, created-at, and relevant administrative metadata. Runtime names alone are not enough for alarms, migrations, repair, and debugging. Raw Durable Objects with meaningful durable identity should expose an explicit identity capability, such as `getIdentity()` / `setIdentity(...)`, backed by that record.
+Persist canonical identity when alarms, recovery, or the accepted domain model need it independently of the current request. Reuse the owning schema and identity capability; do not introduce a generic `_identity` table or mutable identity API without a concrete need.
 
 ## Startup, heartbeat, and work role
 
@@ -137,13 +136,13 @@ Use the runtime startup gate:
 
 Do not mirror startup with `this.ready` and await it in every method.
 
-Every Durable Object/Agent should expose and schedule a low-frequency `heartbeat()` maintenance method for cleanup, migrations, health metadata, repair hooks, and administrative checks. Keep heartbeat work small and local; enqueue/shard/orchestrate expensive work elsewhere.
+Schedule alarms or maintenance only for a demonstrated lifecycle requirement. Do not give every object a heartbeat by default. Keep required maintenance bounded and local; enqueue or distribute expensive work elsewhere.
 
 Durable Objects and Agents own serialized coordination and local state transitions for one shard/entity. They should not become accidental global compute workers for CPU-heavy, high-fanout, bulk, or long-running work.
 
 ## Control plane and data plane
 
-For multi-tenant, sharded, or partitioned systems, separate lifecycle/routing metadata from high-volume data operations.
+Separate lifecycle/routing metadata from high-volume data operations when their ownership, scaling, or lifecycle requirements differ. Multi-tenancy alone does not require another coordination layer.
 
 ```txt
 Control plane: create tenant, list shards, route metadata, admin lifecycle
@@ -152,19 +151,11 @@ Data plane: tenant/document/room/shard operations on hot path
 
 After a resource is created/resolved, hot request paths should route directly to the data-plane object rather than bouncing through a coordinator.
 
-Skip the split only for truly tiny or non-sharded systems with no meaningful control-plane role.
+Keep one cohesive owner when a split would add routing without a concrete responsibility.
 
 ## Storage
 
-Use Drizzle for application-owned Cloudflare SQL storage:
-
-- schema modules;
-- inferred select/insert/update DTOs;
-- Drizzle migrations;
-- queries through Drizzle;
-- parser/projection functions at the External Adapter Module seam.
-
-Raw SQL is reserved for tiny bootstrapping glue, framework internals, generated migrations, or cases Drizzle cannot express cleanly. Keep exceptions localized and documented.
+Use the storage interface and schema ownership accepted for the subsystem. Durable Object SQLite may use the native SQL API; use Drizzle where it is the established adapter. Keep queries, migrations, row parsing, and transactions at the owning persistence seam. Do not add an ORM or rewrite storage merely to satisfy a general preference.
 
 Stateful-object storage stays local to the object that owns the coordination responsibility. One object should not read/mutate another object's local SQLite state by bypassing its interface unless an explicit distributed-storage design assigns ownership elsewhere.
 

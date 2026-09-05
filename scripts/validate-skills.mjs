@@ -1,4 +1,4 @@
-import { readdir, readFile } from "node:fs/promises";
+import { access, readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 
 const root = process.cwd();
@@ -101,6 +101,22 @@ for await (const filePath of walk(skillsRoot)) {
       errors.push(
         `${relativePath}: missing agents/openai.yaml metadata`,
       );
+    }
+  }
+
+  // Validate actual local reference targets, not a skill's choice of wording.
+  // Templates describe paths in the receiving project, so their links are not bundle-relative.
+  if (path.extname(filePath) === ".md" && !relativePath.split(path.sep).includes("assets")) {
+    const prose = content.replace(/```[\s\S]*?```/g, "");
+    for (const match of prose.matchAll(/\[[^\]]*\]\(([^\s)]+)(?:\s+[^)]*)?\)/g)) {
+      const reference = match[1];
+      if (/^(?:[a-zA-Z][a-zA-Z\d+.-]*:|#|\/)/.test(reference)) continue;
+      const target = reference.split("#")[0];
+      try {
+        await access(path.resolve(path.dirname(filePath), target));
+      } catch {
+        errors.push(`${relativePath}: missing local reference: ${reference}`);
+      }
     }
   }
 

@@ -1,6 +1,6 @@
 # Vocabulary
 
-Use these exact terms in explanations, reviews, and code-facing design notes when the concept applies. Topic files may define only topic-local terms near their rules.
+These definitions clarify recurring concepts. Use the terminology that makes the current explanation clearest; the glossary does not dictate wording or capitalization.
 
 ## Failure language
 
@@ -11,7 +11,6 @@ Use these exact terms in explanations, reviews, and code-facing design notes whe
 **Custom Error** — A typed, tagged error value for an Expected Failure. It has a stable tag, useful message, structured safe context, and may retain an `unknown` cause.
 
 **Precise Error Union** — The explicit set of Expected Failures a function can return, kept narrow enough that callers can handle cases semantically.
-
 
 ## Boundary language
 

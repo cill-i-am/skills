@@ -7,13 +7,13 @@ Use this file for domain values, DTOs, persisted rows, wire contracts, brands, v
 Define the runtime contract first, then derive the TypeScript type from it:
 
 ```ts
-import { Schema } from "effect"
+import { Schema } from "effect";
 
 export const User = Schema.Struct({
   id: UserId,
   displayName: Schema.NonEmptyString,
   email: Schema.optionalKey(EmailAddress),
-})
+});
 
 export interface User extends Schema.Schema.Type<typeof User> {}
 ```
@@ -53,14 +53,14 @@ Put validation before the brand and use distinct brands for distinct concepts:
 export const UserId = Schema.String.pipe(
   Schema.check(Schema.isPattern(/^usr_[a-z0-9]+$/)),
   Schema.brand("UserId"),
-)
-export type UserId = typeof UserId.Type
+);
+export type UserId = typeof UserId.Type;
 
 export const OrganizationId = Schema.String.pipe(
   Schema.check(Schema.isPattern(/^org_[a-z0-9]+$/)),
   Schema.brand("OrganizationId"),
-)
-export type OrganizationId = typeof OrganizationId.Type
+);
+export type OrganizationId = typeof OrganizationId.Type;
 ```
 
 Rules:
@@ -92,25 +92,25 @@ Use the schema-backed tagged-error constructor exported by the target pin when a
 - Current v4 release-candidate lines use `Schema.TaggedError`.
 - Older v4 betas used `Schema.TaggedErrorClass`.
 
-Check the installed source and compile a probe before changing constructor spelling. Lightweight internal expected failures that never cross a boundary may use the target pin's Data tagged-error constructor.
+Check the installed declaration and validate the changed constructor through the normal typecheck; use a probe only if inference remains unclear. Lightweight internal expected failures that never cross a boundary may use the target pin's Data tagged-error constructor.
 
 ## Decode At Boundaries
 
 Unknown values enter through HTTP, RPC, queues, files, environment variables, databases, SDKs, and persisted JSON. Decode them once before domain use:
 
 ```ts
-const decodeCreateUser = Schema.decodeUnknownEffect(CreateUser)
+const decodeCreateUser = Schema.decodeUnknownEffect(CreateUser);
 
-export const registerFromRequest = Effect.fn("Users.registerFromRequest")(
-  function* (request: Request) {
-    const body = yield* Effect.tryPromise({
-      try: () => request.json(),
-      catch: (cause) => new InvalidJson({ cause }),
-    })
-    const input = yield* decodeCreateUser(body)
-    return yield* registerUser(input)
-  },
-)
+export const registerFromRequest = Effect.fn("Users.registerFromRequest")(function* (
+  request: Request,
+) {
+  const body = yield* Effect.tryPromise({
+    try: () => request.json(),
+    catch: (cause) => new InvalidJson({ cause }),
+  });
+  const input = yield* decodeCreateUser(body);
+  return yield* registerUser(input);
+});
 ```
 
 Constructor and decoder chooser:
@@ -148,9 +148,9 @@ Do not force one oversized Schema to represent command, domain, row, and wire co
 Schema decoders, encoders, and guards are compiled functions. When the Schema is static and the operation is called repeatedly, hoist the compiler to module scope:
 
 ```ts
-const decodeProfile = Schema.decodeUnknownEffect(ProfileResponse)
-const encodeProfile = Schema.encodeEffect(ProfileRequest)
-const isProfile = Schema.is(Profile)
+const decodeProfile = Schema.decodeUnknownEffect(ProfileResponse);
+const encodeProfile = Schema.encodeEffect(ProfileRequest);
+const isProfile = Schema.is(Profile);
 ```
 
 Inline compilation is acceptable for one-off startup or test setup. Do not rebuild an inline Schema and compiler on every hot-path call.

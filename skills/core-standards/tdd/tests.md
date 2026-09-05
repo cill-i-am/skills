@@ -1,61 +1,9 @@
-# Good and Bad Tests
+# Behavioural tests
 
-## Good Tests
+Exercise the public contract with realistic inputs and observable outcomes. Choose assertions that survive an internal refactor while detecting a broken result. Multiple assertions are useful when they describe one coherent outcome.
 
-**Integration-style**: Test through real interfaces, not mocks of internal parts.
+Use the real local runtime or database when persistence, serialization, isolation, or transactions are the claim. Inspecting stored rows is appropriate when the storage contract itself matters; a private helper call is usually weaker evidence than the caller-facing operation.
 
-```typescript
-// GOOD: Tests observable behavior
-test("user can checkout with valid cart", async () => {
-  const cart = createCart();
-  cart.add(product);
-  const result = await checkout(cart, paymentMethod);
-  expect(result.status).toBe("confirmed");
-});
-```
+Use deterministic substitutes at external capability seams when live execution is unavailable or unauthorized. They should model the failure or response contract without replacing the internal behaviour under test.
 
-Characteristics:
-
-- Tests behavior users/callers care about
-- Uses public API only
-- Survives internal refactors
-- Describes WHAT, not HOW
-- One logical assertion per test
-
-## Bad Tests
-
-**Implementation-detail tests**: Coupled to internal structure.
-
-```typescript
-// BAD: Tests implementation details
-test("checkout calls paymentService.process", async () => {
-  const mockPayment = jest.mock(paymentService);
-  await checkout(cart, payment);
-  expect(mockPayment.process).toHaveBeenCalledWith(cart.total);
-});
-```
-
-Red flags:
-
-- Mocking internal collaborators
-- Testing private methods
-- Asserting on call counts/order
-- Test breaks when refactoring without behavior change
-- Test name describes HOW not WHAT
-- Verifying through external means instead of interface
-
-```typescript
-// BAD: Bypasses interface to verify
-test("createUser saves to database", async () => {
-  await createUser({ name: "Alice" });
-  const row = await db.query("SELECT * FROM users WHERE name = ?", ["Alice"]);
-  expect(row).toBeDefined();
-});
-
-// GOOD: Verifies through interface
-test("createUser makes user retrievable", async () => {
-  const user = await createUser({ name: "Alice" });
-  const retrieved = await getUser(user.id);
-  expect(retrieved.name).toBe("Alice");
-});
-```
+Call counts or ordering are useful assertions for retry limits, duplicate-effect prevention, transaction ordering, and delivery contracts. Avoid them when they merely freeze internal orchestration. Never make a failing test pass by weakening the intended assertion.
