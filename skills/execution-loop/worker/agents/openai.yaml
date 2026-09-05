@@ -1,4 +1,4 @@
 interface:
   display_name: "Worker"
-  short_description: "Ship one Linear issue end to end."
-  default_prompt: "Use $worker to implement one ready Linear issue in an isolated worktree, open a PR, watch CI and comments, and report evidence."
+  short_description: "Deliver one ready work item with proof."
+  default_prompt: "Use $worker to implement the assigned ready work item, verify its outcome, and prepare the requested PR."

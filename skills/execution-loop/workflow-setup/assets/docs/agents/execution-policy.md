@@ -5,16 +5,9 @@ selection, finding disposition, human gates, and watcher ownership.
 
 ## Policy Precedence
 
-1. This execution policy owns authority and state transitions.
-2. Role skills add role-specific behavior without changing that authority.
-3. Templates render this policy without inventing gates.
-4. Capability skills provide techniques inside a phase; they do not grant or
-   withhold workflow authority.
-5. Project instructions may narrow scope or add product-specific safety
-   boundaries, but should not duplicate generic ceremony.
+Follow the host's instruction hierarchy and the user's authorized scope. Apply the project's existing execution policy when present. This template supplies defaults where the project has none; it cannot supersede project instructions or grant external, delegation, or merge authority.
 
-When instructions conflict, use the highest applicable source and report any
-project-specific safety constraint that narrows it.
+Role and capability skills work within that authority. Templates describe artifacts and do not create additional approval gates. Preserve concrete project safety constraints without duplicating generic ceremony.
 
 ## Delivery Contract
 
@@ -24,7 +17,7 @@ focused correction pass when needed, and one orchestrator shipping decision.
 
 The four workflow phases are:
 
-1. **Dispatch:** reconcile live issue and repository state, confirm readiness,
+1. **Dispatch:** reconcile current authoritative work item and repository state, confirm readiness,
    choose the risk tier, establish exact fetched-remote provenance, assign one
    delivery owner, and name genuine external or human gates.
 2. **Build:** implement the smallest end-to-end outcome, use capability skills
@@ -90,8 +83,7 @@ probes, fix reproducible in-scope defects, simplify, update the draft PR, and
 address CI or review findings within scope without fresh authorization.
 
 The worker stops when product meaning would change, the fix crosses issue
-scope, a destructive or external action lacks authority, credentials or real
-data are required, safe provenance cannot be established, or a genuine external
+scope, a destructive or external action lacks authority, a required use of credentials or real data lacks authorization, safe provenance cannot be established, or a genuine external
 dependency is unavailable.
 
 ### Reviewer
@@ -102,7 +94,7 @@ correctness, simplicity, tests, and physical proof; reports concrete findings,
 recommended disposition, confidence, and residual risk.
 
 The reviewer does not grant edit authority, control worker state, expand
-acceptance criteria, require replacement plans, merge, change Linear state, or
+acceptance criteria, require replacement plans, merge, change work-item state, or
 create a governance cycle. A focused Tier B pre-edit review only assesses the
 named dangerous seam.
 
@@ -176,7 +168,7 @@ closed, or genuinely blocked.
 
 Do not run overlapping worker, orchestrator, and project watchers for the same
 event. Watchers do not replay approvals, invent authority, reopen planning, or
-replace Linear and GitHub as durable evidence stores.
+replace the declared work records and PR/check evidence as durable sources.
 
 ## Safety And Completion
 

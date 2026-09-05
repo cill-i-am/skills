@@ -1,4 +1,4 @@
 interface:
   display_name: "Tech Spec"
-  short_description: "Write typed call-stack handoffs."
-  default_prompt: "Use $tech-spec to turn a PRD, issue, architecture candidate, or design discussion into an implementation-ready typed call-stack spec."
+  short_description: "Specify contracts for an implementable change"
+  default_prompt: "Use $tech-spec to describe the outcome, consequential contracts, and verification needed for implementation."

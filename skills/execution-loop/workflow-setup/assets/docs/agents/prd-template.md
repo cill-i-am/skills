@@ -44,6 +44,6 @@ contract.
 
 ## References
 
-- Linear Initiative/Project/issues
+- Canonical plan, parent context, and work items
 - Architecture docs
 - Relevant source-backed notes

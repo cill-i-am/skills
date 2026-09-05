@@ -9,9 +9,9 @@ tags: javascript, arrays, flatMap, filter, performance
 
 **Impact: LOW-MEDIUM (eliminates intermediate array)**
 
-Chaining `.map().filter(Boolean)` creates an intermediate array and iterates twice. Use `.flatMap()` to transform and filter in a single pass.
+Chaining `.map().filter(Boolean)` creates an intermediate array and iterates twice. Consider `.flatMap()` when it makes the transformation clearer. Preserve the original predicate; one pass does not by itself prove better performance because callback allocations and engine behavior also matter.
 
-**Incorrect (2 iterations, intermediate array):**
+**Two-step form (filters all falsy names):**
 
 ```typescript
 const userNames = users
@@ -19,11 +19,11 @@ const userNames = users
   .filter(Boolean)
 ```
 
-**Correct (1 iteration, no intermediate array):**
+**Equivalent flatMap form:**
 
 ```typescript
 const userNames = users.flatMap(user =>
-  user.isActive ? [user.name] : []
+  user.isActive && user.name ? [user.name] : []
 )
 ```
 
@@ -38,7 +38,7 @@ const emails = responses
 
 // After
 const emails = responses.flatMap(r =>
-  r.success ? [r.data.email] : []
+  r.success && r.data.email ? [r.data.email] : []
 )
 
 // Parse and filter valid numbers

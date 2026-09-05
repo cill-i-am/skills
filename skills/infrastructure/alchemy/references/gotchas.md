@@ -1,6 +1,6 @@
 # Gotchas And Hard Rules
 
-Load this before finalizing nontrivial Alchemy work.
+Consult the section relevant to an operational risk or observed failure; this is not a mandatory final checklist.
 
 ## Safety
 
@@ -71,7 +71,7 @@ Load this before finalizing nontrivial Alchemy work.
 - Bind the narrowest capability and provide its exact native/HTTP Layer.
 - Native platform bindings are preferable for trusted internal calls when available.
 - Schemaless RPC is for trusted internal communication, not arbitrary external input.
-- Effect RPC and Effect HTTP validate trust boundaries; do not pay schema encode/decode cost merely to restate internal types.
+- Effect RPC and Effect HTTP validate trust boundaries. Native internal RPC still needs the owning schema when values require validation or reconstruction after serialization; TypeScript types alone do not restore domain instances.
 - Client and server serialization must match.
 - Keep API schemas free of provider resources, credentials, SDK clients, and runtime implementation types.
 

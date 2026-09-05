@@ -1,4 +1,4 @@
 interface:
   display_name: "TDD"
-  short_description: "Drive behavior with red-green-refactor."
-  default_prompt: "Use $tdd to plan or implement a behavior slice with red-green-refactor tests through public interfaces."
+  short_description: "Develop behaviour through red-green-refactor"
+  default_prompt: "Use $tdd to implement the requested behaviour through meaningful failing tests, a working change, and refactoring."

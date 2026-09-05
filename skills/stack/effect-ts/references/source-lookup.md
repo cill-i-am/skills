@@ -6,7 +6,7 @@ Use live source for API spelling and semantics. Reference repositories teach arc
 
 1. Target repository instructions, package manifest, lockfile, compiler settings, and nearby compiling code.
 2. The exact installed `effect` and `@effect/*` package guidance, declarations, implementation, and adjacent tests.
-3. A narrow scratch probe compiled with the target project's own typecheck command.
+3. Compiling changed code and focused tests against that installation; a scratch probe when a disputed API cannot be established there.
 4. Current upstream Effect source and tests for semantic clarification.
 5. Exemplar compiling source, tests, and enforced lint configuration at a pinned revision.
 6. Exemplar prose, migration notes, and embedded skills.
@@ -32,11 +32,11 @@ Also inspect shipped package-level agent guidance, AI docs, cookbooks, declarati
 
 ## Compile A Probe
 
-For a version-sensitive API, create a disposable TypeScript file in the repository and compile it with the project's normal command. Include the real imports and the smallest representative call shape. Delete the probe afterward.
+Validate version-sensitive APIs through the changed code and normal typecheck when that proves the call shape. Use a disposable probe only for unresolved signatures, inference, or lifecycle semantics; include real imports and remove it afterward.
 
 A matching symbol name is not enough. Prove its type parameters, option fields, return/error/service channels, and runtime semantics where relevant.
 
-Probe especially:
+When normal compilation or tests leave uncertainty, useful probe targets include:
 
 - Schema classes, brands, error constructors, decoders, encoders, and optionality;
 - `Effect.fn`, `fnUntraced`, race, timeout, and callback constructors;
@@ -103,15 +103,16 @@ Classify findings by package role before calling them violations.
 
 ## Evidence Record
 
-For source-backed advice or a change involving unstable/non-trivial APIs, record:
+For source-backed advice or unstable APIs, retain the versions and evidence needed to assess the claim. The following is an optional example, not a required output form:
 
 ```md
 Effect evidence
+
 - target version and lockfile: ...
 - installed files inspected: ...
 - upstream revision, if consulted: ...
 - exemplar revision and files: ...
-- compile/typecheck probe: ...
+- normal typecheck or focused probe: ...
 - focused tests: ...
 ```
 

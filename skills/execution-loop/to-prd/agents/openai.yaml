@@ -1,4 +1,4 @@
 interface:
   display_name: "To PRD"
-  short_description: "Turn rough product context into a PRD."
-  default_prompt: "Use $to-prd to turn rough product context, a feature idea, or a planning conversation into a Linear-ready PRD or Project source of truth."
+  short_description: "Turn product context into a clear PRD."
+  default_prompt: "Use $to-prd to create or update the canonical product brief in this project's chosen source."

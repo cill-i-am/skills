@@ -1,86 +1,18 @@
 ---
 name: to-prd
-description: Turn rough product context into a Linear Project or PRD. Use when the user wants a PRD, product spec, initiative/project framing, or source-of-truth product brief for later issue slicing.
+description: Turn product context into a clear PRD with outcomes, boundaries, and acceptance expectations.
 ---
 
 # To PRD
 
-Create or update the Linear source of truth for a product idea. Linear owns the
-active PRD, Project, Initiative links, issue graph, decisions, and execution
-state. The repo owns code and source-backed architecture docs.
+Create or update the canonical product brief in the project's chosen source. Resolve [workflow selection](../workflow-setup/references/workflow-selection.md) before durable writes and load only that mode's guidance. An explicitly requested inline draft needs no tracker setup or mutation.
 
-## Read First
+Synthesize the conversation, current plan, relevant source, domain docs, and any discovery map. Ask only about unresolved choices that change product meaning. Use the existing PRD shape or the bundled template linked by the workflow guide.
 
-- `docs/agents/linear-workflow.md`
-- `docs/agents/triage-states.md`
-- `docs/agents/domain.md`
-- relevant `docs/architecture/*`
+The result should explain the problem, users and outcomes, goals and non-goals, intended behavior, material decisions, acceptance and proof expectations, risks, references, and open questions. Include implementation details only when they constrain the solution.
 
-If `docs/agents/*` is absent because the project has not run `linear-setup` yet
-or this is a bundle simulation, read the matching templates from
-`../linear-setup/assets/docs/agents/*` when available and state that the target
-repo still needs `linear-setup`.
+If decision discovery still contains uncertainty that would force invented intent, keep the PRD provisional and use `wayfinder` for the unresolved decisions. A resolved discovery map contributes links and decisions; it does not substitute for a coherent PRD.
 
-Use the Linear skill/app for Linear reads and writes when publishing. If Linear
-tools are not available and Draft Mode does not apply, stop and ask the user to
-connect the Linear app before attempting to publish the PRD.
+Within the requested scope, update the existing authoritative brief or create one in the declared location. Verify the write. Keep settled product intent in that owner and link from maps or work items. A read-only request returns a draft without files, tracker comments, or status changes.
 
-## Process
-
-1. **Gather context.** Use the current conversation, referenced docs, existing
-   Linear Initiative/Project/issues, Wayfinder map and resolved decision Issues
-   when present, and source code. Do not interview by default; synthesize what
-   is known. Ask only for decisions that cannot be resolved from Linear, source,
-   or architecture docs.
-2. **Choose Linear container.**
-   - Existing Initiative/Project: update it.
-   - New product area: create or propose a Project under the right Initiative,
-     named after the overall user, business, or operational outcome.
-   - Unknown team/project mapping: ask once with a recommended default.
-3. **Stress-test with domain docs.** Use current repo vocabulary and verify any
-   implementation claims against source. If the source contradicts the product
-   idea, call that out in the PRD's open questions or implementation decisions.
-4. **Sketch test seams.** Prefer existing public interfaces and vertical slices.
-   Identify where worker issues should verify behavior.
-5. **Write the PRD in Linear.** Prefer a Linear document attached to the Project
-   when supported; otherwise use the Project description or a linked PRD issue.
-6. **Record unresolved ambiguity.** Mark open questions as HITL instead of
-   burying uncertainty. If a Wayfinder map still has blocking decision Issues or
-   in-scope fog that would force this skill to invent intent, hand it back to
-   `wayfinder` rather than producing a falsely ready PRD.
-7. **Prepare for issue slicing.** End with the recommended next step: run
-   `to-issues` on the Linear Project/PRD.
-
-## Draft Mode
-
-Use Draft Mode when the user asks for a read-only PRD, a simulation, an inline
-artifact, or Linear tools are intentionally unavailable. In Draft Mode, do not
-stop for missing Linear access. Produce the PRD inline, mark it as draft or
-ready for slicing, and state what would be published to Linear later.
-
-## PRD Template
-
-Use `docs/agents/prd-template.md` as the source of truth for PRD shape. If the
-target repo has not run `linear-setup`, use the bundled template at
-`../linear-setup/assets/docs/agents/prd-template.md` and state that the target
-repo still needs setup.
-
-Completion criterion: the PRD has enough goals, non-goals, user outcomes,
-implementation decisions, verification expectations, risks, references, and
-HITL/open questions for `to-issues` to slice without inventing product intent.
-When input came from Wayfinder, settled product intent has one durable owner in
-the PRD and the map retains links rather than duplicate decision prose.
-
-## Publishing Rules
-
-- Do not create implementation issues inside this skill unless the user
-  explicitly asks; `to-issues` owns issue slicing.
-- Link the PRD to the parent Initiative when one exists.
-- If creating a Project, give it a plain-language outcome title that can become
-  the umbrella for parent capability outcomes and child delivery outcomes.
-- Identify the likely capability outcomes that `to-issues` should use as parent
-  Issues, without prematurely decomposing them into technical tasks.
-- Add a short Linear comment summarizing what changed and what remains open.
-- If the PRD is ready for slicing, set or recommend the live Linear state that
-  maps to "ready for issue slicing" or "needs grooming" according to
-  `docs/agents/triage-states.md`.
+Finish when the PRD can be sliced without inventing product meaning, or state the precise unresolved decision. Creating delivery issues is a separate outcome handled by `to-issues` when requested or already authorized.

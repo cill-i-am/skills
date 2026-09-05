@@ -1,125 +1,20 @@
 ---
 name: triage
-description: Triage Linear issues, Projects, PRDs, bugs, and feature requests through the repo's Linear state machine. Use when the user wants to create, classify, clarify, label, unblock, close, or prepare Linear work for human or agent execution.
+description: Clarify, classify, unblock, or close work items using current evidence and the project's readiness rules.
 ---
 
 # Triage
 
-Move Linear work through the state machine defined in
-`docs/agents/triage-states.md`. Triage is about making work truthful: either
-ready for an AFK worker, waiting for information, blocked, ready for a human, or
-explicitly out of scope.
+Make work state truthful in the project's chosen source. Resolve [workflow selection](../workflow-setup/references/workflow-selection.md) and read only that mode's guide. Use the project's state vocabulary and readiness rules; the bundled readiness template is a default only when none exists.
 
-Triage prepares work. It does not implement code, dispatch workers, or create
-speculative backlog items. When an issue is ready, hand it to the orchestrator
-or leave it in the live ready-for-agent state.
+Read the current item, parent plan, dependencies, owner, decisions, and linked PR/evidence. Check relevant source or reproduce a reported bug when that materially improves the recommendation. Read-only requests return recommendations without record updates.
 
-## Read First
+For a ready delivery item, establish an observable outcome, testable acceptance, scope boundaries, resolved product choices, satisfied dependencies, and realistic proof expectations. Keep decision work and aggregate outcomes out of the delivery queue. A fixable implementation defect does not require a new product decision or planning phase.
 
-- `docs/agents/linear-workflow.md`
-- `docs/agents/triage-states.md`
-- `docs/agents/execution-policy.md`
-- `docs/agents/domain.md`
-- relevant Linear issue/Project/PRD/comments
-- relevant source and architecture docs for the area
+When asked what needs attention, surface actionable changes: unclear intake, answered questions, changed blockers, missing evidence, conflicting ownership, or stale completion state. Prioritize using the available evidence and the user's requested scope.
 
-If `docs/agents/*` is absent because the project has not run `linear-setup` yet
-or this is a bundle simulation, read the matching templates from
-`../linear-setup/assets/docs/agents/*` when available and state that the target
-repo still needs `linear-setup`.
+Apply authorized corrections to the owning record and its actual relations. Record a material decision and rationale once; do not manufacture comments or duplicate repository status summaries. If scope or ownership would materially change, resolve that choice before applying it.
 
-Use the Linear skill/app for reads and writes. If Linear tools are unavailable,
-stop and ask the user to connect Linear.
+A rejected or cancelled item retains its reason and links. A dependent item is not automatically unblocked by cancellation. Concrete follow-ups need their own outcome and a link explaining why they fall outside the original scope.
 
-## Show What Needs Attention
-
-When asked what needs attention, query Linear and group oldest first using the
-live workflow states that correspond to:
-
-1. Untriaged or unlabeled work.
-2. needs grooming.
-3. needs information with new reporter or maintainer activity.
-4. blocked work whose blockers changed.
-5. in-review work missing PR, CI, or orchestrator evidence.
-
-Show counts and one-line summaries. Let the user pick unless they asked for a
-specific issue.
-
-## Triage A Specific Issue
-
-1. **Gather context.** Read the full issue, comments, labels/status, parent
-   Project/PRD, parent/sub-Issues, blockers, assignee, and related PRs. Check
-   relevant source or docs rather than trusting stale issue prose.
-2. **Classify.** Recommend category and state:
-   `bug`, `enhancement`, `chore`, `spike`; and one of the states in
-   `docs/agents/triage-states.md`.
-3. **Reproduce bugs when possible.** Trace the likely code path and run focused
-   commands when cheap. If reproduction needs credentials, provider state, or an
-   Alchemy stage, state that clearly.
-4. **Clarify if needed.** Use `grilling` in Docs Mode for real domain ambiguity.
-   Capture resolved decisions in Linear comments or the parent PRD.
-5. **Normalize title and hierarchy.** Ensure the title states an observable
-   outcome in plain language and the Issue sits under the correct parent
-   capability outcome. Keep parent/sub-Issue grouping separate from blockers.
-   Rename or reparent directly when the scope is clearly unchanged, and record
-   the correction in a comment. Ask before changing anything that could alter
-   product scope or ownership.
-6. **Prepare for execution.** If ready for an agent, ensure the issue has
-   acceptance criteria, blockers, verification expectations, out-of-scope
-   boundaries, and AFK/HITL classification.
-7. **Apply Linear updates.** Update title/status/labels/relations and add a concise
-   comment explaining what changed.
-
-## Ready Checklist
-
-Before moving an issue to the live Linear state that means "ready for agent
-work", verify:
-
-- parent Project/PRD is linked or intentionally absent
-- title describes what becomes true rather than the implementation activity
-- parent outcome Issue is linked, or the Issue is intentionally a parent outcome
-- acceptance criteria are concrete and testable
-- blockers are represented as Linear relations
-- no unresolved HITL decision is hidden in prose
-- out-of-scope boundaries are explicit
-- proof-of-outcome expectations name automated and physical/runtime evidence
-- the Tier A, B, or C judgment and any genuine human/external gate are clear
-- a worker can identify the first vertical tracer without inventing product meaning
-
-A Ready issue is normally the implementation plan. Do not add a second worker
-planning phase, predetermined review ceremony, or routine pre-edit reviewer as
-a readiness requirement.
-
-## Wontfix / Out Of Scope
-
-For rejected enhancements, record the reasoning durably:
-
-- Prefer a Linear Project/issue comment or linked document if this is purely
-  product scope.
-- Use a repo doc only when the decision affects future architecture or agent
-  behavior.
-
-The reason must be durable. "Not now" is usually needs information or deferred
-work, not a final won't-do decision.
-
-## Follow-Up Issues
-
-Workers may create follow-up issues only for narrow, concrete work discovered
-during implementation or review. Triage those issues like any other intake:
-verify the link to the source issue, confirm why the work was out of scope, and
-prioritize it deliberately. Give the follow-up an outcome title and place it
-under the nearest correct parent outcome. Do not preserve speculative backlog
-grooming just because a worker generated it.
-
-## Comments
-
-Every triage comment should include:
-
-- current recommendation
-- evidence or code/docs checked
-- open questions or blockers
-- next state and why
-
-Completion criterion: the issue has one clear next state, the durable Linear
-comment explains why, and any blocker or follow-up is represented as Linear
-state rather than hidden in prose.
+Finish with the next state, supporting evidence, remaining blockers, and next action. Triage does not itself implement code, dispatch workers, or merge changes.

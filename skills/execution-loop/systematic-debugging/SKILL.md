@@ -1,70 +1,14 @@
 ---
 name: systematic-debugging
-description: Root-cause debugging loop for bugs, failing tests, flakes, CI failures, performance regressions, and unexpected behavior. Use before proposing fixes when anything is broken, especially during worker implementation or CI-watch repair.
+description: Investigate a bug whose cause is unclear using a focused reproduction and causal evidence.
 ---
 
-# Systematic Debugging
+# Debugging
 
-No fixes without a red-capable feedback loop and a root-cause investigation.
-Skip steps only when you explicitly justify why they do not apply.
+Find the narrowest useful signal for the reported symptom: a failing test, real runtime call, browser interaction, saved trace, or small disposable harness. Confirm it exercises the failure when practical. When reproduction is unavailable, say what evidence supports the diagnosis and what remains unproven.
 
-## Red Loop Contract
+Inspect the failing path and test plausible causes with targeted probes. The number of hypotheses and probes depends on the evidence. An obvious causal defect does not need a debugging ceremony.
 
-Before editing, name the loop you will trust and run it once. If it does not go
-red for the reported symptom, either tighten the loop or state why this bug
-cannot currently be reproduced. Do not claim a fix from a loop that never proved
-it could fail.
+Fix the cause within scope, then rerun the affected reproduction and relevant checks. Keep a regression test when it protects meaningful behaviour; do not create a shallow test merely to make the loop look complete. Remove temporary diagnostics.
 
-## Feedback Loop
-
-Find the tightest pass/fail signal for the reported symptom:
-
-1. failing test at the seam that reaches the bug
-2. HTTP/scripted call against a running service
-3. CLI invocation with a fixture input
-4. browser automation asserting DOM, console, or network behavior
-5. replayed trace: saved request, event, webhook, payload, or fixture
-6. throwaway harness around the smallest runnable subset
-7. property, fuzz, or repeated loop for flakes
-8. bisection or differential loop when the bug appeared between known states
-
-The loop should be red-capable, deterministic enough to trust, fast enough to
-iterate, and runnable by the agent.
-
-## Workflow
-
-1. Reproduce the exact symptom and confirm it matches the user's report.
-2. Minimize the reproduction until every remaining input, step, or dependency is load-bearing.
-3. List 3-5 ranked, falsifiable hypotheses.
-4. Add targeted probes that distinguish the hypotheses. Avoid broad "log everything" debugging.
-5. Change one causal variable at a time until the failing path is understood.
-6. Write or identify the regression test before the fix when a correct seam exists.
-7. Apply the root-cause fix, then rerun the minimized repro and the original loop.
-8. Remove temporary diagnostics, harnesses, and debug code before finishing.
-
-Use a unique marker such as `[DEBUG-a4f2]` for temporary diagnostics so cleanup is
-a single search.
-
-## Guardrails
-
-- Do not patch symptoms while the causal path is unknown.
-- Do not widen scope while debugging a worker issue; create a concrete follow-up
-  when the root cause reveals separate work.
-- If a proper regression seam does not exist, say that plainly and verify with
-  the strongest available loop instead of pretending a shallow test proves the fix.
-- For provider, production data, destructive, or credential-dependent debugging,
-  confirm stage, permissions, and safety before mutating anything.
-
-## Finish
-
-Report:
-
-- reproduction command or loop
-- root cause
-- fix summary
-- verification command/results
-- any missing test seam or follow-up issue
-
-Completion criterion: the trusted loop was red or the lack of red was explained,
-the root cause connects the symptom to a specific path or invariant, the fixed
-loop is green, and a search for the debug marker finds no leftover diagnostics.
+Continue through in-scope fixes. If the cause points to a separate product decision or unauthorized external effect, stop that dependent action and finish useful independent work. Report cause, correction, observed verification, and any remaining uncertainty.

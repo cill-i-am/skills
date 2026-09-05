@@ -177,9 +177,7 @@ const limit = input.limit || defaultLimit;
 Prefer:
 
 ```ts
-const emails = users.flatMap((user) =>
-  user.email === undefined ? [] : [user.email],
-);
+const emails = users.flatMap((user) => (user.email === undefined ? [] : [user.email]));
 
 const limit = input.limit ?? defaultLimit;
 ```
@@ -306,7 +304,7 @@ Use ordinary `if/else` when branches are true peers in a domain decision.
 
 Export only intended caller interfaces. Do not export internals just for tests.
 
-JSDoc every directly exported function, class, constant, type, and public method on exported classes. Document generics with `@template`. Document typed expected failures as return values, not `@throws`. Use `@throws` only for defects, framework-required behavior, or temporary unimplemented paths.
+Document non-obvious public contracts, invariants, lifetimes, and failure behaviour. Do not add JSDoc that repeats a name or type signature. Document typed expected failures as return values; reserve `@throws` for actual throwing behaviour.
 
 Comments explain invariants, trade-offs, safety, and non-obvious domain rules. Avoid comments that narrate obvious syntax.
 

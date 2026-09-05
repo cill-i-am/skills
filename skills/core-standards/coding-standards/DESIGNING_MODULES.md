@@ -16,7 +16,7 @@ This file uses these local terms:
 
 ## Apply this file
 
-When designing or changing a module, check all touched concerns:
+For a module-design question, consider the concerns that affect this change:
 
 - depth and deletion test;
 - interface burden;
@@ -25,7 +25,7 @@ When designing or changing a module, check all touched concerns:
 - functional core / imperative shell boundary;
 - resource ownership.
 
-The module-design pass is complete when each touched concern is either satisfied or named as a compatibility constraint.
+Resolve the concrete design problem within scope. Do not expand a small change into a module-wide audit or introduce compatibility machinery to satisfy these examples.
 
 ## Deep vs shallow
 
@@ -89,7 +89,7 @@ Despite the word "service," pure domain behavior that does not depend on externa
 - Reuse an existing External Adapter Module through a narrow interface when it already provides the needed behavior.
 - Extend an External Adapter Module only when the new method fits its cohesive capability and changes for the same reason.
 - Create a new External Adapter Module only when reuse or extension would create bad coupling or an accidental interface.
-- Record a new production External Adapter Module / Service Module decision in an ADR when it introduces a new external dependency, platform capability, persistence model, runtime boundary, or dependency-provisioning pattern. Skip the ADR for test-only fakes, one-file framework glue that translates no policy, or adding methods to an established cohesive adapter.
+- Record an ADR for a consequential choice about authority, persistence, runtime ownership, or a lasting external dependency. Routine implementation within an accepted pattern needs no new ADR.
 - Keep small ubiquitous generic helpers in `prelude.ts`; keep domain/service policy out of `prelude.ts`.
 - Use parsed, domain-specific authorization inputs such as `AdminUser`, `Session`, `Principal`, `DeployCredential`, or `CommandActor`; avoid generic `AccessContext` unless it is established architecture or deliberate domain vocabulary.
 - Inject/pass time, randomness, and ID generation when they affect service behavior.

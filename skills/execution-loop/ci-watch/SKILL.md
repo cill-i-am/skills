@@ -1,80 +1,14 @@
 ---
 name: ci-watch
-description: Own one PR's next CI and comment poll. Use after a PR exists to refresh the exact head, report deltas, fix bounded in-scope failures, and stop cleanly when green, closed, merged, or genuinely blocked.
+description: Follow a PR’s current CI and review feedback; fix authorized in-scope failures.
 ---
 
-# CI Watch
+# CI Follow-up
 
-One watcher owns one PR's next poll. It observes deltas and prompts action; it
-does not decide readiness, replay governance history, or invent authority.
+Resolve the PR's current head, required checks, and actionable review comments. Reuse an existing watcher for the same PR. Compare observations with the last meaningful state and report changes only.
 
-## Inputs
+For an in-scope failure, inspect the logs, reproduce when practical, fix it, and run affected checks. Commit/push only within existing authorization, then follow the new head. Do not weaken assertions or raise timeouts without understanding a failure. Feedback that changes scope or requires an unauthorized effect goes back to the delivery owner.
 
-- repository and PR URL;
-- owning issue and worker;
-- current branch and exact head;
-- pending check, review thread, or comment;
-- next action and bounded retry/fix budget;
-- stop condition and last meaningful observation.
+Use a bounded inline wait when a result is likely soon. After an unchanged timeout, make at most one targeted fallback and end that polling attempt. Create or update an automation only when the user has asked for continued monitoring; verify activation and keep it quiet until a meaningful change. Stop it when checks/comments are resolved, the PR closes, or the requested follow-up ends.
 
-Before starting, find any active watcher for the same PR. Reuse, update, or stop
-it. Do not create overlapping worker, orchestrator, and project watchers for the
-same event.
-
-## Poll
-
-1. Resolve the live PR and current head SHA. Never report checks for a stale
-   head.
-2. Refresh required checks, review decision, unresolved review threads, PR
-   comments, and new Linear comments.
-3. Compare with the last meaningful observation. Stay silent when nothing
-   changed.
-4. If an in-scope failure or concrete comment is actionable, diagnose it with
-   `systematic-debugging`, reproduce it when practical, make the smallest fix,
-   run relevant checks, commit/push if authorized, update the head, and continue
-   within the retry/fix budget.
-5. If the feedback changes product meaning, crosses issue scope, or needs
-   credentials/provider/production/destructive authority, return it to the
-   orchestrator with the concrete evidence and required decision.
-6. Update Linear only with the live delta: new head, failed/passed check,
-   resolved/new comment, fix, genuine gate, and next action.
-7. Stop when required checks and comments are resolved, the PR is merged or
-   closed, the budget is exhausted, or a genuine human/external dependency is
-   reached.
-
-Use GitHub tooling and the `gh-fix-ci` workflow when GitHub Actions fails.
-A fixed-timeout test that passes promptly in isolation and on an unchanged full
-rerun under lower contention is evidence to record; do not automatically weaken
-the assertion, raise the timeout, or start a governance cycle.
-
-## Automation
-
-Make at most one bounded inline wait when the pending state may change soon. If
-decision-relevant state is unchanged, do not repeat the same status, diff,
-wait, or job query in the current run. Use `automation_update` to create or
-update the single heartbeat for this PR, verify it has the intended next run,
-report the pending item and last meaningful observation, and stop the current
-run. Include only the inputs above. Do not copy historic approvals, comment ID
-chains, full issue prose, or stale policy into the prompt.
-
-On every wakeup, refresh the current head and replace obsolete instructions.
-Delete or stop the automation when its stop condition is met.
-
-## Completion States
-
-- **Green:** current-head required checks pass and actionable comments are
-  resolved; notify the orchestrator that Decide is ready.
-- **Pending:** one watcher owns the named next poll.
-- **Fixed:** an authorized in-scope correction was pushed; continue against the
-  new exact head.
-- **Decision required:** product meaning, scope, or external/irreversible
-  authority needs the orchestrator or human.
-- **External unavailable:** authentication, CI provider, or another genuine
-  dependency prevents the next poll or proof.
-
-Final output names the PR, exact head, changed check/comment state, fixes,
-Linear delta, next action and owner, stop condition, and residual risk.
-
-Completion criterion: the report is current for the exact PR head, no second
-watcher owns the next poll, and the watcher has stopped or has one bounded next
-action.
+Report the PR, exact head, changed check/comment state, any fix, and the pending action if one remains. Green checks do not grant merge authority. Follow the target repository’s execution policy when one is configured. One watcher owns one PR's next poll. Report a material delivery-state change to the existing owner within the authorized workflow.

@@ -6,13 +6,13 @@ The goal is not a random pile of useful skills. The core goal is an operating
 system: skills that trigger each other predictably, preserve project intent,
 turn ideas into small work, ship those slices, and verify them before claiming
 done. Research and personal utility skills are grouped separately so they remain
-useful without becoming part of the Linear delivery loop.
+useful without becoming part of the delivery loop.
 
 ## Layout
 
 - `skills/core-standards/`: portable engineering standards and code-quality
   gates.
-- `skills/execution-loop/`: Linear, worker, reviewer, CI, and production-ready
+- `skills/execution-loop/`: workflow setup, worker, reviewer, CI, and production-ready
   workflow skills.
 - `skills/planning/`: grilling and PRD/design-interrogation skills.
 - `skills/stack/`: default TypeScript application stack skills.
@@ -30,8 +30,7 @@ This repo stores skills under category directories, so use `--full-depth`:
 npx skills add https://github.com/cill-i-am/skills --skill '*' --agent codex --full-depth --copy -y
 ```
 
-After installing into a fresh project, run `linear-setup` before the first
-Linear-backed planning or execution-loop task.
+Use `workflow-setup` when a project needs to choose or declare its planning source. Existing declarations remain valid. Unrelated skills do not require setup.
 
 ## Bundle Shape
 
@@ -59,10 +58,9 @@ Current core-standard emphasis:
 
 ### Execution Loop
 
-These define the Linear/project loop. Keep them together; they are less useful
-as standalone skills.
+These support planning and delivery in either declared mode. Install the capabilities a project uses. Skills that read or write work records use the shared selection references in `workflow-setup`; CI, debugging, review, and other self-contained tasks do not require a tracker.
 
-- `linear-setup`
+- `workflow-setup`
 - `to-prd`
 - `to-issues`
 - `triage`
@@ -77,30 +75,15 @@ as standalone skills.
 - `simplify`
 - `worktree-isolation`
 
-Encoded so far:
+Workflow structure:
 
-- `linear-setup` must carry deterministic templates/assets for the required
-  `docs/agents/*` files, then patch only repo-specific Linear/workflow values.
-- `linear-setup` must use `build-intent-layer` rules when writing or refreshing
-  `AGENTS.md` instruction topology.
-- `production-ready` uses only portable review skills from this bundle plus
-  stack-specific skills that are present in the target project.
-- `worker` and `ci-watch` depend on portable `systematic-debugging` and
-  `subagent-execution` support skills in this bundle.
-- `worker` and `orchestrator` use `worktree-isolation` to keep parallel agent
-  work out of the caller's current workspace.
-
-Current loop-tool assumptions:
-
-- User-visible worker/reviewer threads are the default for non-trivial
-  implementation.
-- Thread lifecycle uses Codex app thread tools such as `create_thread`,
-  `send_message_to_thread`, and `set_thread_archived`.
-- Watcher and orchestration heartbeats use the Codex app `automation_update`
-  tool, not raw automation directives.
-- Pre-bootstrap simulations use the bundled `linear-setup/assets/docs/agents/*`
-  templates as read-only fallbacks and report that the target repo still needs
-  `linear-setup`.
+- `workflow-setup` owns source selection and optional templates. The project owns its declaration and policy; the bundle does not override either.
+- `references/workflow-selection.md` routes to exactly one of `references/linear.md` and `references/repo.md` within `workflow-setup`.
+- Planning and role skills describe shared outcomes. Provider-specific storage, freshness, and publication mechanics belong in the selected guide.
+- Repository mode supports discovery, PRDs, dependencies, readiness, delivery evidence, reconciliation, and completion as tracked Markdown. Local proposals and published shared state remain distinguishable.
+- Linear mode uses live workspace records and native relations. Missing access is an operation limit, not permission to create a shadow tracker.
+- Templates are copied only when the requested workflow needs a missing document. Existing project conventions, domain owners, and authorization are preserved.
+- Delegation, separate user-visible tasks, recurring monitors, external communication, and shipping remain subject to their actual authorization. Skills do not invent permission from their own role names.
 
 ### Planning And Interrogation
 
@@ -119,10 +102,7 @@ and code/doc contradictions. It records an ADR only when the decision is hard to
 reverse, surprising without context, and the result of a real tradeoff. It
 resolves existing doc topology rather than forcing a root `CONTEXT.md`.
 
-`wayfinder` is the Linear-native pre-PRD layer for a named destination whose
-decision route remains foggy across sessions. Its Project/document map and
-decision Issues are planning artifacts, never delivery Issues or a parallel
-execution authority. The required handoff is `wayfinder -> to-prd -> to-issues`.
+`wayfinder` handles interdependent decisions before a PRD. Its map and decision records live in the chosen source and remain distinct from delivery items. Consolidate settled product intent into a PRD before slicing implementation work; continue between capabilities only as the requested scope warrants.
 
 ### Stack Skills
 
@@ -213,7 +193,7 @@ Folded in:
 - Keep provider and operations guidance lean. `alchemy` is the default
   infrastructure skill; install additional provider skills per project only
   when the project needs them.
-- Keep personal utilities out of the Linear execution path. They should not
+- Keep personal utilities out of the delivery execution path. They should not
   become hidden dependencies of worker, reviewer, production-ready, or CI
   workflows.
 
@@ -226,13 +206,9 @@ Before considering this bundle ready for broad reuse:
    invokes the skill by `$skill-name`.
 3. Every referenced skill either exists in this bundle or is intentionally
    external and documented as such.
-4. Every referenced file path is bundled, generated by `linear-setup`, or scoped
+4. Every referenced file path is bundled, generated by `workflow-setup`, or scoped
    to the target repo.
-5. The loop skills can bootstrap a blank repo by running `linear-setup` first.
-6. A fresh agent can run a simulated flow:
-   rough idea -> grilling -> optional Wayfinder -> PRD -> issues -> worker
-   handoff -> production-ready checklist.
+5. A new project can declare either source, and an existing project keeps its choice.
+6. Independently exercise realistic requests in both modes when workflow behavior changes, including unavailable access and read-only requests. Label simulation limits honestly.
 
-Run `pnpm test` before committing bundle changes. It checks skill frontmatter,
-skill-name/path consistency, `agents/openai.yaml` prompt metadata, required
-`linear-setup` templates, and stale thread tool references.
+Run `pnpm test` before committing bundle changes. It checks frontmatter, metadata, bundled workflow resources, and links in the source and flattened installation layout. Perform an actual clean install from the reviewed checkout as described in the README. Static checks do not prove model behavior.

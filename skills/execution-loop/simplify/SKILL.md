@@ -1,51 +1,12 @@
 ---
 name: simplify
-description: Use before wrapping up implementation or reviewing a PR to reduce unnecessary abstraction, fallback logic, duplication, broad scope, and complexity while preserving behavior.
+description: Simplify a named diff or code area by removing complexity that serves no current behaviour.
 ---
 
 # Simplify
 
-Run this before calling changed code done. The goal is not polish for its own
-sake; it is making sure the implementation is the simplest version that still
-satisfies the spec.
+Stay within the requested scope and directly affected callers. Look for redundant wrappers, duplicate policy/state, speculative options, unused abstractions, and fallback paths that hide a broken contract. Prefer deletion or a direct implementation when it makes ownership clearer.
 
-## Scope
+Preserve required behaviour, typed boundaries, and real failure handling. Do not add a generic helper merely to shorten a file. For a review-only request, report candidates; for an authorized cleanup, apply the useful changes and verify the affected behaviour.
 
-Review the current diff, staged changes, or explicitly named files. Stay close
-to the changed behavior and directly adjacent helpers.
-Do not refactor untouched areas to satisfy a taste preference.
-
-## Passes
-
-1. **Reuse:** replace duplicated logic with existing helpers or conventions when
-   that makes the local code easier to understand.
-2. **Type safety:** remove casual casts, weak primitives, broad DTOs, and
-   unchecked boundary values when a local schema, domain type, or parser should
-   own the invariant.
-3. **Shape:** remove one-off abstractions, speculative options, redundant state,
-   fallback branches, and defensive code that does not serve a real failure mode.
-4. **Runtime:** look for avoidable work on hot paths, repeated I/O, leaks,
-   missing cleanup, or serial work that should be parallel.
-5. **Tests:** check whether the tests prove the important behavior without
-   overfitting to implementation details.
-
-## Fixing Rules
-
-- Preserve behavior unless the spec requires a behavior change.
-- Prefer deleting complexity over moving it elsewhere.
-- Keep fixes in scope; create a concrete follow-up only for separate work found
-  during the pass.
-- Do not hide a real product decision, failure mode, or boundary invariant
-  behind a generic helper just to reduce lines.
-- If a simplification could change behavior, add or keep a focused test before
-  making it.
-- Run the smallest relevant validation after changes.
-
-## Finish
-
-Summarize what was simplified or say the diff was already appropriately simple.
-Include the validation command run after edits, or state why no edit was made.
-
-Completion criterion: no remaining local complexity has a clear in-scope delete,
-inline, reuse, or type-safety fix; anything separate is recorded as a concrete
-follow-up instead of folded into the current diff.
+Stop when the requested result is clear and verified. Neither a fixed number of passes nor a separate simplification report is required.

@@ -5,11 +5,7 @@ description: Delegate bounded support work without replacing the delivery owner 
 
 # Subagent Execution
 
-Use subagents as bounded support, not as authority owners. For non-trivial
-Linear implementation, one user-visible Codex worker remains the delivery
-owner. Create an independent reviewer task when exact-head evidence exists, or
-earlier only for a focused Tier B boundary; do not create idle routine reviewers
-at worker dispatch.
+Use subagents as bounded support, not as authority owners. One delivery owner remains accountable under the project's execution policy, regardless of the chosen record store. Use only delegation that the current request and host tools authorize; do not infer permission to create separate user-visible tasks.
 
 ## Good Uses
 
@@ -36,8 +32,7 @@ Give each subagent only the context it needs:
   subset for runtime verification agents
 - expected output format
 
-Subagents do not inherit your context. Point to exact files or include the
-minimal raw artifacts they must inspect. Avoid giving them your intended answer
+Context inheritance depends on the delegation tool and chosen settings. Supply the exact files or minimal raw artifacts needed for the subtask. Avoid giving them your intended answer
 when the goal is independent review.
 
 ## Batch Contract
@@ -56,7 +51,7 @@ make one subagent read-only.
 - Edit subagents must own a narrow file set and report their diff plus checks.
 - The controller verifies results before acting on them.
 - Subagent output is advisory until the controller checks it against source,
-  tests, Linear/spec context, or the current diff.
+  tests, authoritative work-item/spec context, or the current diff.
 
 ## Stop Conditions
 
@@ -65,7 +60,7 @@ Stop delegating and escalate to the worker/orchestrator when:
 - a subagent is blocked twice on missing context
 - the needed change leaves the issue scope
 - tests fail repeatedly without root cause
-- the Linear issue, PRD, or architecture direction appears stale
+- the authoritative work item, PRD, or architecture direction appears stale
 - a decision affects product behavior, data shape, cost, security, or provider state
 
 Completion criterion: every subagent result is either accepted with local

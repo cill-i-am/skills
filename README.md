@@ -10,8 +10,8 @@ encodes a way of working:
 
 - turn rough ideas into durable product context;
 - resolve multi-session decision fog and stabilize domain language before PRDs;
-- slice that context into small Linear issues;
-- dispatch visible worker and reviewer threads;
+- slice that context into bounded work items;
+- coordinate delivery owners and reviewers within the available authority;
 - keep implementation narrow, typed, and testable;
 - verify PRs before calling work done;
 - use stack-specific guidance without burying the project in abstractions.
@@ -31,8 +31,8 @@ The bundle is portable, but opinionated.
 - TanStack Start, Router, Query, and Form for rich React apps.
 - Alchemy v2 for Infrastructure-as-Effects across Cloudflare, AWS, databases,
   APIs, tests, and deployment tooling.
-- Linear as the planning and execution source of truth.
-- Codex worker/reviewer threads as the default unit of non-trivial agent work.
+- A project choice of Linear or versioned repository files for planning and delivery state.
+- Explicit ownership and review, using the delegation the environment and user authorize.
 
 Provider and product-specific skills such as Better Auth, shadcn, Drizzle,
 database providers, email, and design guidance are intentionally installed per
@@ -55,36 +55,28 @@ Install the full bundle into the current project for Codex:
 npx skills add https://github.com/cill-i-am/skills --skill '*' --agent codex --full-depth --copy -y
 ```
 
-## First Run In A Project
+## Choose A Project Workflow
 
-After installing the bundle, ask Codex to run:
-
-```txt
-Use $linear-setup to install the agent workflow docs for this repo.
-```
-
-That creates or refreshes the repo-local `docs/agents/*` workflow docs and root
-`AGENTS.md` pointers expected by the execution-loop skills.
-
-## Operating Loop
-
-The intended path from idea to merged work is:
+Use `workflow-setup` when the project needs its planning and delivery source configured. It respects an existing declaration or asks once when the choice is unclear:
 
 ```txt
-linear-setup
-  -> grilling
-  -> wayfinder when the route is still foggy
-  -> to-prd
-  -> to-issues
-  -> orchestrator
-  -> worker + reviewer
-  -> production-ready
-  -> ci-watch
+Use $workflow-setup with repository files as our source of truth.
 ```
 
-Within that loop, `to-issues`, `triage`, and `reconcile-project` maintain a
-Project -> parent capability outcome -> child delivery outcome hierarchy. Linear
-titles describe what becomes true; implementation details stay in Issue bodies.
+Or select Linear. The setup records one choice and the canonical locations in an existing workflow document, or `docs/agents/workflow.md`, with a short pointer from `AGENTS.md`. Existing projects keep their declared source unless a change is explicitly requested. Installing this bundle does not migrate their records.
+
+| Choice | Planning and delivery records | Requirements |
+| --- | --- | --- |
+| Repository | Versioned Markdown plans and work items, with dependencies, status, ownership, and evidence | Git and filesystem access; no tracker connector |
+| Linear | Project/PRD documents, issues, native blockers, and live state | Connected Linear tools for live operations |
+
+The same planning and delivery skills work in both modes. They read only the selected reference guide. Code, domain docs, ADRs, and PR/check evidence keep their own homes. Missing Linear access does not silently switch a project to repository mode.
+
+## Use The Capabilities You Need
+
+A typical flow is product clarification, a PRD, bounded work items, implementation, review, and an authorized acceptance decision. Use `wayfinder` for interdependent decisions before a PRD; skip stages whose outcomes already exist. An ordinary review, debugging task, or CI check does not require workflow setup.
+
+Install a subset by naming skills with `--skill`. Include `workflow-setup` with the planning and delivery skills that consume its source-selection references. Engineering, stack, research, and personal skills can be used independently. Linear-specific tools are optional and needed only in Linear mode; separate copies of each role are unnecessary.
 
 Use stack and infrastructure skills inside that loop as needed:
 
@@ -98,7 +90,7 @@ Use stack and infrastructure skills inside that loop as needed:
 - `simplify`, `systematic-debugging`, `review-swarm`, and
   `subagent-execution` as helper skills during implementation and review.
 
-Use research and personal utility skills outside the Linear loop when the task
+Use research and personal utility skills outside the delivery loop when the task
 calls for them:
 
 - `research-prompt`, `deep-research`, and `youtube-transcript` for source-backed
@@ -111,7 +103,7 @@ calls for them:
 
 - `skills/core-standards/`: engineering standards, architecture scans, TDD,
   tech specs, and code review.
-- `skills/execution-loop/`: Linear setup, PRD slicing, orchestration, workers,
+- `skills/execution-loop/`: workflow setup, PRD slicing, orchestration, workers,
   reviewers, CI watch, production readiness, debugging, and worktree isolation.
 - `skills/planning/`: grilling, active domain modeling, and Wayfinder decision
   discovery before PRDs.
@@ -151,19 +143,22 @@ Run:
 pnpm test
 ```
 
-The validator checks skill frontmatter, name/path consistency,
-`agents/openai.yaml` metadata, `$skill-name` default prompts, required
-`linear-setup` templates, and stale thread-tool references.
+The validator checks skill frontmatter, name/path consistency, UI metadata, bundled workflow templates, and local Markdown links in both the source tree and the flattened installation layout. These are packaging checks. They do not execute a model or establish that an agent follows the workflow correctly.
 
-Before publishing changes, also do a clean install smoke test:
+Before publishing changes, also do a clean install smoke test against the checkout being reviewed:
 
 ```sh
-tmpdir=$(mktemp -d)
-cd "$tmpdir"
+skills_source="$PWD"
+skills_smoke_dir=$(mktemp -d)
+cd "$skills_smoke_dir"
 git init -q
-npx skills add https://github.com/cill-i-am/skills --skill '*' --agent codex --full-depth --copy -y
-find .agents/skills -name SKILL.md | wc -l
-find .agents/skills -path '*/agents/openai.yaml' | wc -l
+npx skills add "$skills_source" --skill '*' --agent codex --full-depth --copy -y
+rg --files --hidden .agents/skills -g SKILL.md | wc -l
+rg --files --hidden .agents/skills -g openai.yaml | wc -l
 ```
 
 Expected result today: 36 skills and 36 metadata files.
+
+## Guidance Audit
+
+See the [2026-09-05 guidance audit](docs/skill-guidance-audit.md) for the portable updates, per-skill recommendations, and verification limits.

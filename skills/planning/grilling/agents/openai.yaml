@@ -1,4 +1,4 @@
 interface:
   display_name: "Grilling"
-  short_description: "Stress-test plans before building."
-  default_prompt: "Use $grilling to challenge a product, architecture, PRD, or implementation plan against existing code and docs before committing to a build path."
+  short_description: "Challenge consequential assumptions in a plan"
+  default_prompt: "Use $grilling to resolve the plan's important uncertainties against actual code and product decisions."

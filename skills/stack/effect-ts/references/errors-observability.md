@@ -21,12 +21,8 @@ Do not turn every JavaScript exception into one generic application error. Map i
 Use domain values and bounded operation labels in error payloads:
 
 ```ts
-export const PersistenceOperation = Schema.Literals([
-  "findUserById",
-  "decodeUserRow",
-  "saveUser",
-])
-export type PersistenceOperation = typeof PersistenceOperation.Type
+export const PersistenceOperation = Schema.Literals(["findUserById", "decodeUserRow", "saveUser"]);
+export type PersistenceOperation = typeof PersistenceOperation.Type;
 
 export class PersistenceError extends Schema.TaggedError<PersistenceError>()(
   "UserRepository.PersistenceError",
@@ -36,7 +32,7 @@ export class PersistenceError extends Schema.TaggedError<PersistenceError>()(
   },
 ) {
   override get message() {
-    return `User persistence failed during ${this.operation}`
+    return `User persistence failed during ${this.operation}`;
   }
 }
 ```
@@ -48,7 +44,7 @@ The example uses the current RC constructor; compile it against the target pin. 
 Use `return yield*` so the terminal control flow is explicit and TypeScript does not infer continuation:
 
 ```ts
-if (row === undefined) return yield* new UserNotFound({ id })
+if (row === undefined) return yield * new UserNotFound({ id });
 ```
 
 Do not use JavaScript `try` / `catch` inside `Effect.gen`. Yielded Effect failures do not behave like thrown exceptions. Use Effect recovery combinators or inspect an `Exit`/Result where appropriate.
@@ -58,15 +54,12 @@ Do not use JavaScript `try` / `catch` inside `Effect.gen`. Yielded Effect failur
 Translate third-party failures immediately:
 
 ```ts
-const send = Effect.fn("EmailProvider.send")(function* (
-  message: OutboundEmail,
-) {
+const send = Effect.fn("EmailProvider.send")(function* (message: OutboundEmail) {
   return yield* Effect.tryPromise({
     try: () => client.send(encodeEmail(message)),
-    catch: (cause) =>
-      new EmailProviderError({ operation: "sendEmail", cause }),
-  })
-})
+    catch: (cause) => new EmailProviderError({ operation: "sendEmail", cause }),
+  });
+});
 ```
 
 Use a shared mapper when many operations produce the same bounded error family. Preserve enough structured context for recovery and diagnosis, but expose raw causes only to trusted telemetry.
@@ -98,7 +91,7 @@ const supervise = worker.pipe(
     (cause) => !Cause.hasInterrupts(cause),
     (cause) => Effect.logError("Worker.defect", cause),
   ),
-)
+);
 ```
 
 Verify the exact Cause predicates and handler signatures against the target pin.
@@ -116,7 +109,7 @@ const toResponse = Match.value<AppError>().pipe(
     Response.json({ code: "EMAIL_ALREADY_USED" }, { status: 409 }),
   ),
   Match.exhaustive,
-)
+);
 ```
 
 Public codes should be literal or Schema-defined protocol values, not ad hoc messages. Log trusted causes separately and return redacted stable responses.
@@ -138,13 +131,14 @@ Avoid creating duplicate spans by naming a public operation and every trivial su
 Log events an operator can act on. Prefer structured annotations to interpolated blobs:
 
 ```ts
-yield* Effect.logWarning("Payments.retrying").pipe(
-  Effect.annotateLogs({
-    operation: "capturePayment",
-    provider: error.provider,
-    attempt,
-  }),
-)
+yield *
+  Effect.logWarning("Payments.retrying").pipe(
+    Effect.annotateLogs({
+      operation: "capturePayment",
+      provider: error.provider,
+      attempt,
+    }),
+  );
 ```
 
 The layer that handles or finally reports a failure should log it with the context needed to act. Lower layers may annotate or wrap without logging.
@@ -158,11 +152,11 @@ The layer that handles or finally reports a failure should log it with the conte
 
 ## Verification
 
-For every new error family, test:
+Select evidence for the error behaviour actually introduced or changed:
 
 - construction or decoding where Schema-backed;
 - the adapter mapping that creates it;
-- at least one recovery or host-mapping branch;
+- affected recovery or host-mapping branches;
 - redaction of secrets and private payloads;
 - interruption preservation for broad supervision;
 - useful messages and stable span/log naming without duplicate reporting;

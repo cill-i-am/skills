@@ -1,4 +1,4 @@
 interface:
   display_name: "CI Watch"
-  short_description: "Own one PR's next CI poll."
-  default_prompt: "Use $ci-watch to own one PR's next poll, report current-head deltas, fix bounded in-scope failures, and stop when green, closed, merged, or genuinely blocked."
+  short_description: "Follow one pull request and resolve failures"
+  default_prompt: "Use $ci-watch to check the current PR head, resolve authorized failures, and report meaningful changes."
