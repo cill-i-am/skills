@@ -14,7 +14,8 @@ useful without becoming part of the delivery loop.
   gates.
 - `skills/execution-loop/`: workflow setup, worker, reviewer, CI, and production-ready
   workflow skills.
-- `skills/planning/`: grilling and PRD/design-interrogation skills.
+- `skills/planning/`: one-pagers, design documents, and PRD/design-interrogation
+  skills.
 - `skills/stack/`: default TypeScript application stack skills.
 - `skills/infrastructure/`: default infrastructure/deployment skills.
 - `skills/research/`: source-backed research, research prompt construction, and
@@ -90,8 +91,17 @@ Workflow structure:
 These help turn fuzzy ideas into durable plans and design decisions:
 
 - `domain-modeling`
+- `effective-design-docs`
 - `grilling`
 - `wayfinder`
+
+`effective-design-docs` writes, revises, or reviews decision-focused proposals
+when asked for a one-pager or design document. It provides compact and full
+layouts, evidence and trade-off checks, and optional risk prompts. Use `tech-spec`
+for implementation-ready technical specifications; this writing skill does not
+replace PRDs, create delivery items, or authorize implementation. It is usable
+independently of workflow setup and respects the requested document destination.
+Installation guidance and host-level trigger cases live in its `references/`.
 
 `grilling` owns both Interview Mode and Docs Mode. Do not keep separate
 one-line aliases for "grill me" or "grill with docs"; they create cognitive load

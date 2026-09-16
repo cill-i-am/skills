@@ -1,0 +1,37 @@
+# Acceptance cases for a host agent. These are not claims of executed live tests.
+cases:
+  - prompt: "Write a one pager for moving our background jobs to a queue."
+    expected: one-pager
+  - prompt: "Turn the attached notes into a one-pager for leadership."
+    expected: one-pager
+  - prompt: "I need a onepager on the school fundraising proposal."
+    expected: one-pager
+    checks: ["Use nontechnical language; do not invent software sections."]
+  - prompt: "Give me a 1-pager comparing the two implementation approaches."
+    expected: one-pager
+  - prompt: "Draft a one-page design doc for the upload flow."
+    expected: one-pager
+  - prompt: "Write a design doc for offline meal-plan editing."
+    expected: design-doc
+  - prompt: "Create an engineering RFC proposing this new permissions model."
+    expected: design-doc
+  - prompt: "Review this design document; do not rewrite it."
+    expected: review
+    checks: ["Return findings, not an unsolicited replacement."]
+  - prompt: "Keep this one-pager to 300 words and retain its existing headings."
+    expected: one-pager
+    checks: ["Explicit word limit and headings override defaults."]
+  - prompt: "Write a design doc and open a documentation-only PR in the named repo."
+    expected: design-doc
+    checks: ["Inspect the repository first; change docs only; report actual PR outcome."]
+  - prompt: "Implement the changes in the approved design doc."
+    expected: no-trigger
+    checks: ["This is an implementation request, not a request to redraft the design."]
+  - prompt: "What is a one-pager?"
+    expected: no-trigger
+  - prompt: "Explain RFC 9110."
+    expected: no-trigger
+  - prompt: "Summarize this article in three bullet points."
+    expected: no-trigger
+  - prompt: "Prepare a project-status email."
+    expected: no-trigger

@@ -82,6 +82,8 @@ Use stack and infrastructure skills inside that loop as needed:
 
 - `coding-standards`, `tdd`, `tech-spec`, and `code-review` for core engineering
   quality.
+- `effective-design-docs` for decision-focused one-pagers and design documents;
+  `tech-spec` for implementation-ready technical specifications.
 - `domain-modeling` for canonical language and minimal qualifying ADRs;
   `wayfinder` for decision discovery before a PRD is ready.
 - `effect-ts`, `tanstack-routing`, `tanstack-react-best-practices`, and
@@ -105,8 +107,8 @@ calls for them:
   tech specs, and code review.
 - `skills/execution-loop/`: workflow setup, PRD slicing, orchestration, workers,
   reviewers, CI watch, production readiness, debugging, and worktree isolation.
-- `skills/planning/`: grilling, active domain modeling, and Wayfinder decision
-  discovery before PRDs.
+- `skills/planning/`: one-pagers and design documents, grilling, active domain
+  modeling, and Wayfinder decision discovery before PRDs.
 - `skills/stack/`: Effect, TanStack, React performance, and form guidance.
 - `skills/infrastructure/`: Alchemy v2 infrastructure guidance.
 - `skills/research/`: research briefs, cited research reports, and YouTube
@@ -157,7 +159,7 @@ rg --files --hidden .agents/skills -g SKILL.md | wc -l
 rg --files --hidden .agents/skills -g openai.yaml | wc -l
 ```
 
-Expected result today: 36 skills and 36 metadata files.
+Expected result today: 37 skills and 37 metadata files.
 
 ## Guidance Audit
 

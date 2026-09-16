@@ -1,0 +1,6 @@
+interface:
+  display_name: "Effective Design Docs"
+  short_description: "Decision-focused one-pagers and software design docs"
+  default_prompt: "Use $effective-design-docs to draft or improve this one-pager or design document. Match the requested length, ground project claims in evidence, and make the decision and unresolved risks clear."
+policy:
+  allow_implicit_invocation: true
