@@ -13,9 +13,12 @@ Do not collapse these into one `NODE_ENV`-style switch. A `prod` stage can inten
 
 ## Stages
 
-The default stage is `dev_$USER`. Useful patterns:
+The current upstream defaults are `live_$USER` for `deploy`, `plan`,
+`destroy`, `logs`, and `drift`, `dev_$USER` for `alchemy dev`, and
+`test_$USER` for `Test.make`. Useful patterns:
 
-- `dev_<name>` for personal development.
+- `live_<name>` for a personal deploy sandbox.
+- `dev_<name>` for local development.
 - `dev_shared` only for intentionally shared resources.
 - `pr-<number>` or `ci-<run>` for previews/tests.
 - `prod` for trunk production.
@@ -32,22 +35,27 @@ Rules:
 
 ## Profiles
 
-Profiles are stored under `~/.alchemy/profiles.json`; sensitive stored credentials live separately. Use:
+The non-secret profile manifest is stored under `~/.alchemy/profiles.json`;
+sensitive credentials live separately under
+`~/.alchemy/credentials/<profile>/`. Use:
 
 ```sh
-pnpm alchemy login --profile sandbox --configure
+pnpm alchemy profile edit --add Cloudflare
 pnpm alchemy profile show --profile sandbox
 ```
 
 - Prefer browser login or SSO locally when supported.
-- Prefer workload identity/OIDC or environment-provided short-lived credentials in CI.
+- Prefer workload identity/OIDC or CI environment credentials in CI. With
+  `CI=true`, providers resolve machine credentials directly and do not read or
+  write local profiles.
 - Keep an explicit production profile when account separation matters.
 - Never commit profile or credential files.
-- Treat `profile clear` as an authentication mutation requiring confirmation.
+- Treat `profile delete`/credential removal as an authentication mutation
+  requiring confirmation.
 
 ## Auth Provider Model
 
-An Auth Provider integrates a provider with `alchemy login` and profiles. Its contract is five Effect-returning operations:
+An Auth Provider integrates a provider with `alchemy profile` and profiles. Its contract is five Effect-returning operations:
 
 - `configure`: choose and persist a non-secret auth method.
 - `login`: establish or refresh credentials.
@@ -119,7 +127,10 @@ Expose an Effect that lazily constructs the service and cache the initialized se
 
 ## Local Development
 
-`alchemy dev` combines real cloud dependencies with local supported runtimes and hot reload. Resource adaptation may replace a deployed binding with a local transport, but it does not make cloud data or permissions fake.
+`alchemy dev` runs supported compute locally with hot reload and local
+emulators by default. `Alchemy.remote()` opts an individual resource into the
+real cloud. Resource selection can still create or reuse cloud dependencies,
+so inspect the stack and command before treating dev as read-only.
 
 - Use a personal stage and sandbox account.
 - Confirm ports and generated local URLs.
@@ -134,7 +145,9 @@ Expose an Effect that lazily constructs the service and cache the initialized se
 - Set stage and profile explicitly.
 - Use remote state accessible to every runner that participates in the workflow.
 - Run plan/typecheck/tests before deploy.
-- Require `--yes` only after event/stage guards pass.
+- Upstream CI uses `--yes` only after event/stage guards pass. A repository
+  wrapper may intentionally reject `--yes` and require a separate approval
+  flow.
 - Give previews unique stages and destroy them on close.
 - Make cleanup idempotent and impossible to aim at production.
 - Keep admin credentials in a separate bootstrap/credentials stack when credentials-as-code is needed.
@@ -143,7 +156,7 @@ Expose an Effect that lazily constructs the service and cache the initialized se
 
 - Stage and profile are printed before mutation.
 - Cloud account/region/team is independently verified.
-- State tree contains the expected stack/stage.
+- State list/read shows the expected stack/stage.
 - Config is discovered during initialization and remains redacted.
 - CI can authenticate non-interactively without local credential files.
 - Preview stages do not share mutable state unless explicitly designed to do so.

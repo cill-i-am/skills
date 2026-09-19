@@ -108,7 +108,9 @@ Use `Command.Exec` for idempotent, input-keyed side effects. If the operation ow
 ## Compose With Cloud Resources
 
 - Feed immutable Docker image outputs into ECS, Cloudflare Container, or Kubernetes resources.
-- Feed `Command.Build` output into `Cloudflare.StaticSite`, `Cloudflare.Vite`, or AWS website resources when the higher-level provider does not already create the build resource.
+- Feed `Command.Build` output into `Cloudflare.Website.StaticSite`,
+  `Cloudflare.Website.Vite`, or AWS website resources when the higher-level
+  provider does not already create the build resource.
 - Bind runtime endpoints and credentials through Alchemy Outputs rather than shell-written `.env` files.
 - Keep local dev commands stage-aware and make generated URLs explicit outputs.
 
