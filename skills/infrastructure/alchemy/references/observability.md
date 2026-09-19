@@ -12,7 +12,7 @@ Keep them correlated by stack, stage, resource type, logical ID, deployment/run 
 
 ## Deployment Diagnostics
 
-- Use `alchemy tail` for live resource logs and `alchemy logs` for historical batches.
+- Use `alchemy logs --tail` for live resource logs and `alchemy logs` for historical batches.
 - Use state inspection to understand what a plan is diffing against.
 - Name provider and Action operations with `Effect.fn` so spans identify the resource operation.
 - Annotate lifecycle work with provider, operation, logical ID, physical ID, and retry count.

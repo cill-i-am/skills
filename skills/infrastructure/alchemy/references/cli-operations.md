@@ -6,30 +6,34 @@ Use this file for planning, deployment, state inspection, adoption, logs, recove
 
 ```text
 alchemy
-  deploy [file]                 plan, approve, apply
-  plan [file]                   preview only
-  destroy [file]                delete a tracked stack stage
-  unsafe nuke [file]            enumerate and delete tracked or untracked provider resources
-  dev [file]                    deploy dependencies and run supported runtimes locally
-  tail [file]                   stream live logs
-  logs [file]                   fetch historical logs
-  login [file]                  configure/authenticate providers
-  profile show|clear            inspect or clear credential profiles
-  state stacks|stages|resources|get|tree|clear
-  aws bootstrap                 create AWS deployment assets storage
-  cloudflare bootstrap|create-token|state logs
+  deploy                       plan, approve, apply
+  plan                         preview only
+  destroy                      delete every resource in a stage
+  drift                        detect (and optionally repair) drift
+  unsafe nuke                  enumerate and delete tracked or untracked resources
+  dev                          hot-reloading local development loop
+  logs [--tail]                fetch historical logs or stream live logs
+  profile create|rename|edit|refresh|current|list|show|delete
+  state list|read|delete
+  provider check-env
+  provider aws bootstrap|teardown
+  provider cloudflare bootstrap|teardown|token|state logs
 ```
 
-Common options include `[file]`, `--stage`, `--profile`, `--env-file`, and `--yes`. Pass stage and profile explicitly in CI and for any production operation.
+Every command targets `alchemy.run.ts` unless `--config <file>` names an
+existing entrypoint. Common options include `--stage`, `--profile`,
+`--env-file`, `--config`, `--no-input`, and `--yes`. Upstream defaults are
+`live_$USER` for deploy/plan/destroy and `dev_$USER` for `alchemy dev`; pass
+stage and profile explicitly in CI, previews, and production.
 
 ## Safety Classes
 
 Read-only or non-applying:
 
 - `pnpm alchemy plan`
-- `pnpm alchemy state tree|stacks|stages|resources|get`
+- `pnpm alchemy state list|read|delete`
 - `pnpm alchemy profile show`
-- `pnpm alchemy logs` and `tail`
+- `pnpm alchemy logs` and `pnpm alchemy logs --tail`
 
 Cloud-mutating:
 
@@ -40,8 +44,8 @@ Cloud-mutating:
 Ownership/state-mutating:
 
 - `deploy --adopt`
-- `state clear`
-- `profile clear`
+- `state delete`
+- `profile delete`
 
 Catastrophic:
 
@@ -55,7 +59,11 @@ Obtain explicit confirmation for every mutating class. For `unsafe nuke`, show t
 pnpm alchemy plan --stage pr-42 --profile sandbox
 ```
 
-`plan` is equivalent to `deploy --dry-run`: it reads credentials, state, and provider APIs as needed but does not apply the stack plan. A first run using `Cloudflare.state()` can separately offer to bootstrap the remote state Worker and supporting secrets; decline that prompt unless bootstrap was explicitly approved. Review:
+`plan` previews the stack without applying it, and `deploy --dry-run` follows
+the same plan path. It reads credentials, state, and provider APIs as needed.
+A first run using `Cloudflare.state()` can separately offer to bootstrap the
+remote state Worker and supporting secrets; decline that prompt unless
+bootstrap was explicitly approved. Review:
 
 - target stack, stage, profile, account, and region;
 - creates, updates, replacements, deletes, and no-ops;
@@ -68,9 +76,14 @@ Never convert a successful plan into deploy approval on the user's behalf.
 
 ## Interactive And CI Behavior
 
-Interactive terminals use the TUI. Plain/non-interactive mode prints the plan and does not mutate unless `--yes` is passed. `CI=1`, no TTY, and known agent environments select plain mode. `ALCHEMY_PLAIN=1` or `ALCHEMY_NO_TUI=1` forces it; `ALCHEMY_TUI=1` forces the TUI.
+Interactive terminals use the TUI. Plain/non-interactive mode prints the plan
+and cannot approve it without `--yes`; `CI=1`, no TTY, and known agent
+environments select plain mode. `ALCHEMY_PLAIN=1` or `ALCHEMY_NO_TUI=1`
+forces it; `ALCHEMY_TUI=1` forces the TUI. A repository guard may reject
+`--yes` even though the upstream CLI supports it.
 
-CI deployment commands require `--yes`, but automation must first guard the stage and event:
+Upstream CI deployment commands require `--yes`, but automation must first
+guard the stage and event:
 
 ```sh
 test "$ALCHEMY_STAGE" != "prod" || test "$GITHUB_REF" = "refs/heads/main"
@@ -84,15 +97,16 @@ Cleanup workflows must refuse `prod` and shared long-lived stages before calling
 Start with:
 
 ```sh
-pnpm alchemy state tree --profile sandbox
-pnpm alchemy state stages --stack myapp --profile sandbox
-pnpm alchemy state resources --stack myapp --stage dev_cillian --profile sandbox
-pnpm alchemy state get --stack myapp --stage dev_cillian --fqn Bucket --profile sandbox
+pnpm alchemy state list --profile sandbox
+pnpm alchemy state read --profile sandbox
 ```
 
 When a plan wants to create everything, check the stage before changing code. When a diff is surprising, compare desired props, persisted state, and observed cloud state.
 
-`state clear` deletes Alchemy's record, not the cloud resource, but it changes future ownership/recovery behavior. Treat it as destructive and inspect the exact stack/stage first. `--local` selects on-disk state when repairing an interrupted bootstrap.
+`state delete` deletes Alchemy's record, not the cloud resource, but it changes
+future ownership/recovery behavior. Treat it as destructive and inspect the
+exact stack/stage first. A local-state option selects on-disk state when
+repairing an interrupted bootstrap.
 
 ## Adoption And Recovery
 
@@ -122,7 +136,10 @@ Prefer restoring ownership metadata or choosing a new physical name when takeove
 
 ## Local Development
 
-`alchemy dev` deploys or reuses real cloud dependencies while supported runtimes run locally. It is not a complete emulator and may mutate the target stage.
+`alchemy dev` runs supported compute locally and emulates supported services by
+default; `Alchemy.remote()` opts a resource into live cloud execution. It is
+not a universal emulator, and the selected resources may still mutate a cloud
+stage, so inspect the command and stack first.
 
 - Use a dedicated development stage.
 - Set runtime ports deliberately.
@@ -134,11 +151,12 @@ Prefer restoring ownership metadata or choosing a new physical name when takeove
 
 Use the official migration guide rather than reconstructing v1 behavior from memory:
 
-1. Replace the v1 stack wrapper with `Alchemy.Stack`.
-2. Convert infrastructure declarations to yielded Resource Effects.
-3. Keep async runtime handlers temporarily if useful; migrate runtime internals independently.
-4. Preserve logical IDs and pin physical names where identity must not change.
-5. Plan against a safe stage and review every replacement.
-6. Use adoption only with explicit ownership evidence.
+1. Read the current `/migrating-from-v1` guide before changing behavior.
+2. Replace the v1 stack wrapper with `Alchemy.Stack`.
+3. Convert infrastructure declarations to yielded Resource Effects.
+4. Keep async runtime handlers temporarily if useful; migrate runtime internals independently.
+5. Preserve logical IDs and pin physical names where identity must not change.
+6. Plan against a safe stage and review every replacement.
+7. Use adoption only with explicit ownership evidence.
 
 Do not mix migration cleanup, physical renames, and platform redesign in one deployment.

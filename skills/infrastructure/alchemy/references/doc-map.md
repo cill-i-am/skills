@@ -1,6 +1,11 @@
 # Documentation And Source Map
 
-Use this map to reach the smallest authoritative surface before coding. Start at `https://alchemy.run/llms.txt`; it indexes every current documentation page with a one-line summary.
+Use this map to reach the smallest authoritative surface before coding. Start at
+`https://alchemy.run/llms.txt`; it indexes the current guide/concept pages. Use
+`https://alchemy.run/llms-full.txt` only for a specific generated provider API;
+it is intentionally large. The site currently advertises Alchemy
+`2.0.0-beta.79`, while this repository may be pinned to another release, so the
+lockfile and installed package remain the first source for exact behavior.
 
 ## Source Order
 
@@ -39,14 +44,13 @@ Use `core-model.md` for the local synthesis and `provider-extension.md` when imp
 Route runtime/application composition to:
 
 - `/infrastructure-as-effects`
-- `/infrastructure-as-effects/functions-and-servers`
-- `/infrastructure-as-effects/bindings`
+- `/infrastructure-as-effects/runtime`: Functions and Servers, construction/runtime phases, and returned APIs.
+- `/infrastructure-as-effects/binding`: binding contracts, Layers, and deploy-time wiring (singular path).
 - `/infrastructure-as-effects/event-sources`
-- `/infrastructure-as-effects/event-sinks`
+- `/infrastructure-as-effects/sinks`
 - `/infrastructure-as-effects/phases`
 - `/infrastructure-as-effects/layers`
-- `/infrastructure-as-effects/infrastructure-layers`
-- `/infrastructure-as-effects/circular-dependencies`
+- `/infrastructure-as-effects/circular-bindings`
 - `/infrastructure-as-effects/custom-runtime`
 
 Use `effect-infra.md` for concrete ownership and Layer patterns.
@@ -80,8 +84,8 @@ Use `environments-auth-state.md` for ownership/authentication design and `cli-op
 ## Project Structure
 
 - `/project-structure/file-layout`
-- `/project-structure/single-stack`
-- `/project-structure/multiple-stacks`
+- `/project-structure/monorepo-single-stack`
+- `/project-structure/monorepo-multi-stack`
 - `/project-structure/monorepo`
 
 Use `monorepos.md` for pnpm-specific application layouts. Keep one stack until independent ownership or lifecycle justifies references between stacks.

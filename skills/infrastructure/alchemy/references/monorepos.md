@@ -178,7 +178,7 @@ export default Alchemy.Stack(
     const api = yield* Api;
     const path = yield* Path;
 
-    const web = yield* Cloudflare.Vite("Web", {
+    const web = yield* Cloudflare.Website.Vite("Web", {
       rootDir: path.resolve(import.meta.dirname, "apps/web"),
       env: {
         VITE_API_URL: api.url.as<string>(),
@@ -198,8 +198,22 @@ Why this works well:
 - One plan and one state graph per stage.
 - Direct `Output<string>` wiring between backend and frontend.
 - Alchemy builds the frontend after the backend URL resolves.
-- `Cloudflare.Vite.rootDir` lets a root stack build a package-local Vite app.
+- `Cloudflare.Website.Vite.rootDir` lets a root stack build a package-local Vite app.
 - Destroying the stage removes the whole app together.
+
+When the frontend imports source-first sibling workspace packages, include those
+packages in the Website memo and keep the lockfile in the hash:
+
+```ts
+memo: {
+  include: ["src/**", "../../packages/*/src/**"],
+  lockfile: true,
+},
+```
+
+Without this, a package change outside `rootDir` can leave the deployed web
+bundle unchanged even though the workspace build would now produce different
+code.
 
 Commands:
 
@@ -277,7 +291,7 @@ export default Alchemy.Stack(
   Effect.gen(function* () {
     const backend = yield* Backend;
 
-    const web = yield* Cloudflare.Vite("Web", {
+    const web = yield* Cloudflare.Website.Vite("Web", {
       env: {
         VITE_API_URL: backend.url,
       },
@@ -362,7 +376,7 @@ Multi-stack cleanup should reverse dependency order and guard prod:
 - Keep package names stable if downstream imports use package names.
 - Never let frontend bundles import Worker, Stack, provider, or database modules.
 - Put browser-safe clients behind subpath exports like `@acme/api/Client`.
-- Use `Cloudflare.Vite.rootDir` when a root stack builds a package-local frontend.
+- Use `Cloudflare.Website.Vite.rootDir` when a root stack builds a package-local frontend.
 - Run package builds before deploy if exports point at emitted `lib`.
 - Use `pnpm --filter` for package-level stack commands.
 - In multi-stack, deploy upstream dependencies first and destroy downstream dependents first.

@@ -60,7 +60,7 @@ Neon auth is API-key based:
 Use local profile login for development:
 
 ```sh
-pnpm exec alchemy login --configure
+pnpm exec alchemy profile edit --add Neon
 ```
 
 Use `NEON_API_KEY` in CI.

@@ -60,7 +60,7 @@ Prefer Neon for development Postgres unless the repo or user explicitly chooses 
 Recommended stage model:
 
 - `dev_shared` owns the shared Neon project.
-- `dev_$USER`, `test`, and `pr-<number>` create per-stage branches against that project.
+- `dev_$USER`, `test_$USER`, and `pr-<number>` create per-stage branches against that project.
 - PR cleanup destroys only the branch, Hyperdrive, Worker, and other owned stage resources.
 - `prod` owns its own protected project/branch or uses a deliberately selected production database provider.
 

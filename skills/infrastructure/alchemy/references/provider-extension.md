@@ -6,7 +6,7 @@ Use this file when Alchemy lacks a first-class Resource, auth provider, state st
 
 - Resource provider: remote object with identity and lifecycle.
 - Action: idempotent deploy-time work keyed by inputs, without a managed remote lifecycle.
-- Auth Provider: credentials/profile integration for `alchemy login`.
+- Auth Provider: credentials/profile integration for `alchemy profile`.
 - State store: custom persistence for Alchemy resource state.
 - Binding: runtime capability plus deploy-time policy/config wiring.
 - Runtime: new host for Effectful Functions/Servers.

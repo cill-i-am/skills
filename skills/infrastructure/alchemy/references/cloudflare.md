@@ -32,8 +32,8 @@ export default Alchemy.Stack(
 | Strongly consistent keyed state, WebSockets, coordination | Durable Object                           |
 | Arbitrary/long-running process                            | Container paired with a Durable Object   |
 | Durable multi-step work                                   | Workflow                                 |
-| Pure Vite/full-stack Vite application                     | `Cloudflare.Vite`                        |
-| Arbitrary static build output                             | `Cloudflare.StaticSite`                  |
+| Pure Vite/full-stack Vite application                     | `Cloudflare.Website.Vite`                |
+| Arbitrary static build output                             | `Cloudflare.Website.StaticSite`          |
 | SQLite relational data                                    | `Cloudflare.D1.Database`                 |
 | Edge configuration/cache lookups                          | `Cloudflare.KV.Namespace`                |
 | Object storage                                            | `Cloudflare.R2.Bucket`                   |
@@ -135,7 +135,17 @@ Where native RPC is the accepted internal transport, use its typed Worker/DO/Con
 
 ## Frontends
 
-Use `Cloudflare.Vite` for Vite-native applications, including supported TanStack Start, React Router, SolidStart, Vue, Nuxt, and Astro patterns. Use `Cloudflare.StaticSite` for an arbitrary build command and output directory.
+Use `Cloudflare.Website.Vite` for pure Vite applications, including supported
+TanStack Start, React Router, SolidStart, Vue, and similar Vite-first patterns.
+Use the dedicated `Cloudflare.Website.<Framework>` resource when a framework
+drives its own build, and `Cloudflare.Website.StaticSite` for arbitrary build
+commands and output directories. `Website.Vite` owns the build, so a generated
+framework entry normally needs no `main`; use `main` only for a deliberate
+custom wrapper that adds handlers/classes or wraps the framework entry.
+
+In a monorepo, set `memo.include` for every imported workspace package and set
+`memo.lockfile: true`. Supplying `include` otherwise drops the lockfile from the
+rebuild hash.
 
 - Set the project/root directory explicitly in monorepos.
 - Keep server/provider/database modules out of browser bundles.
@@ -160,7 +170,9 @@ These resources can affect unrelated traffic. Before mutation, verify account, z
 
 ## Local Development
 
-`alchemy dev` uses real cloud resources while running supported Worker code locally. It can deploy dependencies and is therefore mutating.
+`alchemy dev` runs supported compute locally and emulates supported services by
+default; use `Alchemy.remote()` when a resource must use the real cloud. It is
+still capable of cloud mutation for selected resources or dependencies.
 
 - Use a personal stage.
 - Choose ports explicitly when frontend and API run together.

@@ -25,7 +25,7 @@ Consult the section relevant to an operational risk or observed failure; this is
 - A logical-ID edit can replace or orphan infrastructure even if the TypeScript variable rename looks harmless.
 - One physical resource must have one authoritative stack/state owner.
 - An empty or switched state store can make existing resources look new.
-- Inspect state before clearing it; `state clear` removes records, not cloud objects.
+- Inspect state before deleting it; `state delete` removes records, not cloud objects.
 - Recovery of owned resources is normal; takeover of unowned resources requires explicit adoption.
 - References read existing state and do not deploy upstream resources.
 - Deploy upstream before downstream; destroy downstream before upstream.
@@ -33,7 +33,9 @@ Consult the section relevant to an operational risk or observed failure; this is
 ## Stages And Profiles
 
 - Stage selects infrastructure; profile selects credentials.
-- CI must not rely on `dev_$USER` defaults.
+- Deploy/plan/destroy default to `live_$USER`; `alchemy dev` defaults to
+  `dev_$USER`, and `Test.make` defaults to `test_$USER`. CI must pass an
+  explicit stage.
 - A profile name does not prove the account/project currently resolved by its auth provider.
 - Shared development stages create shared data and destroy risk; use them intentionally.
 - Do not pin references to production merely to make local development convenient.
@@ -79,7 +81,9 @@ Consult the section relevant to an operational risk or observed failure; this is
 
 - Use canonical namespaced resources: `R2.Bucket`, `KV.Namespace`, `D1.Database`, and `Queues.Queue`.
 - Use least-privilege R2/KV/Queue capabilities and matching Layers.
-- `alchemy dev` uses real cloud dependencies; it is not full emulation.
+- `alchemy dev` runs supported compute locally and emulates supported services
+  by default; `Alchemy.remote()` opts resources into live cloud execution.
+  Inspect selected resources because dev can still mutate cloud dependencies.
 - Prove frontend traffic targets the local Worker instead of a deployed URL.
 - Use a narrow Worker `cwd` in monorepos to prevent reloads on generated/sibling output.
 - Durable Object and Workflow handlers must account for replay/concurrency semantics.
