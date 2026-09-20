@@ -16,6 +16,7 @@ useful without becoming part of the delivery loop.
   workflow skills.
 - `skills/planning/`: one-pagers, design documents, and PRD/design-interrogation
   skills.
+- `skills/documentation/`: customer-facing documentation authoring and review.
 - `skills/stack/`: default TypeScript application stack skills.
 - `skills/infrastructure/`: default infrastructure/deployment skills.
 - `skills/research/`: source-backed research, research prompt construction, and
@@ -113,6 +114,21 @@ reverse, surprising without context, and the result of a real tradeoff. It
 resolves existing doc topology rather than forcing a root `CONTEXT.md`.
 
 `wayfinder` handles interdependent decisions before a PRD. Its map and decision records live in the chosen source and remain distinct from delivery items. Consolidate settled product intent into a PRD before slicing implementation work; continue between capabilities only as the requested scope warrants.
+
+### Customer Documentation
+
+- `diataxis`
+
+Write, review, or reorganize customer-facing documentation according to the
+reader's need: tutorials, how-to guides, reference, or explanation. Keep the core
+workflow lean and load only the relevant mode guidance. Improve existing content
+incrementally rather than creating empty quadrants or four pages per feature.
+
+This skill verifies product and release evidence, protects private information,
+and preserves publishing boundaries. It is stack-agnostic and independent of
+workflow setup; it does not replace `effective-design-docs`, PRDs, ADRs, delivery
+plans, or agent instructions. Framework attribution lives in its `references/`;
+maintainer acceptance cases live in `docs/diataxis-skill-validation.md`.
 
 ### Stack Skills
 

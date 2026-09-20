@@ -1,0 +1,6 @@
+interface:
+  display_name: "Diátaxis Customer Docs"
+  short_description: "Customer documentation shaped around reader needs"
+  default_prompt: "Use $diataxis to write, review, or improve this customer-facing documentation for the intended reader, grounded in verified product behavior."
+policy:
+  allow_implicit_invocation: true

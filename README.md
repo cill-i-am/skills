@@ -2,7 +2,7 @@
 
 A personal, reusable collection of Codex skills for building TypeScript
 applications with a repeatable planning, execution, review, and deployment loop,
-plus a small set of research and personal utility workflows.
+plus customer documentation, research, and personal utility workflows.
 
 This repo is meant to be installed into new projects as a starting operating
 system for agents. It is not a random grab bag of skills. The core bundle
@@ -76,7 +76,7 @@ The same planning and delivery skills work in both modes. They read only the sel
 
 A typical flow is product clarification, a PRD, bounded work items, implementation, review, and an authorized acceptance decision. Use `wayfinder` for interdependent decisions before a PRD; skip stages whose outcomes already exist. An ordinary review, debugging task, or CI check does not require workflow setup.
 
-Install a subset by naming skills with `--skill`. Include `workflow-setup` with the planning and delivery skills that consume its source-selection references. Engineering, stack, research, and personal skills can be used independently. Linear-specific tools are optional and needed only in Linear mode; separate copies of each role are unnecessary.
+Install a subset by naming skills with `--skill`. Include `workflow-setup` with the planning and delivery skills that consume its source-selection references. Engineering, stack, documentation, research, and personal skills can be used independently. Linear-specific tools are optional and needed only in Linear mode; separate copies of each role are unnecessary.
 
 Use stack and infrastructure skills inside that loop as needed:
 
@@ -91,6 +91,16 @@ Use stack and infrastructure skills inside that loop as needed:
 - `alchemy` for infrastructure, local dev, CI stages, and deployment.
 - `simplify`, `systematic-debugging`, `review-swarm`, and
   `subagent-execution` as helper skills during implementation and review.
+
+Use `diataxis` to write, review, or reorganize customer-facing help, tutorials,
+task guides, public reference, and conceptual documentation. It selects the
+reader's need before the document shape, verifies customer-visible claims, and
+keeps internal proposals, ADRs, and agent instructions in their own workflows.
+It works independently of workflow setup and does not require the TypeScript stack.
+
+```txt
+Use $diataxis to audit our customer help docs and propose the smallest useful improvements.
+```
 
 Use research and personal utility skills outside the delivery loop when the task
 calls for them:
@@ -109,6 +119,7 @@ calls for them:
   reviewers, CI watch, production readiness, debugging, and worktree isolation.
 - `skills/planning/`: one-pagers and design documents, grilling, active domain
   modeling, and Wayfinder decision discovery before PRDs.
+- `skills/documentation/`: Diátaxis customer-documentation authoring and review.
 - `skills/stack/`: Effect, TanStack, React performance, and form guidance.
 - `skills/infrastructure/`: Alchemy v2 infrastructure guidance.
 - `skills/research/`: research briefs, cited research reports, and YouTube
@@ -159,7 +170,11 @@ rg --files --hidden .agents/skills -g SKILL.md | wc -l
 rg --files --hidden .agents/skills -g openai.yaml | wc -l
 ```
 
-Expected result today: 37 skills and 37 metadata files.
+Expected result today: 38 skills and 38 metadata files.
+
+See the [Diátaxis acceptance cases](docs/diataxis-skill-validation.md) for
+customer-documentation trigger and behavior checks; these are separate from
+packaging validation.
 
 ## Guidance Audit
 
