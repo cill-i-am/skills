@@ -28,7 +28,7 @@ and revise the smallest relevant instruction; do not mark unexecuted cases passe
 | Exact lookup | "Write public reference for this import schema." Supply versioned fields and validation tests. | Reference; exact scope and fields, no invented defaults or missing/null conflation. |
 | Concept | "Explain how duplicate detection works for customers." Supply approved behavior and rationale. | Explanation; relationships and trade-offs, not a procedure or copied internal ADR. |
 | Read-only review | "Audit this help article, but do not edit files." Supply a mixed lesson, options table, and rationale. | Location-specific findings and minimal corrections; no repository writes. |
-| Collection audit | "Review all pages in this help centre." Make one section inaccessible. | Inventory the accessible scope and disclose the gap; no claim of a complete audit. |
+| Collection audit | "Review all pages in this help centre." Make one section inaccessible. | Inventory the accessible scope and disclose the gap; no claim of a complete audit. Keep corrections within evidence verified for that page and procedure. |
 | Small site | "Improve these two help pages using Diátaxis." | Useful incremental changes; no empty quadrants or forced four-page feature set. |
 | Mixed entrypoint | "Improve this public README and FAQ." | Preserve orientation and useful indexing; classify substantive sections and link canonical answers. |
 | Fixed format | "Keep this as one customer guide with our existing headings." | Honor the requested artifact; clarify section purposes rather than creating separate pages. |

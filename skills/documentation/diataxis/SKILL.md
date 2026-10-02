@@ -1,6 +1,6 @@
 ---
 name: diataxis
-description: Write, review, or reorganize customer-facing product documentation using Diátaxis. Use for help centres, onboarding tutorials, task guides, troubleshooting, public API or configuration reference, and conceptual guides. Keep internal design proposals, PRDs, ADRs, delivery plans, and agent instructions in their own workflows.
+description: Write, audit, improve, or explain customer-facing product documentation using Diátaxis. Use for customer task and recovery guides, troubleshooting, feature-availability docs, product-behavior explanations, tutorials, and public API or configuration reference, even when the request does not name Diátaxis. Use this documentation workflow when general writing advice also applies. Keep internal design proposals, PRDs, ADRs, delivery plans, release notes, and agent instructions in their own workflows.
 ---
 
 # Diátaxis
@@ -34,6 +34,11 @@ Resolve contradictions before treating a claim as authoritative. Never invent
 controls, endpoints, defaults, limits, prices, permissions, support promises, or
 compliance guarantees. Where evidence is missing, narrow the claim or leave the
 page explicitly draft with a blocker in the handoff, not a guessed fact.
+
+Keep each fact tied to the workflow, reader, and version its evidence establishes.
+A recovery procedure's success check does not establish the result of a tutorial
+or another procedure. For audit corrections, require evidence for the page being
+reviewed; otherwise flag the verification gap rather than prescribing a new rule.
 
 Use synthetic examples and redact secrets and personal data. Access to an internal
 source is not permission to publish it. Keep private links and implementation
