@@ -1,0 +1,16 @@
+{
+  "name": "diataxis-skill-eval",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test harness.test.mjs",
+    "check": "node --check run.mjs && node --check scoring.mjs",
+    "eval": "node run.mjs",
+    "smoke": "node run.mjs --smoke"
+  },
+  "devDependencies": {
+    "promptfoo": "0.123.1",
+    "@openai/codex-sdk": "0.160.0",
+    "@openai/codex": "0.160.0"
+  }
+}
