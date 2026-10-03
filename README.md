@@ -98,6 +98,10 @@ reader's need before the document shape, verifies customer-visible claims, and
 keeps internal proposals, ADRs, and agent instructions in their own workflows.
 It works independently of workflow setup and does not require the TypeScript stack.
 
+For repeatable behavioral checks, see the [Diataxis Promptfoo pilot](evals/diataxis/README.md).
+It separates implicit selection, explicit output behavior, and sibling/negative
+boundaries; authenticated evaluations are opt-in and static checks run without a login.
+
 ```txt
 Use $diataxis to audit our customer help docs and propose the smallest useful improvements.
 ```

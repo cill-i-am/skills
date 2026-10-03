@@ -1,0 +1,247 @@
+{
+  "date": "2026-10-03",
+  "evalId": "eval-9wu-2026-10-03T07:59:12",
+  "sourceSkillCommit": "0d2edd951f1b56122df28f50f29b6aab3ffe2f3c",
+  "model": "gpt-6-sol",
+  "reasoning": "low",
+  "versions": {
+    "promptfoo": "0.123.1",
+    "codexSDK": "0.160.0",
+    "codexCLI": "0.160.0"
+  },
+  "traceCount": 6,
+  "startupInjectionCount": 2,
+  "usage": {
+    "prompt": 163177,
+    "completion": 2167,
+    "cached": 135552,
+    "total": 165344
+  },
+  "monetaryCost": null,
+  "resultsSha256": "732ba00ef3f7469537082cf5da4e1fdf26889750445a243f555235f13660fdc2",
+  "records": [
+    {
+      "case": "recovery-implicit",
+      "sessionId": "01a100c6-35fc-7713-83e5-793f97a2eb52",
+      "behaviorReview": "pass",
+      "selection": "pass",
+      "commands": [
+        "/bin/zsh -lc 'cat .agents/skills/diataxis/SKILL.md'",
+        "/bin/zsh -lc 'cat .agents/skills/diataxis/references/how-to-guides.md'"
+      ],
+      "usage": {
+        "prompt": 34502,
+        "completion": 399,
+        "cached": 30336,
+        "total": 34901,
+        "numRequests": 1,
+        "completionDetails": {
+          "reasoning": 12,
+          "acceptedPrediction": 0,
+          "rejectedPrediction": 0,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        },
+        "assertions": {
+          "total": 0,
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "numRequests": 0,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          }
+        }
+      }
+    },
+    {
+      "case": "recovery-explicit",
+      "sessionId": "01a100c6-8d9a-70c2-9da7-86b3c70796b1",
+      "behaviorReview": "pass",
+      "selection": "pass",
+      "commands": [
+        "/bin/zsh -lc 'cat .agents/skills/diataxis/references/how-to-guides.md'"
+      ],
+      "usage": {
+        "prompt": 23952,
+        "completion": 377,
+        "cached": 19840,
+        "total": 24329,
+        "numRequests": 1,
+        "completionDetails": {
+          "reasoning": 36,
+          "acceptedPrediction": 0,
+          "rejectedPrediction": 0,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        },
+        "assertions": {
+          "total": 0,
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "numRequests": 0,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          }
+        }
+      }
+    },
+    {
+      "case": "missing-fact-implicit",
+      "sessionId": "01a100c6-dd6b-7a02-9735-be9bbc068800",
+      "behaviorReview": "pass",
+      "selection": "pass",
+      "commands": [
+        "/bin/zsh -lc 'cat .agents/skills/diataxis/SKILL.md'",
+        "/bin/zsh -lc 'cat .agents/skills/diataxis/references/reference.md'"
+      ],
+      "usage": {
+        "prompt": 34289,
+        "completion": 262,
+        "cached": 30208,
+        "total": 34551,
+        "numRequests": 1,
+        "completionDetails": {
+          "reasoning": 11,
+          "acceptedPrediction": 0,
+          "rejectedPrediction": 0,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        },
+        "assertions": {
+          "total": 0,
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "numRequests": 0,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          }
+        }
+      }
+    },
+    {
+      "case": "missing-fact-explicit",
+      "sessionId": "01a100c7-2bff-7612-9d68-0a3e16225f5d",
+      "behaviorReview": "pass",
+      "selection": "pass",
+      "commands": [
+        "/bin/zsh -lc 'cat .agents/skills/diataxis/references/reference.md'"
+      ],
+      "usage": {
+        "prompt": 23857,
+        "completion": 418,
+        "cached": 19840,
+        "total": 24275,
+        "numRequests": 1,
+        "completionDetails": {
+          "reasoning": 178,
+          "acceptedPrediction": 0,
+          "rejectedPrediction": 0,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        },
+        "assertions": {
+          "total": 0,
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "numRequests": 0,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          }
+        }
+      }
+    },
+    {
+      "case": "design-sibling",
+      "sessionId": "01a100c7-7aa3-7e03-a39e-c0ed8000bbd6",
+      "behaviorReview": "pass",
+      "selection": "pass",
+      "commands": [
+        "/bin/zsh -lc 'cat .agents/skills/effective-design-docs/SKILL.md'",
+        "/bin/zsh -lc 'cat .agents/skills/effective-design-docs/references/layouts.md && cat .agents/skills/effective-design-docs/references/review-checks.md'"
+      ],
+      "usage": {
+        "prompt": 36104,
+        "completion": 632,
+        "cached": 27008,
+        "total": 36736,
+        "numRequests": 1,
+        "completionDetails": {
+          "reasoning": 7,
+          "acceptedPrediction": 0,
+          "rejectedPrediction": 0,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        },
+        "assertions": {
+          "total": 0,
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "numRequests": 0,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          }
+        }
+      }
+    },
+    {
+      "case": "release-negative",
+      "sessionId": "01a100c8-c33e-7151-95c6-7a7e9cdaa3c4",
+      "behaviorReview": "pass",
+      "selection": "inconclusive",
+      "commands": [],
+      "usage": {
+        "prompt": 10473,
+        "completion": 79,
+        "cached": 8320,
+        "total": 10552,
+        "numRequests": 1,
+        "completionDetails": {
+          "reasoning": 13,
+          "acceptedPrediction": 0,
+          "rejectedPrediction": 0,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        },
+        "assertions": {
+          "total": 0,
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "numRequests": 0,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          }
+        }
+      }
+    }
+  ]
+}

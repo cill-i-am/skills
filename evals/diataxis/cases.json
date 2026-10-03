@@ -1,0 +1,84 @@
+[
+  {
+    "id": "recovery-implicit",
+    "mode": "implicit",
+    "expectedSkill": "diataxis",
+    "prompt": "Use only the supplied product sources below. Return the requested draft or findings as text. Do not edit files, execute product procedures, publish, or browse externally.\n\n# Request\n\nDocument how an administrator retries a failed import.\n\n# Supplied sources\n\nReleased UI v2.3: Imports table has Status and an Actions menu with Retry for Failed imports. Only workspace Administrators can retry. Open the failed import to view Error details. Error code TEMP_STORAGE means storage interruption; retry the same file. INVALID_EMAIL means fix invalid rows in the original CSV and upload the corrected file as a new import; Retry would repeat the error. Retry preserves successful rows and imports only previously failed rows, using import ID plus row number for idempotency. Do not retry while Status is Running. Retry shows a confirmation saying successful rows will not be reimported. Completed with Failed rows: 0 establishes success; a repeated TEMP_STORAGE error should go to customer support with the import ID, never with file contents. Verified release notes and sandbox recovery tests confirm these rules. Draft only.\n",
+    "required": [
+      "Administrator",
+      "TEMP_STORAGE",
+      "INVALID_EMAIL",
+      "Running",
+      "Failed rows",
+      "0"
+    ],
+    "rubric": "How-to: role/prerequisites, two error branches, preserve successful rows, avoid running imports, observable success and safe support handoff."
+  },
+  {
+    "id": "recovery-explicit",
+    "mode": "explicit",
+    "expectedSkill": "diataxis",
+    "prompt": "Use $diataxis.\n\nUse only the supplied product sources below. Return the requested draft or findings as text. Do not edit files, execute product procedures, publish, or browse externally.\n\n# Request\n\nDocument how an administrator retries a failed import.\n\n# Supplied sources\n\nReleased UI v2.3: Imports table has Status and an Actions menu with Retry for Failed imports. Only workspace Administrators can retry. Open the failed import to view Error details. Error code TEMP_STORAGE means storage interruption; retry the same file. INVALID_EMAIL means fix invalid rows in the original CSV and upload the corrected file as a new import; Retry would repeat the error. Retry preserves successful rows and imports only previously failed rows, using import ID plus row number for idempotency. Do not retry while Status is Running. Retry shows a confirmation saying successful rows will not be reimported. Completed with Failed rows: 0 establishes success; a repeated TEMP_STORAGE error should go to customer support with the import ID, never with file contents. Verified release notes and sandbox recovery tests confirm these rules. Draft only.\n",
+    "required": [
+      "Administrator",
+      "TEMP_STORAGE",
+      "INVALID_EMAIL",
+      "Running",
+      "Failed rows",
+      "0"
+    ],
+    "rubric": "How-to: role/prerequisites, two error branches, preserve successful rows, avoid running imports, observable success and safe support handoff."
+  },
+  {
+    "id": "missing-fact-implicit",
+    "mode": "implicit",
+    "expectedSkill": "diataxis",
+    "prompt": "Use only the supplied product sources below. Return the requested draft or findings as text. Do not edit files, execute product procedures, publish, or browse externally.\n\n# Request\n\nFinish this reference.\n\n# Supplied sources\n\nCurrent draft:\n# CSV import reference (v2.3)\nRequired column: email. Optional column: name.\nMaximum file size: TBD.\nDefault handling of duplicate rows: TBD.\nAuthoritative v2.3 public schema verifies columns email (required email string) and name (optional string). Nothing supplied establishes file-size limit, duplicate default, or missing/null rules. Do not use web or infer undocumented behavior. Return a draft/reference with a handoff.\n",
+    "required": [
+      "email",
+      "name",
+      "file",
+      "duplicate"
+    ],
+    "rubric": "Reference: no invented size/default/null rules; clearly mark missing evidence and publication blockers."
+  },
+  {
+    "id": "missing-fact-explicit",
+    "mode": "explicit",
+    "expectedSkill": "diataxis",
+    "prompt": "Use $diataxis.\n\nUse only the supplied product sources below. Return the requested draft or findings as text. Do not edit files, execute product procedures, publish, or browse externally.\n\n# Request\n\nFinish this reference.\n\n# Supplied sources\n\nCurrent draft:\n# CSV import reference (v2.3)\nRequired column: email. Optional column: name.\nMaximum file size: TBD.\nDefault handling of duplicate rows: TBD.\nAuthoritative v2.3 public schema verifies columns email (required email string) and name (optional string). Nothing supplied establishes file-size limit, duplicate default, or missing/null rules. Do not use web or infer undocumented behavior. Return a draft/reference with a handoff.\n",
+    "required": [
+      "email",
+      "name",
+      "file",
+      "duplicate"
+    ],
+    "rubric": "Reference: no invented size/default/null rules; clearly mark missing evidence and publication blockers."
+  },
+  {
+    "id": "design-sibling",
+    "mode": "sibling",
+    "expectedSkill": "effective-design-docs",
+    "prompt": "Use only the supplied product sources below. Return the requested draft or findings as text. Do not edit files, execute product procedures, publish, or browse externally.\n\n# Request\n\nWrite an internal one-pager proposing a new import architecture.\n\n# Supplied sources\n\nInternal proposal context: current synchronous import requests time out around 30 seconds; observed test workload 5,000 rows takes 45 seconds. Goal: accepted jobs complete asynchronously with customer-visible status, retaining per-workspace authorization and idempotent retries. Options: persistent queue worker vs in-request batching. No implementation or external publication authorized. Open questions: retry backoff, retention, deployment budget. Intended readers engineering decision makers. Return proposal draft only.\n",
+    "required": [
+      "queue",
+      "batch",
+      "30",
+      "45"
+    ],
+    "rubric": "Internal decision proposal, options/trade-offs and open questions; no customer documentation quadrants or implementation."
+  },
+  {
+    "id": "release-negative",
+    "mode": "negative",
+    "expectedSkill": null,
+    "prompt": "Use only the supplied product sources below. Return the requested draft or findings as text. Do not edit files, execute product procedures, publish, or browse externally.\n\n# Request\n\nWrite release notes for v2.3.\n\n# Supplied sources\n\nApproved v2.3 released changes: Administrators can retry failed imports caused by TEMP_STORAGE without reimporting successful rows; Preview now reports normalized-email duplicate counts. Known issue: INVALID_EMAIL requires corrected CSV as a new import. Bulk Import remains internal preview, not in this release. No issue creation, product changes, or publication authorized. Keep concise Changes and Known issues headings.\n",
+    "required": [
+      "Changes",
+      "Known issues",
+      "TEMP_STORAGE",
+      "INVALID_EMAIL"
+    ],
+    "rubric": "Concise release record, excludes bulk import as released; no Diataxis restructuring or shadow plan."
+  }
+]
