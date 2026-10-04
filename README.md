@@ -97,6 +97,8 @@ calls for them:
 
 - `research-prompt`, `deep-research`, and `youtube-transcript` for source-backed
   investigation and transcript extraction.
+- `psychopomp` for Rust motion graphics and source-grounded architecture or PR
+  explainers; see its [renderer installation guide](skills/personal/psychopomp/references/install.md).
 - `teach`, `handoff`, `setup-help`, `cyber-audit`, and `anti-sleep` for
   learning, continuation context, manual setup, read-only security audits, and
   long-running local work.
@@ -159,7 +161,7 @@ rg --files --hidden .agents/skills -g SKILL.md | wc -l
 rg --files --hidden .agents/skills -g openai.yaml | wc -l
 ```
 
-Expected result today: 37 skills and 37 metadata files.
+Expected result today: 38 skills and 38 metadata files.
 
 ## Guidance Audit
 

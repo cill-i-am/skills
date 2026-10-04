@@ -151,6 +151,9 @@ product-engineering loop:
 - `setup-help`
 - `cyber-audit`
 - `anti-sleep`
+- `psychopomp`: deterministic Rust motion graphics, architecture explainers, and
+  PR walkthroughs; renderer/toolchain installation is documented in its
+  `references/install.md`.
 
 Do not make delivery-loop skills depend on personal utility skills. Use them
 opportunistically when the user asks for learning, setup, handoff, local audit,
