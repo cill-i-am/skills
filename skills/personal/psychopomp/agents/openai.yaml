@@ -1,0 +1,4 @@
+interface:
+  display_name: "Psychopomp"
+  short_description: "Kit-style motion graphics and PR explainer videos"
+  default_prompt: "Use $psychopomp to turn this code change into a concise motion graphics explainer following Kit Langton’s story and motion guidance."
