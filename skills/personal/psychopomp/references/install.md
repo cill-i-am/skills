@@ -66,7 +66,7 @@ binary must be reinstalled after source updates. No CLI wrapper is required.
 From the checkout root:
 
 ```sh
-ffmpeg -hide_banner -encoders | rg libx264
+ffmpeg -hide_banner -encoders | grep libx264
 cargo run --release --locked -p agent-demo -- target/agent-demo.json
 ./target/release/psychopomp plan validate target/agent-demo.json
 ./target/release/psychopomp plan render target/agent-demo.json output/install-smoke.mp4 --range 0..2 --theme neutral
