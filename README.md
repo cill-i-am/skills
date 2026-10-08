@@ -28,6 +28,8 @@ The bundle is portable, but opinionated.
 - Feature-slice-first architecture.
 - Effect for TypeScript backend services, shared packages, schemas, typed
   errors, retries, observability, SQL, and testable async workflows.
+- XState through the official `@xstate/effect` integration when an explicit
+  event-driven workflow model is warranted; simple operations remain Effects.
 - TanStack Start, Router, Query, and Form for rich React apps.
 - Alchemy v2 for Infrastructure-as-Effects across Cloudflare, AWS, databases,
   APIs, tests, and deployment tooling.
@@ -88,6 +90,8 @@ Use stack and infrastructure skills inside that loop as needed:
   `wayfinder` for decision discovery before a PRD is ready.
 - `effect-ts`, `tanstack-routing`, `tanstack-react-best-practices`, and
   `app-forms` for the default TypeScript app stack.
+- [xstate-effect](skills/stack/xstate-effect/SKILL.md) for Effect-first statecharts,
+  actor lifecycles, approvals, UI workflows, and testing through `@xstate/effect`.
 - `alchemy` for infrastructure, local dev, CI stages, and deployment.
 - `simplify`, `systematic-debugging`, `review-swarm`, and
   `subagent-execution` as helper skills during implementation and review.
@@ -111,7 +115,7 @@ calls for them:
   reviewers, CI watch, production readiness, debugging, and worktree isolation.
 - `skills/planning/`: one-pagers and design documents, grilling, active domain
   modeling, and Wayfinder decision discovery before PRDs.
-- `skills/stack/`: Effect, TanStack, React performance, and form guidance.
+- `skills/stack/`: Effect, XState workflows, TanStack, React performance, and form guidance.
 - `skills/infrastructure/`: Alchemy v2 infrastructure guidance.
 - `skills/research/`: research briefs, cited research reports, and YouTube
   transcript extraction.
@@ -161,7 +165,7 @@ rg --files --hidden .agents/skills -g SKILL.md | wc -l
 rg --files --hidden .agents/skills -g openai.yaml | wc -l
 ```
 
-Expected result today: 38 skills and 38 metadata files.
+Expected result today: 39 skills and 39 metadata files.
 
 ## Guidance Audit
 

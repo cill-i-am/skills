@@ -116,13 +116,23 @@ resolves existing doc topology rather than forcing a root `CONTEXT.md`.
 
 ### Stack Skills
 
-These encode the current preferred TypeScript application stack. Treat all four
+These encode the current preferred TypeScript application stack. Treat all five
 as first-class bundled skills, not optional external add-ons:
 
 - `effect-ts`
+- `xstate-effect`
 - `tanstack-routing`
 - `tanstack-react-best-practices`
 - `app-forms`
+
+`xstate-effect` complements `effect-ts` for event-driven workflows using the
+ official `@xstate/effect` integration and Effect 4. Its routed references,
+examples, templates, and audit scripts cover modeling, services, actor ownership,
+UI, testing, and operations. Simple operations remain Effects. Read its
+[version contract](skills/stack/xstate-effect/references/00-version-contract.md)
+and [validation record](skills/stack/xstate-effect/VALIDATION.md) before using
+version-sensitive XState v6 alpha APIs; bundled test sources are not a claim
+that dependency-aware compilation or runtime tests have passed.
 
 ### Infrastructure Skills
 
