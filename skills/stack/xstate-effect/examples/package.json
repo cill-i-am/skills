@@ -1,0 +1,21 @@
+{
+  "name": "xstate-effect-skill-examples",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Original Effect-first XState examples; see VALIDATION.md for execution status.",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc",
+    "test": "npm run build && node dist/tests.js",
+    "demo": "npm run build && node dist/demo.js"
+  },
+  "dependencies": {
+    "@xstate/effect": "0.1.0-alpha.6",
+    "effect": "4.0.0",
+    "xstate": "6.0.0-alpha.64"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  }
+}
