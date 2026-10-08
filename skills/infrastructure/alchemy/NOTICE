@@ -1,0 +1,20 @@
+Alchemy Infrastructure Skill
+
+This independently assembled package is distributed under the Apache License,
+Version 2.0. It contains original instructional synthesis and modified examples
+adapted from the Alchemy project's Apache-2.0 documentation and source.
+
+Upstream project: https://github.com/alchemy-run/alchemy
+Documentation: https://alchemy.run/
+Reference revision: fbe6ece368c6898234592e897d852bb47b88ebb1
+Research date: 7 October 2026
+Upstream attribution: Alchemy contributors; see upstream notices and history.
+
+Adaptations include reorganized task playbooks, changed example names and data,
+explicit authentication/validation caveats, independent CI templates, offline
+helper scripts/tests, source indexing, and evaluation cases. This is not an
+upstream Alchemy release or an endorsement by its maintainers.
+
+Alchemy, Effect, provider SDKs, GitHub Actions, fonts, and other third-party
+runtime packages are not bundled. Links to external primary documentation and
+action commit identities are references, not copies of those dependencies.
