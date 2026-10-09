@@ -1,0 +1,43 @@
+# Requires protected main and a production environment with required reviewers.
+# Bootstrap shared state separately. Configure project scripts before copying.
+name: Alchemy production
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: alchemy-app-prod
+  cancel-in-progress: false
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: pnpm/setup@fbda4c85fc2e1e08721cd8763afea8f48d60f024 # v3
+        with:
+          runtime: node@24
+          install: false
+          cache: false
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run typecheck && pnpm run test:unit
+      - name: Apply the approved production revision
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CI: "true"
+        run: |
+          pnpm exec alchemy provider check-env --provider Cloudflare
+          pnpm exec alchemy deploy --config alchemy.run.ts --stage prod --yes
+      - name: Project HTTP smoke test
+        env:
+          BASE_URL: ${{ vars.PRODUCTION_BASE_URL }}
+        run: pnpm run test:smoke
+      # Environment approval alone does not inspect a generated plan. Add your
+      # plan-review/change-management gate before apply for consequential changes.

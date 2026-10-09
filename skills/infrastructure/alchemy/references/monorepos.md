@@ -1,386 +1,234 @@
-# Monorepos
+# Alchemy in pnpm monorepos
 
-Use this file for pnpm workspace Alchemy projects with multiple packages such as `apps/web`, `apps/api`, `packages/db`, or `packages/shared`.
+## Default and scope
 
-## Contents
+Treat a monorepo as the default for Cillian's new projects. Preserve the repository's existing package boundaries and package manager. A monorepo is a packaging choice, not a requirement to have one stack per package. Start with one root stack unless independent ownership, permissions, deployment cadence, or data lifecycle justifies a split.
 
-- Decision rule
-- pnpm workspace layout
-- Shared backend/client package pattern
-- Single-stack root deployment
-- Multi-stack package deployment
-- Stage and state behavior
-- CI and commands
-- Monorepo gotchas
+Use [Drizzle](drizzle.md) for database integration and [infrastructure colocation](infra-colocation.md) for feature Layers. The [worked workspace](../assets/examples/drizzle-monorepo/README.md) contains actual manifests, exports, schemas, Layers, hosts, a small browser app, root stacks, and generation commands. It is a demonstration awaiting dependency and integration verification, not a production template with hidden setup omitted.
 
-## Decision Rule
+## Recommended layout
 
-Start with a single root stack. Split into multiple stacks only when package ownership, deploy cadence, or blast-radius requirements justify the reference overhead.
+```text
+alchemy.run.ts                 # One root composition graph
+pnpm-workspace.yaml             # Workspace membership + compatible version catalog
+package.json                   # Root deployment/check commands
+apps/
+  api/src/                     # Worker entry + HTTP/auth adapter
+  web/src/                     # Browser/framework application
+packages/
+  contracts/src/               # Public schemas/types, no infra imports
+  notes/src/                   # Domain rules, service, storage implementations
+  notes/drizzle/               # Separate histories for the two example engines
+```
 
-Use single-stack when:
+For a real shared product database, introduce `packages/database/` to own its resource, client, aggregate schema entrypoint, and migration history. Individual feature packages can own table definitions and repository code. Do not give every feature its own physical database just to match folders. The two sample dialect histories target two **different example databases**, not two writers for one database.
 
-- One team owns the app.
-- Frontend and backend ship together.
-- A single `deploy`/`destroy` per stage is acceptable.
-- The project is early or still changing quickly.
-- The frontend only needs the backend URL and does not need an independently deployed backend.
-
-Use multi-stack when:
-
-- Backend and frontend deploy on different schedules.
-- The backend has consumers beyond one frontend.
-- You need to destroy or redeploy the frontend without touching the backend.
-- Different teams own package-level CI.
-- You are comfortable with deploy ordering and cross-stack reference failures.
-
-## pnpm Workspace Layout
-
-Use pnpm workspaces at the repo root.
+## Workspace dependencies and version alignment
 
 ```yaml
-# pnpm-workspace.yaml
 packages:
   - "apps/*"
   - "packages/*"
+catalog:
+  alchemy: "2.0.0-beta.81"
+  effect: "4.0.0"
+  drizzle-orm: "1.0.0-rc.5-ab785fc"
+  drizzle-kit: "1.0.0-rc.5-ab785fc"
 ```
 
-Typical layout:
-
-```txt
-.
-|-- alchemy.run.ts
-|-- package.json
-|-- pnpm-lock.yaml
-|-- pnpm-workspace.yaml
-|-- apps/
-|   |-- api/
-|   `-- web/
-`-- packages/
-    |-- db/
-    `-- shared/
-```
-
-Root `package.json`:
+Each package declares what it imports; do not rely on root hoisting or undeclared transitive dependencies. Internal packages use `workspace:*`; external dependencies use the catalog or a compatible reviewed pin, **not** `workspace:*` unless that external project really is part of the workspace. Keep ORM, Kit, Effect, SQL drivers, and Alchemy compatible as a tuple. Commit one real lockfile once installation has resolved it; do not fabricate one from package declarations.
 
 ```json
 {
-  "name": "my-monorepo",
+  "name": "@example/api",
   "private": true,
   "type": "module",
-  "scripts": {
-    "build": "pnpm -r build",
-    "check": "pnpm -r check",
-    "deploy": "pnpm exec alchemy deploy",
-    "dev": "pnpm exec alchemy dev",
-    "destroy": "pnpm exec alchemy destroy",
-    "plan": "pnpm exec alchemy plan",
-    "test": "pnpm -r test"
-  },
-  "devDependencies": {
-    "alchemy": "latest",
-    "typescript": "latest",
-    "vitest": "latest"
-  }
-}
-```
-
-Workspace packages should reference each other with `workspace:*`:
-
-```json
-{
   "dependencies": {
-    "@acme/api": "workspace:*",
-    "@acme/shared": "workspace:*",
-    "effect": "latest"
+    "@example/contracts": "workspace:*",
+    "@example/notes": "workspace:*",
+    "alchemy": "catalog:",
+    "effect": "catalog:"
   }
 }
 ```
 
-Do not add Bun-specific package conditions, scripts, or test runners unless the existing repo already uses Bun.
+The fixture's manifests carry the full toolchain. They are independent from the parent example package; install and typecheck inside the fixture root rather than accidentally using a different parent dependency set.
 
-## Shared Backend/Client Package Pattern
+## Public exports and browser boundaries
 
-For a backend package that exposes both server infrastructure and a browser-safe client, split exports carefully.
-
-```txt
-apps/api/src/
-|-- Client.ts
-|-- Service.ts
-|-- Spec.ts
-|-- Stack.ts
-`-- index.ts
-```
-
-- `Spec.ts`: pure Effect HTTP API schema shared by server and browser.
-- `Client.ts`: browser-safe runtime client.
-- `Service.ts`: Cloudflare Worker, server-only.
-- `Stack.ts`: typed Alchemy stack handle, server/plan-time only.
-- `index.ts`: server/plan-time barrel, not a browser import target.
-
-Package exports for source-first pnpm workspaces:
+Source-first private packages can expose TypeScript entrypoints directly when the selected bundler/toolchain supports them:
 
 ```json
 {
-  "name": "@acme/api",
+  "name": "@example/contracts",
   "private": true,
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./src/index.ts",
-      "import": "./src/index.ts"
-    },
-    "./Client": {
-      "types": "./src/Client.ts",
-      "import": "./src/Client.ts"
-    }
+    "./notes": "./src/notes.ts",
+    "./health": "./src/health.ts"
   },
-  "dependencies": {
-    "alchemy": "workspace:*",
-    "effect": "latest"
-  }
+  "dependencies": { "effect": "catalog:" }
 }
 ```
 
-If the repo emits `lib/`, point exports at `lib` and run `pnpm -r build` before `pnpm exec alchemy deploy`.
-
-Browser rule: frontend code imports only the client subpath:
+The storage package separately exports `./service`, `./d1`, and `./postgres`. There is no catch-all root barrel re-exporting all implementations. Browser imports resolve only through contracts, not through a server module that happens to export the same type. A `type` import can erase at build time, but explicit public entrypoints also protect runtime-schema imports and future refactors.
 
 ```ts
-import { BackendClient } from "@acme/api/Client";
+// Browser-safe public schema.
+import { Note } from "@example/contracts/notes";
+// Server-only storage implementation, never a browser import.
+import { NotesD1Live } from "@example/notes/d1";
 ```
 
-Do not import the backend barrel from browser code:
+If a package publishes built `dist/` or `lib/` exports, build it before consuming it. Do not claim source-first and emitted-package workflows are interchangeable. Avoid TypeScript path aliases that compile locally while bypassing the actual package export map used by the deployed bundler.
+
+## One root stack: backend plus frontend
+
+This is the core of the complete fixture's [root stack](../assets/examples/drizzle-monorepo/alchemy.run.ts):
 
 ```ts
-// Avoid in frontend bundles. This can pull Stack/Worker/server-only modules.
-import { BackendClient } from "@acme/api";
-```
-
-## Single-Stack Root Deployment
-
-This is the default for most monorepos. Put `alchemy.run.ts` at the workspace root and deploy packages as siblings in one graph.
-
-```ts
-// alchemy.run.ts
 import * as Alchemy from "alchemy";
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
 import { Path } from "effect/Path";
-import Api from "./apps/api/src/Service.ts";
+import Api from "./apps/api/src/Api.ts";
 
-export default Alchemy.Stack(
-  "App",
-  {
-    providers: Cloudflare.providers(),
-    state: Cloudflare.state(),
-  },
-  Effect.gen(function* () {
-    const api = yield* Api;
-    const path = yield* Path;
-
-    const web = yield* Cloudflare.Website.Vite("Web", {
-      rootDir: path.resolve(import.meta.dirname, "apps/web"),
-      env: {
-        VITE_API_URL: api.url.as<string>(),
-      },
-    });
-
-    return {
-      apiUrl: api.url.as<string>(),
-      webUrl: web.url.as<string>(),
-    };
-  }),
-);
+export default Alchemy.Stack("NotesExample", {
+  providers: Cloudflare.providers(),
+  state: Alchemy.localState(),
+}, Effect.gen(function* () {
+  const api = yield* Api;
+  const path = yield* Path;
+  const web = yield* Cloudflare.Website.Vite("Web", {
+    rootDir: path.resolve(import.meta.dirname, "apps/web"),
+    env: { VITE_API_URL: api.url },
+    memo: {
+      include: ["**/*", "../../packages/contracts/src/**", "../../packages/contracts/package.json"],
+      lockfile: true,
+    },
+  });
+  return { apiUrl: api.url, webUrl: web.url };
+}));
 ```
 
-Why this works well:
+Use remote state for shared team/CI ownership, after a separately authorized bootstrap or state migration. The local state in this disposable example is not a recommendation to lose CI state between runners. Returning an Output or passing it into props preserves graph dependencies; avoid normal string interpolation or branching on unresolved outputs.
 
-- One plan and one state graph per stage.
-- Direct `Output<string>` wiring between backend and frontend.
-- Alchemy builds the frontend after the backend URL resolves.
-- `Cloudflare.Website.Vite.rootDir` lets a root stack build a package-local Vite app.
-- Destroying the stage removes the whole app together.
+For an existing TanStack Start app, the Alchemy Cloudflare baseline also uses `Website.Vite`; preserve that app's framework/Vite configuration. The minimal fixture is plain Vite, **not** a tested TanStack Start SSR application. A complete Start + authenticated RPC + Drizzle path remains an explicit follow-up.
 
-When the frontend imports source-first sibling workspace packages, include those
-packages in the Website memo and keep the lockfile in the hash:
+## Paths: two different command roots
+
+Alchemy stack commands in this example run from the workspace root. Drizzle generation runs from the owning package through `pnpm --filter`. This distinction is deliberate:
+
+| Path | Resolution contract |
+|---|---|
+| Worker `main: import.meta.url` | The declaring file; safe for an imported entrypoint. |
+| Website `rootDir` | Explicit absolute app directory, anchored at the stack file. |
+| Database `migrations: "./packages/notes/drizzle/sqlite"` | Root Alchemy command directory. |
+| Package Drizzle config `schema: "./src/sqlite-schema.ts"` | Notes package directory selected by `pnpm --filter`. |
+| Package Drizzle config `out: "./drizzle/sqlite"` | Same Notes package directory. |
+
+The sample's migration-input guard rejects the wrong root and missing SQL before its convenience dev/plan/deploy scripts proceed. It checks existence, not migration correctness. Invoking the CLI directly bypasses that convenience guard; understand the command contract rather than treating the guard as authorization.
+
+When a real project needs commands callable from multiple directories, anchor paths explicitly using the supported path helpers and verify how the runtime bundler handles the module. Do not concatenate unescaped URL pathnames into filesystem paths. Avoid evaluating Node-only filesystem/configuration operations inside deployed request code.
+
+## Build invalidation: the important monorepo trap
+
+A frontend importing a sibling package can change without any file under `apps/web` changing. Include all source-first packages used by the build in the Website memo. Once overriding `include`, explicitly keep `lockfile: true` for the inspected Vite implementation. Include relevant package manifests and build configuration as well as source files.
+
+Two caches must be correct: the workspace task runner's cache (Turborepo or otherwise) and Alchemy's Website memo. Fixing only one does not guarantee the deployed bundle changes. Avoid building the same frontend twice merely because both tools can orchestrate it; define which command owns that build.
+
+A regression test should modify only a shared contract, verify the browser bundle/build hash changes, then modify only the lockfile and repeat. Also verify an unrelated package does not force unnecessary application deployments where that isolation is intended. These tests have not yet been run for the new fixture.
+
+## Multiple stacks: typed handles and explicit ordering
+
+Split when the boundary is real—for example, a retained shared database and independently disposable preview apps. References read producer state; they do not deploy it or establish a cross-stack transaction.
+
+A minimal **plan-time-only** shared stack handle:
 
 ```ts
-memo: {
-  include: ["src/**", "../../packages/*/src/**"],
-  lockfile: true,
-},
-```
-
-Without this, a package change outside `rootDir` can leave the deployed web
-bundle unchanged even though the workspace build would now produce different
-code.
-
-Commands:
-
-```sh
-pnpm exec alchemy plan --stage pr-147
-pnpm exec alchemy deploy --stage pr-147
-pnpm exec alchemy destroy --stage pr-147
-```
-
-## Multi-Stack Package Deployment
-
-Use this only when packages need separate deploy lifecycles. Each package owns an `alchemy.run.ts`, and downstream stacks reference upstream stack outputs from state.
-
-Backend stack handle:
-
-```ts
-// apps/api/src/Stack.ts
+// apps/api/src/Stack.ts; expose this through a server-only ./stack subpath.
 import * as Alchemy from "alchemy";
-
-export class Backend extends Alchemy.Stack<
-  Backend,
-  {
-    url: string;
-  }
->()("Backend") {}
+export class Backend extends Alchemy.Stack<Backend, { url: string }>()("Backend") {}
 ```
 
-Export the handle from the package barrel for plan-time consumers:
-
-```ts
-// apps/api/src/index.ts
-export * from "./Client.ts";
-export * from "./Spec.ts";
-export * from "./Stack.ts";
-```
-
-Backend `alchemy.run.ts`:
+Backend stack:
 
 ```ts
 // apps/api/alchemy.run.ts
+import * as Alchemy from "alchemy";
 import * as Cloudflare from "alchemy/Cloudflare";
 import * as Effect from "effect/Effect";
-import Service from "./src/Service.ts";
+import Api from "./src/Api.ts";
 import { Backend } from "./src/Stack.ts";
 
-export default Backend.make(
-  {
-    providers: Cloudflare.providers(),
-    state: Cloudflare.state(),
-  },
-  Effect.gen(function* () {
-    const api = yield* Service;
-    return {
-      url: api.url.as<string>(),
-    };
-  }),
-);
+export default Backend.make({
+  providers: Cloudflare.providers(),
+  state: Cloudflare.state(),
+}, Effect.gen(function* () {
+  const api = yield* Api;
+  return { url: api.url.as<string>() };
+}));
 ```
 
-Frontend `alchemy.run.ts`:
+Frontend stack:
 
 ```ts
 // apps/web/alchemy.run.ts
 import * as Alchemy from "alchemy";
 import * as Cloudflare from "alchemy/Cloudflare";
-import { Backend } from "@acme/api";
 import * as Effect from "effect/Effect";
+import { Path } from "effect/Path";
+import { Backend } from "@example/api/stack";
 
-export default Alchemy.Stack(
-  "Frontend",
-  {
-    providers: Cloudflare.providers(),
-    state: Cloudflare.state(),
-  },
-  Effect.gen(function* () {
-    const backend = yield* Backend;
-
-    const web = yield* Cloudflare.Website.Vite("Web", {
-      env: {
-        VITE_API_URL: backend.url,
-      },
-    });
-
-    return {
-      url: web.url.as<string>(),
-    };
-  }),
-);
+export default Alchemy.Stack("Frontend", {
+  providers: Cloudflare.providers(),
+  state: Cloudflare.state(),
+}, Effect.gen(function* () {
+  const backend = yield* Backend;
+  const path = yield* Path;
+  const web = yield* Cloudflare.Website.Vite("Web", {
+    rootDir: path.resolve(import.meta.dirname),
+    env: { VITE_API_URL: backend.url },
+    memo: { include: ["**/*", "../../packages/contracts/src/**"], lockfile: true },
+  });
+  return { url: web.url };
+}));
 ```
 
-Deploy backend first, then frontend, with matching stages:
+These three blocks are a **separate multi-stack composition example**, not files to drop unchanged beside the single-stack fixture. Add the `./stack` export to the backend manifest, declare `@example/api: workspace:*` in the frontend package for its plan-time import, and adapt database migration paths to the chosen invocation directory. Do not keep deploying both root and package stacks over the same intended physical data.
 
 ```sh
-pnpm --filter @acme/api exec alchemy deploy --stage pr-147
-pnpm --filter @acme/web exec alchemy deploy --stage pr-147
+# After configuring and authorizing these independent stacks:
+pnpm --filter @example/api exec alchemy deploy --stage pr-42
+pnpm --filter @example/web exec alchemy deploy --stage pr-42
+# Cleanup reverses dependency order; use the preview guard before actual destroy.
+pnpm --filter @example/web exec alchemy destroy --stage pr-42
+pnpm --filter @example/api exec alchemy destroy --stage pr-42
 ```
 
-Destroy in reverse:
+`yield* Backend` selects the same stage. `yield* Backend.stage.staging` deliberately selects a shared stage. Never silently fall back to production when the matching producer does not exist. Use the same intended state backend/account/profile resolution across readers and writers; a matching stage name alone does not identify the right environment.
 
-```sh
-pnpm --filter @acme/web exec alchemy destroy --stage pr-147
-pnpm --filter @acme/api exec alchemy destroy --stage pr-147
-```
+`.as<string>()` above follows the upstream typed-handle example; it is not runtime validation and must not be used to conceal an actually optional/missing URL. Confirm the host exposes a public URL when that is the contract.
 
-`yield* Backend` resolves the backend stack output in the same stage as the frontend. If the backend was not deployed to that stage, planning fails with a reference error.
+## Shared databases, previews, and CI
 
-Pin a frontend to a specific backend stage only when stage symmetry is intentionally broken:
+A preview branch is a database boundary only if its actual data, schema, credentials, and deletion behavior are isolated as intended. A preview Worker stage pointing at production is not isolated storage. Put a long-lived database owner in a shared stack and let preview stacks own only their disposable branches/credentials when that suits the provider.
 
-```ts
-const backend = yield* Backend.stage.prod;
-const sharedDevBackend = yield* Backend.stage.dev_shared;
-const prBackend = yield* Backend.stage["pr-42"];
-```
+Keep migration concurrency keyed by physical database, not just by app stack/stage: two different stacks can still target one database. Prevent preview cleanup from deleting the long-lived parent. Do not assume there is a universal provider-independent branch API.
 
-## Stage And State Behavior
+Root CI should install the reviewed lockfile, run affected package checks plus dependent builds, validate/gate migrations, and deploy the right graph. Do not combine `pnpm -r` with deployment scripts accidentally so every package deploys. In a multi-stack pipeline, encode producer-before-consumer deployment and reverse cleanup, and serialize writers for each shared resource.
 
-- Single-stack: one stack name, one state graph per stage, direct graph edges between packages.
-- Multi-stack: one state graph per stack per stage; references are state lookups, not resources.
-- `yield* Backend` means "same stage"; `Backend.stage.prod` means "pinned stage".
-- References do not create upstream resources. Deploy upstream first.
-- Deleting a frontend stack does not delete a referenced backend stack.
-- Deleting a single-stack root stack deletes backend and frontend together.
+## Verification gates
 
-## CI And Commands
+Verify package exports in both typechecking and the actual browser/server build. Check root and package working directories, shared-source and lockfile invalidation, one migration owner per database, no provider/driver/secret in browser bundles, resource identity stability during moves, and same-stage/missing-stage references. A local link check is not evidence of any of these behaviors.
 
-Single-stack CI:
+## Sources
 
-```yaml
-- run: pnpm install --frozen-lockfile
-- run: pnpm -r build
-- run: pnpm exec alchemy deploy --stage ${{ env.STAGE }}
-```
+- [Single-stack guide](https://alchemy.run/project-structure/monorepo-single-stack/)
+- [Multi-stack guide](https://alchemy.run/project-structure/monorepo-multi-stack/)
+- [Pinned Vite implementation](https://github.com/alchemy-run/alchemy/blob/fbe6ece368c6898234592e897d852bb47b88ebb1/packages/alchemy/src/Cloudflare/Website/Vite.ts)
+- [Pinned workspace catalog](https://github.com/alchemy-run/alchemy/blob/fbe6ece368c6898234592e897d852bb47b88ebb1/pnpm-workspace.yaml)
+- [References](https://alchemy.run/infrastructure-as-code/references/)
+- [Drizzle migration ownership](https://alchemy.run/sql/drizzle/migrations/)
 
-Multi-stack CI:
-
-```yaml
-- run: pnpm install --frozen-lockfile
-- run: pnpm -r build
-- run: pnpm --filter @acme/api exec alchemy deploy --stage ${{ env.STAGE }}
-- run: pnpm --filter @acme/web exec alchemy deploy --stage ${{ env.STAGE }}
-```
-
-Multi-stack cleanup should reverse dependency order and guard prod:
-
-```yaml
-- run: |
-    if [ "${{ env.STAGE }}" = "prod" ]; then
-      echo "ERROR: refusing to destroy prod"
-      exit 1
-    fi
-- run: pnpm --filter @acme/web exec alchemy destroy --stage ${{ env.STAGE }}
-- run: pnpm --filter @acme/api exec alchemy destroy --stage ${{ env.STAGE }}
-```
-
-## Monorepo Gotchas
-
-- Prefer single-stack until there is a concrete reason to split.
-- Do not split stacks merely because packages live in separate folders.
-- Keep stack names stable. In multi-stack, the typed handle name must match the deployed stack name.
-- Keep package names stable if downstream imports use package names.
-- Never let frontend bundles import Worker, Stack, provider, or database modules.
-- Put browser-safe clients behind subpath exports like `@acme/api/Client`.
-- Use `Cloudflare.Website.Vite.rootDir` when a root stack builds a package-local frontend.
-- Run package builds before deploy if exports point at emitted `lib`.
-- Use `pnpm --filter` for package-level stack commands.
-- In multi-stack, deploy upstream dependencies first and destroy downstream dependents first.
-- Treat cross-stack references as state reads. Missing stage, wrong stack name, wrong profile, or wrong state backend all break resolution.
-- Keep CI stage computation identical across stacks, or same-stage references will miss.
-- Avoid local `.alchemy/` state in team monorepos; use `Cloudflare.state()`.
-- In PR previews, decide whether PR frontend references a PR backend, shared dev backend, or prod backend. Encode that choice explicitly.
+Expanded 9 October 2026 against Alchemy `2.0.0-beta.81`. The single-stack fixture and the multi-stack excerpts have different validation status; see the [iteration checklist](iteration-checklist.md).

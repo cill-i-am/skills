@@ -1,0 +1,15 @@
+{
+  "name": "@example/web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@example/contracts": "workspace:*",
+    "effect": "catalog:"
+  },
+  "devDependencies": {
+    "vite": "8.0.7"
+  }
+}

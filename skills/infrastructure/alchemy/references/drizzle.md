@@ -1,234 +1,174 @@
-# Drizzle
+# Drizzle-first Alchemy applications
 
-Use this file for Alchemy's Drizzle provider and Drizzle runtime patterns. For provider-specific database details, load `neon.md` or `planetscale.md`; for full database stack examples with Hyperdrive, also load `database-patterns.md`.
+## Scope and version contract
 
-## Contents
+For Cillian's new projects, use Drizzle as the default ORM and pnpm monorepos as the default packaging model. These are project preferences, not Alchemy requirements. Preserve an existing engine, migration owner, or ORM until its replacement is explicitly scoped. [SQL and migrations](sql-and-migrations.md) remains the alternative route for Effect SQL, Prisma, and non-Drizzle projects.
 
-- Provider setup
-- Schema and migrations
-- Postgres runtime
-- MySQL runtime on Workers
-- Relations
-- Monorepo guidance
-- Testing
-- Gotchas
+Research checked **9 October 2026**:
 
-## Provider Setup
+| Surface | Verified baseline | Meaning |
+|---|---|---|
+| Latest stable Drizzle ORM release on GitHub | `0.45.4`, published 8 October 2026 | Stable release track; do not assume its API includes the v1 Effect drivers. |
+| Alchemy's documented Effect-compatible ORM and Kit pair | Both `1.0.0-rc.5-ab785fc` | Exact prerelease snapshot used in these new examples, not an assertion that this is the newest npm prerelease. |
+| Drizzle source behind that suffix | `ab785fcd99710d6d136ffbfd121b7aeb96e4d51d` | Package source says `1.0.0-rc.5` and permits Effect/SQL peers `>=4.0.0-beta.105 || >=4.0.0`. |
+| Alchemy/Effect for this skill | `2.0.0-beta.81` / `4.0.0` | Preserve this researched tuple until a separate upgrade is verified. |
 
-Register the Drizzle provider whenever a stack uses `Drizzle.Schema`:
+The npm registry was unreachable in the authoring container. No current npm dist-tag or successful dependency installation is claimed. Registry resolution, lockfile generation, peer validation, and compilation are still required. Never use `--force` to hide a peer mismatch or replace the prerelease with `latest` to get installation unstuck.
 
-```ts
-import * as Drizzle from "alchemy/Drizzle";
-import * as Layer from "effect/Layer";
+Drizzle's stable package and its v1 prerelease are distinct tracks. `defineRelations`, Effect-native clients, and `drizzle-orm/effect-schema` in this chapter belong to the inspected v1 surface. Do not paste these patterns into a stable 0.45 project without checking its exports. Conversely, do not wrap a native Effect query in `Effect.tryPromise` just because an older tutorial used Promise-based Drizzle.
 
-providers: Layer.mergeAll(
-  Cloudflare.providers(),
-  Drizzle.providers(),
-  Planetscale.providers(),
-)
-```
+## Pick the runtime integration
 
-Do not add `Drizzle.providers()` just for a runtime import from `drizzle-orm`. Add it when Alchemy owns schema generation or migration artifacts.
+| Database/runtime | Alchemy entry point | Required runtime peers | Important boundary |
+|---|---|---|---|
+| Worker + D1 | `alchemy/Drizzle/D1` → `D1(binding, { relations })` | `drizzle-orm`, `@effect/sql-d1` | Native D1 binding; no URL, `pg`, or Hyperdrive needed. |
+| Worker + Neon/PlanetScale Postgres | `alchemy/Drizzle/Postgres` → `Postgres(hd.connectionString, { relations, client })` | `drizzle-orm`, `@effect/sql-pg`, `pg` | Hyperdrive binding, `nodejs_compat`, and scoped connections. |
+| Worker + PlanetScale MySQL | `alchemy/Drizzle/MySQL` → `MySQL(hd.connectionString, { relations })` | `drizzle-orm`, `@effect/sql-mysql2`, `mysql2` | MySQL schema and semantics; not a Postgres adapter with a new URL. |
+| Durable Object SQLite | `alchemy/Drizzle/Cloudflare` → `DurableObject({ migrations, relations })` | `drizzle-orm`, `@effect/sql-sqlite-do` | Construct in the inner activation Effect, after capturing migrations in the outer Effect. |
+| Other Alchemy compute + Postgres | `alchemy/Drizzle/Postgres` | Postgres peers above | Use that host's connection capability and execution scope, not a Worker-only binding. |
 
-## Schema And Migrations
+Prefer the narrow driver subpath: a broad barrel can import optional drivers the selected runtime does not need. `drizzle-kit` is a development dependency. Register `Drizzle.providers()` only when actually using an Alchemy Drizzle resource such as `Drizzle.Schema`; it is not required for ordinary ORM queries or applying committed SQL through a database resource.
 
-`Drizzle.Schema` is a deploy-time/build-time resource. It loads a schema module, runs Drizzle Kit programmatic generation, writes migration files, and exposes the migration directory to other resources.
+## Worked workspace, not disconnected fragments
 
-```ts
-const schema = yield* Drizzle.Schema("AppSchema", {
-  schema: "./src/schema.ts",
-  out: "./migrations",
-  dialect: "postgres",
-});
-```
+The [worked workspace](../assets/examples/drizzle-monorepo/README.md) contains D1 and Neon/Postgres implementations of the same Notes service, a shared HTTP handler, a minimal Vite client that calls only public health, explicit package exports, generation configs, and root stack entrypoints. Read the setup and validation limits before using it. It is source-complete for that demonstration, but dependency compilation, migration generation, and integration execution remain unverified.
 
-Defaults:
+The sample uses one authenticated, shared dataset. It is **not** a multi-tenant authorization example and its token must never be put in browser code. The default D1 and alternative Postgres stacks have different names; selecting the latter creates a different example system, not a D1-to-Postgres data migration.
 
-- `out`: `./migrations`
-- `dialect`: `postgres`
+### D1: declaration, binding, client, query
 
-Wire the generated directory into a migration-aware database branch:
+The core of [NotesD1Live.ts](../assets/examples/drizzle-monorepo/packages/notes/src/NotesD1Live.ts) is:
 
 ```ts
-const branch = yield* Planetscale.PostgresBranch("AppBranch", {
-  database,
-  migrationsDir: schema.out,
-});
-```
-
-or:
-
-```ts
-const branch = yield* Neon.Branch("AppBranch", {
-  project,
-  migrationsDir: schema.out,
-});
-```
-
-For MySQL, use `dialect: "mysql"` if Alchemy is generating MySQL migrations:
-
-```ts
-const schema = yield* Drizzle.Schema("AppSchema", {
-  schema: "./src/schema.ts",
-  out: "./migrations",
-  dialect: "mysql",
-});
-```
-
-PlanetScale MySQL examples often use checked-in migrations produced by `drizzle-kit generate` and pass `migrationsDir: "./migrations"` to `Planetscale.MySQLBranch`.
-
-## Postgres Runtime
-
-Use `Drizzle.postgres` with a redacted Hyperdrive connection string:
-
-```ts
-import * as Drizzle from "alchemy/Drizzle";
 import * as Cloudflare from "alchemy/Cloudflare";
+import * as Drizzle from "alchemy/Drizzle/D1";
 import * as Effect from "effect/Effect";
-import { Hyperdrive } from "./infra.ts";
-import { relations } from "./schema.ts";
+import { notes, relations } from "./sqlite-schema.ts";
 
-export const DatabaseLive = Effect.gen(function* () {
-  const hd = yield* Cloudflare.Hyperdrive.Connect(Hyperdrive);
-
-  return yield* Drizzle.postgres(hd.connectionString, {
-    relations,
+export const makeQueries = Effect.gen(function* () {
+  const database = yield* Cloudflare.D1.Database("NotesDatabase", {
+    migrations: "./packages/notes/drizzle/sqlite",
   });
-}).pipe(Effect.provide(Cloudflare.Hyperdrive.ConnectBinding));
+  const binding = yield* Cloudflare.D1.QueryDatabase(database);
+  const db = yield* Drizzle.D1(binding, { relations });
+  return {
+    list: () => db.select().from(notes).limit(50),
+    create: (id: string, title: string) =>
+      db.insert(notes).values({ id, title }).returning(),
+  };
+}).pipe(Effect.provide(Cloudflare.D1.QueryDatabaseBinding));
 ```
 
-Runtime notes:
+This is a server composition excerpt; the full Layer maps errors and validates titles. Merely constructing the client does not run a query. The handlers call these methods later. Supplying the binding Layer is essential; adding broad account permissions does not satisfy a missing Effect service.
 
-- The connection string is an Effect of `Redacted<string>`.
-- The actual pool is deferred until first query.
-- The pool is memoized in the current execution context.
-- Query builders return Effects, so use `yield* db.select().from(Users)`.
-- Workers need `nodejs_compat` for `pg`.
+### Postgres: Neon, Hyperdrive, Effect-native Drizzle
 
-Example query in a Worker handler:
+[NotesPostgresLive.ts](../assets/examples/drizzle-monorepo/packages/notes/src/NotesPostgresLive.ts) includes the whole declaration. Its connection is:
 
 ```ts
-const users = yield* db.select().from(Users).limit(10);
-return Response.json({ users });
+const hyperdrive = yield* Cloudflare.Hyperdrive.Connection("NotesHyperdrive", {
+  origin: branch.origin,
+  dev: branch.pooledOrigin,
+  caching: { disabled: true },
+});
+const hd = yield* Cloudflare.Hyperdrive.Connect(hyperdrive);
+const db = yield* Drizzle.Postgres(hd.connectionString, {
+  relations,
+  client: { prepare: false },
+});
 ```
 
-## MySQL Runtime On Workers
+Here `branch` is the `Neon.Branch` returned by the same construction Effect. Import `Drizzle` from `alchemy/Drizzle/Postgres`, provide `Cloudflare.Hyperdrive.ConnectBinding`, register both Cloudflare and Neon providers in the stack, and enable `compatibility: { flags: ["nodejs_compat"] }` on the Worker.
 
-For PlanetScale MySQL, use the `mysql2` Drizzle adapter through Hyperdrive and disable eval:
+Use the direct origin behind Hyperdrive and the documented pooled origin when local development bypasses it. The disabled result cache is a deliberate consistency choice for this CRUD sample. Alchemy's Postgres source exposes `client.prepare: false` for transaction-mode poolers; verify the actual transport before changing this. Do not eagerly unwrap `hd.connectionString` in construction: the lazy helper resolves it inside the runtime execution.
+
+Pools are per constructed client, per execution scope—not one application-global pool. Distinct `Drizzle.Postgres(...)` constructions can allocate distinct pools even within one request. Reuse the same database service where a feature set shares a database. Do not share a live Worker socket across requests, open a new client for each query, or keep a transaction open across Workflow steps. A task attempt gets its own scope under the Workflow bridge.
+
+### PlanetScale connection variations
+
+For Postgres, the official provider recipe returns a role; pass `role.origin` and `role.pooledOrigin` to Hyperdrive. For MySQL, it returns a password; use `password.origin` and the MySQL client. There is no equivalent pooled password origin in that recipe. Keep role/password creation and rotation with the database owner, not in every feature Layer.
+
+Follow the exact [PlanetScale Drizzle guide](https://alchemy.run/planetscale/guides/drizzle/) for resource properties. The client substitution is:
 
 ```ts
-import { drizzle } from "drizzle-orm/mysql2";
-import * as Data from "effect/Data";
-import * as Effect from "effect/Effect";
-import * as Redacted from "effect/Redacted";
-import * as Cloudflare from "alchemy/Cloudflare";
-import { Hyperdrive } from "./infra.ts";
-import * as schema from "./schema.ts";
-import { relations } from "./relations.ts";
-
-class DatabaseQueryError extends Data.TaggedError("DatabaseQueryError")<{
-  readonly cause: unknown;
-}> {}
-
-const program = Effect.gen(function* () {
-  const hd = yield* Cloudflare.Hyperdrive.Connect(Hyperdrive);
-  const connectionString = yield* hd.connectionString;
-
-  const db = drizzle({
-    connection: {
-      uri: Redacted.value(connectionString),
-      disableEval: true,
-    },
-    schema,
-    relations,
-    mode: "default",
-  });
-
-  return yield* Effect.tryPromise({
-    try: () => db.select().from(schema.Users),
-    catch: (cause) => new DatabaseQueryError({ cause }),
-  });
-}).pipe(Effect.provide(Cloudflare.Hyperdrive.ConnectBinding));
+import * as Drizzle from "alchemy/Drizzle/MySQL";
+const db = yield* Drizzle.MySQL(hd.connectionString, { relations });
 ```
 
-Use `disableEval: true` because Cloudflare Workers isolates do not allow the JIT/eval path used by mysql2 parsers.
+This is not a portable substitution for all SQL: change schema builders to `mysql-core`, generate MySQL migrations, verify insert-returning behavior, transaction support, indexes, and driver requirements. Do not copy Postgres `.returning()` assertions into a MySQL example unchanged.
 
-When creating raw mysql2 connections, close them in `finally` or `Effect.ensuring`.
+## Tables, relations, and transport schemas are different contracts
 
-## Relations
-
-Relations improve typed runtime query APIs but do not generate foreign keys. Define foreign keys in table definitions.
+Tables define storage. Relations describe typed query navigation; they do not create foreign-key constraints. Declare real constraints on the tables, then add v1 relation metadata:
 
 ```ts
 import { defineRelations } from "drizzle-orm";
-import { Posts, Users } from "./schema.ts";
+import { integer, pgTable, serial, text } from "drizzle-orm/pg-core";
 
-export const relations = defineRelations({ Users, Posts }, (t) => ({
-  Users: {
-    posts: t.many.Posts(),
-  },
-  Posts: {
-    user: t.one.Users({
-      from: t.Posts.userId,
-      to: t.Users.id,
-    }),
-  },
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+});
+export const posts = pgTable("posts", {
+  id: serial("id").primaryKey(),
+  authorId: integer("author_id").notNull().references(() => users.id),
+  title: text("title").notNull(),
+});
+export const relations = defineRelations({ users, posts }, r => ({
+  users: { posts: r.many.posts() },
+  posts: { author: r.one.users({ from: r.posts.authorId, to: r.users.id }) },
 }));
 ```
 
-Pass `relations` to `Drizzle.postgres` or the MySQL Drizzle adapter when using relational query APIs.
-
-## Monorepo Guidance
-
-Keep schema and migrations owned by the package that owns the database contract:
-
-```text
-apps/api/
-  alchemy.run.ts
-  src/schema.ts
-  migrations/
-packages/db/
-  src/schema.ts
-```
-
-For shared schema packages, avoid browser entrypoints that import infrastructure, `alchemy`, provider modules, `pg`, or `mysql2`.
-
-Run package-scoped commands with pnpm:
-
-```sh
-pnpm --filter api exec alchemy plan
-pnpm --filter api drizzle-kit generate
-```
-
-Only run a separate `drizzle-kit generate` step if the project intentionally does not use `Drizzle.Schema` for generation.
-
-## Testing
-
-Use Vitest helpers for Alchemy integration tests:
+Pass `{ relations }` when constructing Drizzle. In a runtime Effect, the v1 query shape is:
 
 ```ts
-import * as Test from "alchemy/Test/Vitest";
-import * as Layer from "effect/Layer";
-
-const { test, beforeAll, afterAll, deploy, destroy } = Test.make({
-  providers: Layer.mergeAll(
-    Cloudflare.providers(),
-    Drizzle.providers(),
-    Planetscale.providers(),
-  ),
-  state: Cloudflare.state(),
-  stage: "test",
+const author = yield* db.query.users.findFirst({
+  where: { id: authorId },
+  with: { posts: true },
 });
 ```
 
-Review generated migrations before committing. In CI, make migration generation deterministic and fail on unexpected diffs if the repo requires checked-in migrations.
+The example names the relation on the `posts` side; check both directions and actual SQL in an integration test. Bound collections and paginate large relationships instead of loading an unbounded object graph.
 
-## Gotchas
+The v1 validation integration can derive row schemas:
 
-- `Drizzle.Schema` removal does not delete the migration directory.
-- Do not run duplicate migration generation in CI when Alchemy owns migration generation.
-- Do not expect Drizzle relations to generate FK SQL.
-- Do not use Postgres runtime helpers for MySQL connections.
-- Use `nodejs_compat` for `pg` and `mysql2` in Workers.
-- Keep connection strings redacted until the driver boundary.
-- Keep migration directories intentional: either checked in for team review or clearly treated as deploy artifacts.
+```ts
+import { createInsertSchema, createSelectSchema, createUpdateSchema } from "drizzle-orm/effect-schema";
+
+export const StoredNote = createSelectSchema(notes);
+export const InsertNoteRow = createInsertSchema(notes);
+export const UpdateNoteRow = createUpdateSchema(notes);
+```
+
+Use these at persistence/import boundaries where appropriate. A database insert shape is **not automatically a safe public request**: it can include tenant IDs, role flags, ownership fields, or server-managed timestamps. Prefer an explicit public `Schema.Struct` allowlist; derive trusted identity from authentication, then build an explicit `.values({ ... })` object. Never spread arbitrary decoded row input into a privileged write. Keep date/bigint/decimal transport encoding deliberate rather than assuming database values are JSON-safe.
+
+## Query correctness and failures
+
+Select only the columns the consumer needs. Parameterize values with Drizzle builders or its `sql` tag; validate identifiers separately rather than accepting arbitrary SQL fragments. Scope reads, updates, and deletes to the authorized tenant in a real multi-tenant app. Query typing does not implement authorization.
+
+Prefer database constraints and a single atomic statement for uniqueness, counters, or compare-and-set. Do not implement `SELECT exists` followed by an unguarded `INSERT` as a concurrency control. Use the selected dialect's conflict API deliberately and test conflicts with different payloads; ignoring a duplicate can hide a failed idempotency contract.
+
+For Postgres/MySQL multi-statement work, use the inspected Effect driver's transaction API and keep all operations on its transaction handle. D1 uses batches rather than interactive transactions; DO SQLite has a different instance/transaction model. `Effect.all` creates concurrency, not a transaction. An external API call and a SQL commit are not one atomic operation: use idempotency and an outbox/workflow design where the failure scenario needs it.
+
+Inspect the actual inferred error channel. Drizzle Effect paths can expose `EffectDrizzleQueryError` wrapping an SQL error; transactions can add `SqlError`. Some guide prose simplifies this. Do not assume a catch on `SqlError` alone handles every query. Query errors may carry SQL and parameters: do not serialize or log the raw error to a client. The sample maps them to a sanitized service error. A production adapter should additionally classify known constraints and emit redacted operational diagnostics, not convert every database outage into a 404 or empty list.
+
+## Generation and migration ownership
+
+Use package-local Drizzle configs and generation commands, but one reviewed migration history per physical database. Generate SQL and snapshots locally, review and commit both, then have the chosen deployment owner apply them. The new fixture intentionally ships **no fabricated snapshots or generated migrations**; generation is an explicit setup step.
+
+Alchemy's database `migrations` option applies files; `Drizzle.Schema` is an optional generation integration. Keeping an existing Drizzle Kit migration runner is valid. Do not turn on two writers, generate-and-apply unseen SQL in production CI, or switch history tables without the documented adoption process.
+
+For a shared database, aggregate the owning features' tables into one schema entrypoint and put the generation config/history with the database owner. Separate packages do not imply separate migration histories. See [monorepos](monorepos.md) for root/package working directories and [SQL and migrations](sql-and-migrations.md) for expand/migrate/contract and recovery.
+
+## Sources and remaining proof
+
+- [Latest stable Drizzle release](https://github.com/drizzle-team/drizzle-orm/releases/tag/0.45.4)
+- [Drizzle snapshot and peer contract](https://github.com/drizzle-team/drizzle-orm/blob/ab785fcd99710d6d136ffbfd121b7aeb96e4d51d/drizzle-orm/package.json)
+- [Alchemy's pinned Cloudflare Drizzle recipe](https://github.com/alchemy-run/alchemy/blob/fbe6ece368c6898234592e897d852bb47b88ebb1/website/src/content/docs/cloudflare/data/drizzle.mdx)
+- [D1 adapter source](https://github.com/alchemy-run/alchemy/blob/fbe6ece368c6898234592e897d852bb47b88ebb1/packages/alchemy/src/Drizzle/D1.ts)
+- [Postgres adapter source](https://github.com/alchemy-run/alchemy/blob/fbe6ece368c6898234592e897d852bb47b88ebb1/packages/alchemy/src/Drizzle/Postgres.ts)
+- [DO adapter and error channel](https://github.com/alchemy-run/alchemy/blob/fbe6ece368c6898234592e897d852bb47b88ebb1/packages/alchemy/src/Drizzle/Cloudflare.ts)
+- [Connection lifecycle](https://alchemy.run/sql/effect-sql/lifecycle/), [Drizzle migrations](https://alchemy.run/sql/drizzle/migrations/), [Effect schemas](https://orm.drizzle.team/docs/effect-schema)
+
+These are researched examples, not a compatibility certification. Follow the [iteration checklist](iteration-checklist.md) before treating the new fixture as a verified starter.

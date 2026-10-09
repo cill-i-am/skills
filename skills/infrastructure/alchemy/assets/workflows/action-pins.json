@@ -1,0 +1,21 @@
+{
+  "checked": "2026-10-07",
+  "actions": [
+    {
+      "action": "actions/checkout",
+      "ref": "v7",
+      "commit": "3d3c42e5aac5ba805825da76410c181273ba90b1"
+    },
+    {
+      "action": "pnpm/setup",
+      "ref": "v3",
+      "tag_object": "479c3cd2084b8e20207344a47dc10bdabea95adb",
+      "commit": "fbda4c85fc2e1e08721cd8763afea8f48d60f024"
+    },
+    {
+      "action": "aws-actions/configure-aws-credentials",
+      "ref": "v6.3.0",
+      "commit": "e1253824e5c10ff9df46874f81ed3ec929e19cfd"
+    }
+  ]
+}

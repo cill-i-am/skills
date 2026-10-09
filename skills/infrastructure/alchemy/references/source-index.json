@@ -1,0 +1,1494 @@
+{
+  "schema_version": 1,
+  "researched": "2026-10-07",
+  "upstream_revision": "fbe6ece368c6898234592e897d852bb47b88ebb1",
+  "alchemy_version": "2.0.0-beta.81",
+  "effect_catalogue": "^4.0.0",
+  "records": [
+    {
+      "url": "https://alchemy.run/apis/",
+      "title": "apis",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "apis.md",
+        "cloudflare-workers.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/apis/schemaless/",
+      "title": "apis / schemaless",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "apis.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/apis/effect-rpc/",
+      "title": "apis / effect rpc",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "apis.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/apis/effect-http/",
+      "title": "apis / effect http",
+      "evidence": "content-reviewed",
+      "references": [
+        "apis.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/apis/effect-http-api/",
+      "title": "cloudflare / apis / effect http api",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "apis.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/apis/effect-rpc/",
+      "title": "cloudflare / apis / effect rpc",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "apis.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/aws/apis/effect-http-api/",
+      "title": "aws / apis / effect http api",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "apis.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/aws/",
+      "title": "aws",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "aws.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/aws/setup/",
+      "title": "aws / setup",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "aws.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/aws/compute/choosing-a-runtime/",
+      "title": "aws / compute / choosing a runtime",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "aws.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/aws/compute/ecs/",
+      "title": "aws / compute / ecs",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "aws.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/aws/compute/ec2/",
+      "title": "aws / compute / ec2",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "aws.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/aws/compute/eks/",
+      "title": "aws / compute / eks",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "aws.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/aws/compute/microvms/",
+      "title": "aws / compute / microvms",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "aws.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/aws/tutorial/part-2/",
+      "title": "aws / tutorial / part 2",
+      "evidence": "content-reviewed",
+      "references": [
+        "aws.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/aws/data/s3/",
+      "title": "aws / data / s3",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "aws.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/aws/data/dynamodb/",
+      "title": "aws / data / dynamodb",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "aws.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/aws/local-development/",
+      "title": "aws / local development",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "aws.md",
+        "local-development.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/aws/tutorial/part-5/",
+      "title": "aws / tutorial / part 5",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "aws.md",
+        "ci-cd.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/environments/ci/",
+      "title": "environments / ci",
+      "evidence": "content-reviewed",
+      "references": [
+        "ci-cd.md",
+        "environments.md",
+        "migration.md",
+        "production-review.md",
+        "security-and-networking.md",
+        "state-and-recovery.md",
+        "troubleshooting.md",
+        "workflow-templates.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/tutorial/part-5/",
+      "title": "cloudflare / tutorial / part 5",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "ci-cd.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/state-store/",
+      "title": "state store",
+      "evidence": "content-reviewed",
+      "references": [
+        "ci-cd.md",
+        "first-stack.md",
+        "migration.md",
+        "production-review.md",
+        "state-and-recovery.md",
+        "troubleshooting.md",
+        "version-policy.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/environments/stages/",
+      "title": "environments / stages",
+      "evidence": "content-reviewed",
+      "references": [
+        "ci-cd.md",
+        "environments.md",
+        "version-policy.md"
+      ]
+    },
+    {
+      "url": "https://docs.github.com/en/actions/reference/security/secure-use",
+      "title": "GitHub Actions secure use",
+      "evidence": "external-primary-reference",
+      "references": [
+        "ci-cd.md"
+      ]
+    },
+    {
+      "url": "https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-aws",
+      "title": "GitHub Actions OIDC in AWS",
+      "evidence": "external-primary-reference",
+      "references": [
+        "ci-cd.md"
+      ]
+    },
+    {
+      "url": "https://github.com/pnpm/setup",
+      "title": "https: /  / github.com / pnpm / setup",
+      "evidence": "external-primary-reference",
+      "references": [
+        "ci-cd.md",
+        "workflow-templates.md"
+      ]
+    },
+    {
+      "url": "https://github.com/aws-actions/configure-aws-credentials",
+      "title": "https: /  / github.com / aws actions / configure aws credentials",
+      "evidence": "external-primary-reference",
+      "references": [
+        "ci-cd.md",
+        "workflow-templates.md"
+      ]
+    },
+    {
+      "url": "https://github.com/actions/checkout",
+      "title": "https: /  / github.com / actions / checkout",
+      "evidence": "external-primary-reference",
+      "references": [
+        "ci-cd.md",
+        "workflow-templates.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cli/",
+      "title": "cli",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cli.md",
+        "troubleshooting.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cli/plan/",
+      "title": "cli / plan",
+      "evidence": "content-reviewed",
+      "references": [
+        "cli.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cli/deploy/",
+      "title": "cli / deploy",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cli.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cli/destroy/",
+      "title": "cli / destroy",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cli.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cli/drift/",
+      "title": "cli / drift",
+      "evidence": "content-reviewed",
+      "references": [
+        "cli.md",
+        "state-and-recovery.md",
+        "troubleshooting.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cli/dev/",
+      "title": "cli / dev",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cli.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cli/inspecting-state/",
+      "title": "cli / inspecting state",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cli.md",
+        "lifecycle.md",
+        "state-and-recovery.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cli/adopting-resources/",
+      "title": "cli / adopting resources",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cli.md",
+        "lifecycle.md",
+        "recipes.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/compute/containers/",
+      "title": "cloudflare / compute / containers",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cloudflare-advanced.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/compute/run-a-container/",
+      "title": "cloudflare / compute / run a container",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cloudflare-advanced.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/compute/browser-rendering/",
+      "title": "cloudflare / compute / browser rendering",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cloudflare-advanced.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/compute/worker-loader/",
+      "title": "cloudflare / compute / worker loader",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cloudflare-advanced.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/compute/workers-for-platforms/",
+      "title": "cloudflare / compute / workers for platforms",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cloudflare-advanced.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/ai/workers-ai/",
+      "title": "cloudflare / ai / workers ai",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cloudflare-advanced.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/ai/ai-gateway/",
+      "title": "cloudflare / ai / ai gateway",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cloudflare-advanced.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/ai/vectorize/",
+      "title": "cloudflare / ai / vectorize",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cloudflare-advanced.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/ai/ai-search/",
+      "title": "cloudflare / ai / ai search",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cloudflare-advanced.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/ai/effect-ai/",
+      "title": "cloudflare / ai / effect ai",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cloudflare-advanced.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/ai/release-agent/",
+      "title": "cloudflare / ai / release agent",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cloudflare-advanced.md",
+        "recipes.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/compute/python-workers/",
+      "title": "cloudflare / compute / python workers",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cloudflare-advanced.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/data/r2/",
+      "title": "cloudflare / data / r2",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cloudflare-data.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/data/kv/",
+      "title": "cloudflare / data / kv",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cloudflare-data.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/data/d1/",
+      "title": "cloudflare / data / d1",
+      "evidence": "content-reviewed",
+      "references": [
+        "cloudflare-data.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/data/d1-drizzle/",
+      "title": "cloudflare / data / d1 drizzle",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cloudflare-data.md",
+        "sql-and-migrations.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/data/hyperdrive/",
+      "title": "cloudflare / data / hyperdrive",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cloudflare-data.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/data/r2-presigned-urls/",
+      "title": "cloudflare / data / r2 presigned urls",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cloudflare-data.md",
+        "recipes.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/data/shared-database/",
+      "title": "cloudflare / data / shared database",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cloudflare-data.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/compute/workers/",
+      "title": "cloudflare / compute / workers",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cloudflare-workers.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/tutorial/part-2/",
+      "title": "cloudflare / tutorial / part 2",
+      "evidence": "content-reviewed",
+      "references": [
+        "cloudflare-workers.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/compute/previews/",
+      "title": "cloudflare / compute / previews",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cloudflare-workers.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/compute/gradual-deployments/",
+      "title": "cloudflare / compute / gradual deployments",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cloudflare-workers.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/security/access/",
+      "title": "cloudflare / security / access",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "cloudflare-workers.md",
+        "security-and-networking.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/docker/",
+      "title": "docker",
+      "evidence": "content-reviewed",
+      "references": [
+        "containers-and-kubernetes.md",
+        "troubleshooting.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/docker/setup/",
+      "title": "docker / setup",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "containers-and-kubernetes.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/docker/build-and-push/",
+      "title": "docker / build and push",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "containers-and-kubernetes.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/docker/local-services/",
+      "title": "docker / local services",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "containers-and-kubernetes.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/kubernetes/",
+      "title": "kubernetes",
+      "evidence": "content-reviewed",
+      "references": [
+        "containers-and-kubernetes.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/kubernetes/clusters/connecting/",
+      "title": "kubernetes / clusters / connecting",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "containers-and-kubernetes.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/kubernetes/workloads/object-lifecycle/",
+      "title": "kubernetes / workloads / object lifecycle",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "containers-and-kubernetes.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/kubernetes/objects/helm-charts/",
+      "title": "kubernetes / objects / helm charts",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "containers-and-kubernetes.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/command/",
+      "title": "command",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "containers-and-kubernetes.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/compute/durable-objects/",
+      "title": "cloudflare / compute / durable objects",
+      "evidence": "content-reviewed",
+      "references": [
+        "durable-objects.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/compute/hibernatable-websockets/",
+      "title": "cloudflare / compute / hibernatable websockets",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "durable-objects.md",
+        "recipes.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/compute/cross-worker-durable-object/",
+      "title": "cloudflare / compute / cross worker durable object",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "durable-objects.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/sql/effect-sql/migrations/",
+      "title": "sql / effect sql / migrations",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "durable-objects.md",
+        "sql-and-migrations.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/infrastructure-as-effects/phases/",
+      "title": "infrastructure as effects / phases",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "durable-objects.md",
+        "runtime-and-layers.md",
+        "troubleshooting.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/environments/profiles/",
+      "title": "environments / profiles",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "environments.md",
+        "first-stack.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/environments/auth-providers/",
+      "title": "environments / auth providers",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "environments.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/environments/secrets/",
+      "title": "environments / secrets",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "environments.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/environments/secret-providers/",
+      "title": "environments / secret providers",
+      "evidence": "content-reviewed",
+      "references": [
+        "environments.md",
+        "integrations.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/security/secrets-store/",
+      "title": "cloudflare / security / secrets store",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "environments.md",
+        "security-and-networking.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/infrastructure-as-code/custom-provider/",
+      "title": "infrastructure as code / custom provider",
+      "evidence": "content-reviewed",
+      "references": [
+        "extensions.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/infrastructure-as-code/provider/",
+      "title": "infrastructure as code / provider",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "extensions.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/infrastructure-as-code/local-provider/",
+      "title": "infrastructure as code / local provider",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "extensions.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/environments/custom-auth-provider/",
+      "title": "environments / custom auth provider",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "extensions.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/state-store/custom-state-store/",
+      "title": "state store / custom state store",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "extensions.md",
+        "state-and-recovery.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/infrastructure-as-effects/custom-runtime/",
+      "title": "infrastructure as effects / custom runtime",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "extensions.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/testing/testing-providers/",
+      "title": "testing / testing providers",
+      "evidence": "content-reviewed",
+      "references": [
+        "extensions.md",
+        "testing.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/getting-started/",
+      "title": "getting started",
+      "evidence": "content-reviewed",
+      "references": [
+        "first-stack.md",
+        "migration.md",
+        "version-policy.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/tutorial/part-1/",
+      "title": "cloudflare / tutorial / part 1",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "first-stack.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/setup/",
+      "title": "cloudflare / setup",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "first-stack.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/frontend/frontends/",
+      "title": "cloudflare / frontend / frontends",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "frontends.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/frontend/vite/",
+      "title": "cloudflare / frontend / vite",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "frontends.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/frontend/tanstack-start/",
+      "title": "cloudflare / frontend / tanstack start",
+      "evidence": "content-reviewed",
+      "references": [
+        "frontends.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/frontend/static-site/",
+      "title": "cloudflare / frontend / static site",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "frontends.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/prisma/frontend/websites/",
+      "title": "prisma / frontend / websites",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "frontends.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/project-structure/monorepo/",
+      "title": "project structure / monorepo",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "frontends.md",
+        "graph-and-outputs.md",
+        "monorepos.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/gcp/",
+      "title": "gcp",
+      "evidence": "content-reviewed",
+      "references": [
+        "gcp.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/gcp/setup/",
+      "title": "gcp / setup",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "gcp.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/gcp/guides/cloud-run-api/",
+      "title": "gcp / guides / cloud run api",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "gcp.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/gcp/guides/event-pipeline/",
+      "title": "gcp / guides / event pipeline",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "gcp.md",
+        "recipes.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/gcp/guides/memorystore/",
+      "title": "gcp / guides / memorystore",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "gcp.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/gcp/guides/bindings/",
+      "title": "gcp / guides / bindings",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "gcp.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/infrastructure-as-code/stack/",
+      "title": "infrastructure as code / stack",
+      "evidence": "content-reviewed",
+      "references": [
+        "graph-and-outputs.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/infrastructure-as-code/resource/",
+      "title": "infrastructure as code / resource",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "graph-and-outputs.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/infrastructure-as-code/action/",
+      "title": "infrastructure as code / action",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "graph-and-outputs.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/infrastructure-as-code/outputs/",
+      "title": "infrastructure as code / outputs",
+      "evidence": "content-reviewed",
+      "references": [
+        "graph-and-outputs.md",
+        "troubleshooting.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/infrastructure-as-code/references/",
+      "title": "infrastructure as code / references",
+      "evidence": "content-reviewed",
+      "references": [
+        "graph-and-outputs.md",
+        "monorepos.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/github/",
+      "title": "github",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "integrations.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/messaging/github-events/",
+      "title": "cloudflare / messaging / github events",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "integrations.md",
+        "security-and-networking.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/stripe/",
+      "title": "stripe",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "integrations.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/better-auth/",
+      "title": "better auth",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "integrations.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/acme/",
+      "title": "acme",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "integrations.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/environments/doppler/",
+      "title": "environments / doppler",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "integrations.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/environments/infisical/",
+      "title": "environments / infisical",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "integrations.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/infrastructure-as-code/resource-lifecycle/",
+      "title": "infrastructure as code / resource lifecycle",
+      "evidence": "content-reviewed",
+      "references": [
+        "lifecycle.md",
+        "migration.md",
+        "production-review.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/infrastructure-as-code/renaming/",
+      "title": "infrastructure as code / renaming",
+      "evidence": "content-reviewed",
+      "references": [
+        "lifecycle.md",
+        "migration.md",
+        "monorepos.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/environments/local-development/",
+      "title": "environments / local development",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "local-development.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/local-development/",
+      "title": "cloudflare / local development",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "local-development.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/testing/test-harness/",
+      "title": "testing / test harness",
+      "evidence": "content-reviewed",
+      "references": [
+        "local-development.md",
+        "testing.md",
+        "troubleshooting.md",
+        "version-policy.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/tutorial/part-4/",
+      "title": "cloudflare / tutorial / part 4",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "local-development.md",
+        "testing.md"
+      ]
+    },
+    {
+      "url": "https://github.com/openai/skills/blob/main/skills/.system/skill-creator/SKILL.md",
+      "title": "https: /  / github.com / openai / skills / blob / main / skills / .system / skill creator / SKILL.md",
+      "evidence": "external-primary-reference",
+      "references": [
+        "maintenance.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/",
+      "title": "",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "maintenance.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/fly/",
+      "title": "fly",
+      "evidence": "content-reviewed",
+      "references": [
+        "managed-platforms.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/fly/compute/services/",
+      "title": "fly / compute / services",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "managed-platforms.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/fly/data/volumes/",
+      "title": "fly / data / volumes",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "managed-platforms.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/railway/",
+      "title": "railway",
+      "evidence": "content-reviewed",
+      "references": [
+        "managed-platforms.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/railway/compute/environments/",
+      "title": "railway / compute / environments",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "managed-platforms.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/railway/data/variables/",
+      "title": "railway / data / variables",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "managed-platforms.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/hetzner/",
+      "title": "hetzner",
+      "evidence": "content-reviewed",
+      "references": [
+        "managed-platforms.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/hetzner/compute/services/",
+      "title": "hetzner / compute / services",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "managed-platforms.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/neon/",
+      "title": "neon",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "managed-platforms.md",
+        "sql-and-migrations.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/planetscale/",
+      "title": "planetscale",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "managed-platforms.md",
+        "sql-and-migrations.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/prisma/",
+      "title": "prisma",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "managed-platforms.md",
+        "sql-and-migrations.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/migrating-from-v1/",
+      "title": "migrating from v1",
+      "evidence": "content-reviewed",
+      "references": [
+        "migration.md",
+        "version-policy.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/project-structure/file-layout/",
+      "title": "project structure / file layout",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "monorepos.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/project-structure/monorepo-single-stack/",
+      "title": "project structure / monorepo single stack",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "monorepos.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/project-structure/monorepo-multi-stack/",
+      "title": "project structure / monorepo multi stack",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "monorepos.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/infrastructure-as-effects/layers/",
+      "title": "infrastructure as effects / layers",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "monorepos.md",
+        "runtime-and-layers.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/testing/observability/",
+      "title": "testing / observability",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "observability.md",
+        "production-review.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/infrastructure-as-effects/telemetry/",
+      "title": "infrastructure as effects / telemetry",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "observability.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/observability/workers-tracing/",
+      "title": "cloudflare / observability / workers tracing",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "observability.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/observability/axiom-observability/",
+      "title": "cloudflare / observability / axiom observability",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "observability.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/observability/analytics-engine/",
+      "title": "cloudflare / observability / analytics engine",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "observability.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/axiom/",
+      "title": "axiom",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "observability.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cli/logs/",
+      "title": "cli / logs",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "observability.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/testing/",
+      "title": "testing",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "production-review.md",
+        "testing.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/sql/drizzle/migrations/",
+      "title": "sql / drizzle / migrations",
+      "evidence": "content-reviewed",
+      "references": [
+        "production-review.md",
+        "sql-and-migrations.md",
+        "version-policy.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/frontend/full-stack-tanstack-rpc-drizzle/",
+      "title": "cloudflare / frontend / full stack tanstack rpc drizzle",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "recipes.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/data/branch-from-shared-database/",
+      "title": "cloudflare / data / branch from shared database",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "recipes.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/compute/workflows/",
+      "title": "cloudflare / compute / workflows",
+      "evidence": "content-reviewed",
+      "references": [
+        "recipes.md",
+        "workflows-and-messaging.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/infrastructure-as-effects/runtime/",
+      "title": "infrastructure as effects / runtime",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "runtime-and-layers.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/infrastructure-as-effects/binding/",
+      "title": "infrastructure as effects / binding",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "runtime-and-layers.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/infrastructure-as-effects/circular-bindings/",
+      "title": "infrastructure as effects / circular bindings",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "runtime-and-layers.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/infrastructure-as-effects/event-sources/",
+      "title": "infrastructure as effects / event sources",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "runtime-and-layers.md",
+        "workflows-and-messaging.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/infrastructure-as-effects/sinks/",
+      "title": "infrastructure as effects / sinks",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "runtime-and-layers.md",
+        "workflows-and-messaging.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/security/turnstile/",
+      "title": "cloudflare / security / turnstile",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "security-and-networking.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/security/secrets-env/",
+      "title": "cloudflare / security / secrets env",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "security-and-networking.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/networking/custom-domains/",
+      "title": "cloudflare / networking / custom domains",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "security-and-networking.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/networking/domains/",
+      "title": "cloudflare / networking / domains",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "security-and-networking.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/networking/tunnel/",
+      "title": "cloudflare / networking / tunnel",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "security-and-networking.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/email/send-and-receive/",
+      "title": "cloudflare / email / send and receive",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "security-and-networking.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/sql/effect-sql/lifecycle/",
+      "title": "sql / effect sql / lifecycle",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "sql-and-migrations.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/sql/effect-sql/d1/",
+      "title": "sql / effect sql / d1",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "sql-and-migrations.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/data/drizzle/",
+      "title": "cloudflare / data / drizzle",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "sql-and-migrations.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/data/prisma/",
+      "title": "cloudflare / data / prisma",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "sql-and-migrations.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cli/state/",
+      "title": "cli / state",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "state-and-recovery.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/testing/testing-a-stack/",
+      "title": "testing / testing a stack",
+      "evidence": "content-reviewed",
+      "references": [
+        "testing.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/tutorial/part-3/",
+      "title": "cloudflare / tutorial / part 3",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "testing.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/messaging/queues/",
+      "title": "cloudflare / messaging / queues",
+      "evidence": "content-reviewed",
+      "references": [
+        "troubleshooting.md",
+        "workflows-and-messaging.md"
+      ]
+    },
+    {
+      "url": "https://github.com/alchemy-run/alchemy/tree/fbe6ece368c6898234592e897d852bb47b88ebb1/website/src/content/docs",
+      "title": "Pinned guide source",
+      "evidence": "source-navigation",
+      "references": [
+        "version-policy.md"
+      ]
+    },
+    {
+      "url": "https://github.com/alchemy-run/alchemy/blob/fbe6ece368c6898234592e897d852bb47b88ebb1/pnpm-workspace.yaml",
+      "title": "https: /  / github.com / alchemy run / alchemy / blob / fbe6ece368c6898234592e897d852bb47b88ebb1 / pnpm workspace.yaml",
+      "evidence": "external-primary-reference",
+      "references": [
+        "version-policy.md"
+      ]
+    },
+    {
+      "url": "https://docs.github.com/en/actions/reference/security/secure-use",
+      "title": "https: /  / docs.github.com / en / actions / reference / security / secure use",
+      "evidence": "external-primary-reference",
+      "references": [
+        "workflow-templates.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/messaging/cron/",
+      "title": "cloudflare / messaging / cron",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "workflows-and-messaging.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/cloudflare/compute/add-a-workflow/",
+      "title": "cloudflare / compute / add a workflow",
+      "evidence": "linked-for-task-specific-retrieval",
+      "references": [
+        "workflows-and-messaging.md"
+      ]
+    },
+    {
+      "url": "https://alchemy.run/llms.txt",
+      "title": "Official guide index",
+      "evidence": "source-navigation",
+      "references": []
+    },
+    {
+      "url": "https://alchemy.run/llms-full.txt",
+      "title": "Generated API reference corpus; large",
+      "evidence": "source-navigation",
+      "references": []
+    },
+    {
+      "url": "https://github.com/alchemy-run/alchemy/blob/fbe6ece368c6898234592e897d852bb47b88ebb1/packages/alchemy/package.json",
+      "title": "Pinned Alchemy package and exports",
+      "evidence": "source-navigation",
+      "references": []
+    },
+    {
+      "url": "https://github.com/alchemy-run/alchemy/tree/fbe6ece368c6898234592e897d852bb47b88ebb1/examples",
+      "title": "Pinned upstream worked applications",
+      "evidence": "source-navigation",
+      "references": []
+    },
+    {
+      "url": "https://github.com/alchemy-run/alchemy/tree/fbe6ece368c6898234592e897d852bb47b88ebb1/packages/alchemy/test",
+      "title": "Pinned provider/engine tests",
+      "evidence": "source-navigation",
+      "references": []
+    }
+  ]
+}
