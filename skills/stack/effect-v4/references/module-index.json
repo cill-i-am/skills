@@ -1,0 +1,2508 @@
+{
+  "version": "4.0.2",
+  "observed_on": "2026-10-07",
+  "source": "https://effect.website/docs/v4/api/effect",
+  "note": "Inventory, not a claim that every module or exported symbol was individually reviewed. API URLs track current v4; source URLs pin the baseline tag.",
+  "count": 357,
+  "modules": [
+    {
+      "group": "ai",
+      "module": "AiError",
+      "api_url": "https://effect.website/docs/v4/api/effect/ai/AiError",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ai/AiError.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "ai",
+      "module": "AnthropicStructuredOutput",
+      "api_url": "https://effect.website/docs/v4/api/effect/ai/AnthropicStructuredOutput",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ai/AnthropicStructuredOutput.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "ai",
+      "module": "Chat",
+      "api_url": "https://effect.website/docs/v4/api/effect/ai/Chat",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ai/Chat.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "ai",
+      "module": "Decision",
+      "api_url": "https://effect.website/docs/v4/api/effect/ai/Decision",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ai/Decision.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "ai",
+      "module": "DecisionModel",
+      "api_url": "https://effect.website/docs/v4/api/effect/ai/DecisionModel",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ai/DecisionModel.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "ai",
+      "module": "EmbeddingModel",
+      "api_url": "https://effect.website/docs/v4/api/effect/ai/EmbeddingModel",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ai/EmbeddingModel.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "ai",
+      "module": "IdGenerator",
+      "api_url": "https://effect.website/docs/v4/api/effect/ai/IdGenerator",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ai/IdGenerator.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "ai",
+      "module": "LanguageModel",
+      "api_url": "https://effect.website/docs/v4/api/effect/ai/LanguageModel",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ai/LanguageModel.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "ai",
+      "module": "McpProtocol",
+      "api_url": "https://effect.website/docs/v4/api/effect/ai/McpProtocol",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ai/McpProtocol.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "ai",
+      "module": "McpSchema",
+      "api_url": "https://effect.website/docs/v4/api/effect/ai/McpSchema",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ai/McpSchema.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "ai",
+      "module": "McpServer",
+      "api_url": "https://effect.website/docs/v4/api/effect/ai/McpServer",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ai/McpServer.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "ai",
+      "module": "Model",
+      "api_url": "https://effect.website/docs/v4/api/effect/ai/Model",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ai/Model.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "ai",
+      "module": "OpenAiStructuredOutput",
+      "api_url": "https://effect.website/docs/v4/api/effect/ai/OpenAiStructuredOutput",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ai/OpenAiStructuredOutput.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "ai",
+      "module": "Prompt",
+      "api_url": "https://effect.website/docs/v4/api/effect/ai/Prompt",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ai/Prompt.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "ai",
+      "module": "Response",
+      "api_url": "https://effect.website/docs/v4/api/effect/ai/Response",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ai/Response.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "ai",
+      "module": "ResponseIdTracker",
+      "api_url": "https://effect.website/docs/v4/api/effect/ai/ResponseIdTracker",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ai/ResponseIdTracker.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "ai",
+      "module": "Telemetry",
+      "api_url": "https://effect.website/docs/v4/api/effect/ai/Telemetry",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ai/Telemetry.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "ai",
+      "module": "Tokenizer",
+      "api_url": "https://effect.website/docs/v4/api/effect/ai/Tokenizer",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ai/Tokenizer.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "ai",
+      "module": "Tool",
+      "api_url": "https://effect.website/docs/v4/api/effect/ai/Tool",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ai/Tool.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "ai",
+      "module": "Toolkit",
+      "api_url": "https://effect.website/docs/v4/api/effect/ai/Toolkit",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ai/Toolkit.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Arbitrary",
+      "api_url": "https://effect.website/docs/v4/api/effect/Arbitrary",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Arbitrary.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Array",
+      "api_url": "https://effect.website/docs/v4/api/effect/Array",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Array.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "BigDecimal",
+      "api_url": "https://effect.website/docs/v4/api/effect/BigDecimal",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/BigDecimal.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "BigInt",
+      "api_url": "https://effect.website/docs/v4/api/effect/BigInt",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/BigInt.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Boolean",
+      "api_url": "https://effect.website/docs/v4/api/effect/Boolean",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Boolean.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Brand",
+      "api_url": "https://effect.website/docs/v4/api/effect/Brand",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Brand.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "ByteSize",
+      "api_url": "https://effect.website/docs/v4/api/effect/ByteSize",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ByteSize.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Cache",
+      "api_url": "https://effect.website/docs/v4/api/effect/Cache",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Cache.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Cause",
+      "api_url": "https://effect.website/docs/v4/api/effect/Cause",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Cause.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Channel",
+      "api_url": "https://effect.website/docs/v4/api/effect/Channel",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Channel.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "ChannelSchema",
+      "api_url": "https://effect.website/docs/v4/api/effect/ChannelSchema",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ChannelSchema.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Chunk",
+      "api_url": "https://effect.website/docs/v4/api/effect/Chunk",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Chunk.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Clock",
+      "api_url": "https://effect.website/docs/v4/api/effect/Clock",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Clock.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Combiner",
+      "api_url": "https://effect.website/docs/v4/api/effect/Combiner",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Combiner.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Config",
+      "api_url": "https://effect.website/docs/v4/api/effect/Config",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Config.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "ConfigProvider",
+      "api_url": "https://effect.website/docs/v4/api/effect/ConfigProvider",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ConfigProvider.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Console",
+      "api_url": "https://effect.website/docs/v4/api/effect/Console",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Console.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Context",
+      "api_url": "https://effect.website/docs/v4/api/effect/Context",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Context.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Cron",
+      "api_url": "https://effect.website/docs/v4/api/effect/Cron",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Cron.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Crypto",
+      "api_url": "https://effect.website/docs/v4/api/effect/Crypto",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Crypto.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Data",
+      "api_url": "https://effect.website/docs/v4/api/effect/Data",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Data.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "DateTime",
+      "api_url": "https://effect.website/docs/v4/api/effect/DateTime",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/DateTime.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Deferred",
+      "api_url": "https://effect.website/docs/v4/api/effect/Deferred",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Deferred.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Differ",
+      "api_url": "https://effect.website/docs/v4/api/effect/Differ",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Differ.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Duration",
+      "api_url": "https://effect.website/docs/v4/api/effect/Duration",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Duration.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Effect",
+      "api_url": "https://effect.website/docs/v4/api/effect/Effect",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Effect.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Effectable",
+      "api_url": "https://effect.website/docs/v4/api/effect/Effectable",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Effectable.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Equal",
+      "api_url": "https://effect.website/docs/v4/api/effect/Equal",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Equal.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Equivalence",
+      "api_url": "https://effect.website/docs/v4/api/effect/Equivalence",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Equivalence.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "ErrorReporter",
+      "api_url": "https://effect.website/docs/v4/api/effect/ErrorReporter",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ErrorReporter.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "ExecutionPlan",
+      "api_url": "https://effect.website/docs/v4/api/effect/ExecutionPlan",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ExecutionPlan.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Exit",
+      "api_url": "https://effect.website/docs/v4/api/effect/Exit",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Exit.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Fiber",
+      "api_url": "https://effect.website/docs/v4/api/effect/Fiber",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Fiber.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "FiberHandle",
+      "api_url": "https://effect.website/docs/v4/api/effect/FiberHandle",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/FiberHandle.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "FiberMap",
+      "api_url": "https://effect.website/docs/v4/api/effect/FiberMap",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/FiberMap.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "FiberSet",
+      "api_url": "https://effect.website/docs/v4/api/effect/FiberSet",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/FiberSet.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "FileSystem",
+      "api_url": "https://effect.website/docs/v4/api/effect/FileSystem",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/FileSystem.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Filter",
+      "api_url": "https://effect.website/docs/v4/api/effect/Filter",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Filter.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Formatter",
+      "api_url": "https://effect.website/docs/v4/api/effect/Formatter",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Formatter.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Function",
+      "api_url": "https://effect.website/docs/v4/api/effect/Function",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Function.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Graph",
+      "api_url": "https://effect.website/docs/v4/api/effect/Graph",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Graph.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Hash",
+      "api_url": "https://effect.website/docs/v4/api/effect/Hash",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Hash.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "HashMap",
+      "api_url": "https://effect.website/docs/v4/api/effect/HashMap",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/HashMap.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "HashRing",
+      "api_url": "https://effect.website/docs/v4/api/effect/HashRing",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/HashRing.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "HashSet",
+      "api_url": "https://effect.website/docs/v4/api/effect/HashSet",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/HashSet.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "HKT",
+      "api_url": "https://effect.website/docs/v4/api/effect/HKT",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/HKT.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Inspectable",
+      "api_url": "https://effect.website/docs/v4/api/effect/Inspectable",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Inspectable.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Iterable",
+      "api_url": "https://effect.website/docs/v4/api/effect/Iterable",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Iterable.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "JsonPatch",
+      "api_url": "https://effect.website/docs/v4/api/effect/JsonPatch",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/JsonPatch.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "JsonPointer",
+      "api_url": "https://effect.website/docs/v4/api/effect/JsonPointer",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/JsonPointer.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "JsonSchema",
+      "api_url": "https://effect.website/docs/v4/api/effect/JsonSchema",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/JsonSchema.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Latch",
+      "api_url": "https://effect.website/docs/v4/api/effect/Latch",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Latch.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Layer",
+      "api_url": "https://effect.website/docs/v4/api/effect/Layer",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Layer.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "LayerMap",
+      "api_url": "https://effect.website/docs/v4/api/effect/LayerMap",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/LayerMap.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "LayerRef",
+      "api_url": "https://effect.website/docs/v4/api/effect/LayerRef",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/LayerRef.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Logger",
+      "api_url": "https://effect.website/docs/v4/api/effect/Logger",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Logger.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "LogLevel",
+      "api_url": "https://effect.website/docs/v4/api/effect/LogLevel",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/LogLevel.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "ManagedRuntime",
+      "api_url": "https://effect.website/docs/v4/api/effect/ManagedRuntime",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ManagedRuntime.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Match",
+      "api_url": "https://effect.website/docs/v4/api/effect/Match",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Match.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Metric",
+      "api_url": "https://effect.website/docs/v4/api/effect/Metric",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Metric.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "MutableHashMap",
+      "api_url": "https://effect.website/docs/v4/api/effect/MutableHashMap",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/MutableHashMap.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "MutableHashSet",
+      "api_url": "https://effect.website/docs/v4/api/effect/MutableHashSet",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/MutableHashSet.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "MutableList",
+      "api_url": "https://effect.website/docs/v4/api/effect/MutableList",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/MutableList.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "MutableRef",
+      "api_url": "https://effect.website/docs/v4/api/effect/MutableRef",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/MutableRef.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Newtype",
+      "api_url": "https://effect.website/docs/v4/api/effect/Newtype",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Newtype.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "NonEmptyIterable",
+      "api_url": "https://effect.website/docs/v4/api/effect/NonEmptyIterable",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/NonEmptyIterable.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Number",
+      "api_url": "https://effect.website/docs/v4/api/effect/Number",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Number.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Optic",
+      "api_url": "https://effect.website/docs/v4/api/effect/Optic",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Optic.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Option",
+      "api_url": "https://effect.website/docs/v4/api/effect/Option",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Option.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Order",
+      "api_url": "https://effect.website/docs/v4/api/effect/Order",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Order.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Ordering",
+      "api_url": "https://effect.website/docs/v4/api/effect/Ordering",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Ordering.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "PartitionedSemaphore",
+      "api_url": "https://effect.website/docs/v4/api/effect/PartitionedSemaphore",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/PartitionedSemaphore.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Path",
+      "api_url": "https://effect.website/docs/v4/api/effect/Path",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Path.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Pipeable",
+      "api_url": "https://effect.website/docs/v4/api/effect/Pipeable",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Pipeable.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "PlatformError",
+      "api_url": "https://effect.website/docs/v4/api/effect/PlatformError",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/PlatformError.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Pool",
+      "api_url": "https://effect.website/docs/v4/api/effect/Pool",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Pool.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Predicate",
+      "api_url": "https://effect.website/docs/v4/api/effect/Predicate",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Predicate.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "PrimaryKey",
+      "api_url": "https://effect.website/docs/v4/api/effect/PrimaryKey",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/PrimaryKey.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "PubSub",
+      "api_url": "https://effect.website/docs/v4/api/effect/PubSub",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/PubSub.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Pull",
+      "api_url": "https://effect.website/docs/v4/api/effect/Pull",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Pull.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Queue",
+      "api_url": "https://effect.website/docs/v4/api/effect/Queue",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Queue.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Random",
+      "api_url": "https://effect.website/docs/v4/api/effect/Random",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Random.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "RcMap",
+      "api_url": "https://effect.website/docs/v4/api/effect/RcMap",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/RcMap.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "RcRef",
+      "api_url": "https://effect.website/docs/v4/api/effect/RcRef",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/RcRef.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Record",
+      "api_url": "https://effect.website/docs/v4/api/effect/Record",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Record.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Redactable",
+      "api_url": "https://effect.website/docs/v4/api/effect/Redactable",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Redactable.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Redacted",
+      "api_url": "https://effect.website/docs/v4/api/effect/Redacted",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Redacted.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Reducer",
+      "api_url": "https://effect.website/docs/v4/api/effect/Reducer",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Reducer.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Ref",
+      "api_url": "https://effect.website/docs/v4/api/effect/Ref",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Ref.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "References",
+      "api_url": "https://effect.website/docs/v4/api/effect/References",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/References.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "RegExp",
+      "api_url": "https://effect.website/docs/v4/api/effect/RegExp",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/RegExp.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Request",
+      "api_url": "https://effect.website/docs/v4/api/effect/Request",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Request.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "RequestResolver",
+      "api_url": "https://effect.website/docs/v4/api/effect/RequestResolver",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/RequestResolver.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Resource",
+      "api_url": "https://effect.website/docs/v4/api/effect/Resource",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Resource.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Result",
+      "api_url": "https://effect.website/docs/v4/api/effect/Result",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Result.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Runtime",
+      "api_url": "https://effect.website/docs/v4/api/effect/Runtime",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Runtime.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Schedule",
+      "api_url": "https://effect.website/docs/v4/api/effect/Schedule",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Schedule.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Scheduler",
+      "api_url": "https://effect.website/docs/v4/api/effect/Scheduler",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Scheduler.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Schema",
+      "api_url": "https://effect.website/docs/v4/api/effect/Schema",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Schema.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "SchemaAST",
+      "api_url": "https://effect.website/docs/v4/api/effect/SchemaAST",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/SchemaAST.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "SchemaGetter",
+      "api_url": "https://effect.website/docs/v4/api/effect/SchemaGetter",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/SchemaGetter.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "SchemaIssue",
+      "api_url": "https://effect.website/docs/v4/api/effect/SchemaIssue",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/SchemaIssue.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "SchemaParser",
+      "api_url": "https://effect.website/docs/v4/api/effect/SchemaParser",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/SchemaParser.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "SchemaRepresentation",
+      "api_url": "https://effect.website/docs/v4/api/effect/SchemaRepresentation",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/SchemaRepresentation.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "SchemaTransformation",
+      "api_url": "https://effect.website/docs/v4/api/effect/SchemaTransformation",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/SchemaTransformation.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Scope",
+      "api_url": "https://effect.website/docs/v4/api/effect/Scope",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Scope.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "ScopedCache",
+      "api_url": "https://effect.website/docs/v4/api/effect/ScopedCache",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ScopedCache.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "ScopedRef",
+      "api_url": "https://effect.website/docs/v4/api/effect/ScopedRef",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/ScopedRef.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Semaphore",
+      "api_url": "https://effect.website/docs/v4/api/effect/Semaphore",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Semaphore.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Sink",
+      "api_url": "https://effect.website/docs/v4/api/effect/Sink",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Sink.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "StandardSchema",
+      "api_url": "https://effect.website/docs/v4/api/effect/StandardSchema",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/StandardSchema.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Stdio",
+      "api_url": "https://effect.website/docs/v4/api/effect/Stdio",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Stdio.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Stream",
+      "api_url": "https://effect.website/docs/v4/api/effect/Stream",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Stream.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "String",
+      "api_url": "https://effect.website/docs/v4/api/effect/String",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/String.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Struct",
+      "api_url": "https://effect.website/docs/v4/api/effect/Struct",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Struct.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "SubscriptionRef",
+      "api_url": "https://effect.website/docs/v4/api/effect/SubscriptionRef",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/SubscriptionRef.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Symbol",
+      "api_url": "https://effect.website/docs/v4/api/effect/Symbol",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Symbol.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "SynchronizedRef",
+      "api_url": "https://effect.website/docs/v4/api/effect/SynchronizedRef",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/SynchronizedRef.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Take",
+      "api_url": "https://effect.website/docs/v4/api/effect/Take",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Take.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Terminal",
+      "api_url": "https://effect.website/docs/v4/api/effect/Terminal",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Terminal.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Tracer",
+      "api_url": "https://effect.website/docs/v4/api/effect/Tracer",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Tracer.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Trie",
+      "api_url": "https://effect.website/docs/v4/api/effect/Trie",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Trie.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Tuple",
+      "api_url": "https://effect.website/docs/v4/api/effect/Tuple",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Tuple.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "TxChunk",
+      "api_url": "https://effect.website/docs/v4/api/effect/TxChunk",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/TxChunk.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "TxDeferred",
+      "api_url": "https://effect.website/docs/v4/api/effect/TxDeferred",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/TxDeferred.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "TxHashMap",
+      "api_url": "https://effect.website/docs/v4/api/effect/TxHashMap",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/TxHashMap.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "TxHashSet",
+      "api_url": "https://effect.website/docs/v4/api/effect/TxHashSet",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/TxHashSet.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "TxPriorityQueue",
+      "api_url": "https://effect.website/docs/v4/api/effect/TxPriorityQueue",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/TxPriorityQueue.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "TxPubSub",
+      "api_url": "https://effect.website/docs/v4/api/effect/TxPubSub",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/TxPubSub.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "TxQueue",
+      "api_url": "https://effect.website/docs/v4/api/effect/TxQueue",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/TxQueue.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "TxReentrantLock",
+      "api_url": "https://effect.website/docs/v4/api/effect/TxReentrantLock",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/TxReentrantLock.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "TxRef",
+      "api_url": "https://effect.website/docs/v4/api/effect/TxRef",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/TxRef.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "TxSemaphore",
+      "api_url": "https://effect.website/docs/v4/api/effect/TxSemaphore",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/TxSemaphore.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "TxSubscriptionRef",
+      "api_url": "https://effect.website/docs/v4/api/effect/TxSubscriptionRef",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/TxSubscriptionRef.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Types",
+      "api_url": "https://effect.website/docs/v4/api/effect/Types",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Types.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "UndefinedOr",
+      "api_url": "https://effect.website/docs/v4/api/effect/UndefinedOr",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/UndefinedOr.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Unify",
+      "api_url": "https://effect.website/docs/v4/api/effect/Unify",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Unify.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Utils",
+      "api_url": "https://effect.website/docs/v4/api/effect/Utils",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Utils.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "core",
+      "module": "Version",
+      "api_url": "https://effect.website/docs/v4/api/effect/Version",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Version.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cli",
+      "module": "Argument",
+      "api_url": "https://effect.website/docs/v4/api/effect/cli/Argument",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cli/Argument.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cli",
+      "module": "CliConfig",
+      "api_url": "https://effect.website/docs/v4/api/effect/cli/CliConfig",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cli/CliConfig.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cli",
+      "module": "CliError",
+      "api_url": "https://effect.website/docs/v4/api/effect/cli/CliError",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cli/CliError.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cli",
+      "module": "CliOutput",
+      "api_url": "https://effect.website/docs/v4/api/effect/cli/CliOutput",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cli/CliOutput.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cli",
+      "module": "Command",
+      "api_url": "https://effect.website/docs/v4/api/effect/cli/Command",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cli/Command.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cli",
+      "module": "Completions",
+      "api_url": "https://effect.website/docs/v4/api/effect/cli/Completions",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cli/Completions.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cli",
+      "module": "Flag",
+      "api_url": "https://effect.website/docs/v4/api/effect/cli/Flag",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cli/Flag.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cli",
+      "module": "GlobalFlag",
+      "api_url": "https://effect.website/docs/v4/api/effect/cli/GlobalFlag",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cli/GlobalFlag.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cli",
+      "module": "HelpDoc",
+      "api_url": "https://effect.website/docs/v4/api/effect/cli/HelpDoc",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cli/HelpDoc.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cli",
+      "module": "Param",
+      "api_url": "https://effect.website/docs/v4/api/effect/cli/Param",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cli/Param.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cli",
+      "module": "Primitive",
+      "api_url": "https://effect.website/docs/v4/api/effect/cli/Primitive",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cli/Primitive.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cli",
+      "module": "Prompt",
+      "api_url": "https://effect.website/docs/v4/api/effect/cli/Prompt",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cli/Prompt.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "ClusterCron",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/ClusterCron",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/ClusterCron.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "ClusterError",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/ClusterError",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/ClusterError.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "ClusterMetrics",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/ClusterMetrics",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/ClusterMetrics.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "ClusterSchema",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/ClusterSchema",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/ClusterSchema.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "ClusterWorkflowEngine",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/ClusterWorkflowEngine",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/ClusterWorkflowEngine.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "DeliverAt",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/DeliverAt",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/DeliverAt.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "Entity",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/Entity",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/Entity.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "EntityAddress",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/EntityAddress",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/EntityAddress.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "EntityId",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/EntityId",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/EntityId.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "EntityProxy",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/EntityProxy",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/EntityProxy.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "EntityProxyServer",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/EntityProxyServer",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/EntityProxyServer.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "EntityResource",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/EntityResource",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/EntityResource.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "EntityType",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/EntityType",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/EntityType.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "Envelope",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/Envelope",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/Envelope.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "HttpRunner",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/HttpRunner",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/HttpRunner.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "K8sHttpClient",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/K8sHttpClient",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/K8sHttpClient.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "K8sTypes",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/K8sTypes",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/K8sTypes.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "MachineId",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/MachineId",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/MachineId.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "Message",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/Message",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/Message.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "MessageStorage",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/MessageStorage",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/MessageStorage.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "Reply",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/Reply",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/Reply.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "Runner",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/Runner",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/Runner.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "RunnerAddress",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/RunnerAddress",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/RunnerAddress.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "RunnerHealth",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/RunnerHealth",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/RunnerHealth.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "Runners",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/Runners",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/Runners.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "RunnerServer",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/RunnerServer",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/RunnerServer.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "RunnerStorage",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/RunnerStorage",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/RunnerStorage.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "ShardId",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/ShardId",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/ShardId.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "Sharding",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/Sharding",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/Sharding.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "ShardingConfig",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/ShardingConfig",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/ShardingConfig.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "ShardingRegistrationEvent",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/ShardingRegistrationEvent",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/ShardingRegistrationEvent.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "SingleRunner",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/SingleRunner",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/SingleRunner.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "Singleton",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/Singleton",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/Singleton.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "SingletonAddress",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/SingletonAddress",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/SingletonAddress.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "Snowflake",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/Snowflake",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/Snowflake.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "SocketRunner",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/SocketRunner",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/SocketRunner.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "SqlMessageStorage",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/SqlMessageStorage",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/SqlMessageStorage.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "SqlRunnerStorage",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/SqlRunnerStorage",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/SqlRunnerStorage.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "cluster",
+      "module": "TestRunner",
+      "api_url": "https://effect.website/docs/v4/api/effect/cluster/TestRunner",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/cluster/TestRunner.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "devtools",
+      "module": "DevTools",
+      "api_url": "https://effect.website/docs/v4/api/effect/devtools/DevTools",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/devtools/DevTools.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "devtools",
+      "module": "DevToolsClient",
+      "api_url": "https://effect.website/docs/v4/api/effect/devtools/DevToolsClient",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/devtools/DevToolsClient.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "devtools",
+      "module": "DevToolsSchema",
+      "api_url": "https://effect.website/docs/v4/api/effect/devtools/DevToolsSchema",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/devtools/DevToolsSchema.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "devtools",
+      "module": "DevToolsServer",
+      "api_url": "https://effect.website/docs/v4/api/effect/devtools/DevToolsServer",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/devtools/DevToolsServer.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "encoding",
+      "module": "Base64",
+      "api_url": "https://effect.website/docs/v4/api/effect/encoding/Base64",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/encoding/Base64.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "encoding",
+      "module": "Base64Url",
+      "api_url": "https://effect.website/docs/v4/api/effect/encoding/Base64Url",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/encoding/Base64Url.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "encoding",
+      "module": "EncodingError",
+      "api_url": "https://effect.website/docs/v4/api/effect/encoding/EncodingError",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/encoding/EncodingError.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "encoding",
+      "module": "Hex",
+      "api_url": "https://effect.website/docs/v4/api/effect/encoding/Hex",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/encoding/Hex.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "encoding",
+      "module": "Ini",
+      "api_url": "https://effect.website/docs/v4/api/effect/encoding/Ini",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/encoding/Ini.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "encoding",
+      "module": "Ndjson",
+      "api_url": "https://effect.website/docs/v4/api/effect/encoding/Ndjson",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/encoding/Ndjson.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "encoding",
+      "module": "SchemaBinary",
+      "api_url": "https://effect.website/docs/v4/api/effect/encoding/SchemaBinary",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/encoding/SchemaBinary.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "encoding",
+      "module": "Sse",
+      "api_url": "https://effect.website/docs/v4/api/effect/encoding/Sse",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/encoding/Sse.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "encoding",
+      "module": "Toml",
+      "api_url": "https://effect.website/docs/v4/api/effect/encoding/Toml",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/encoding/Toml.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "encoding",
+      "module": "Yaml",
+      "api_url": "https://effect.website/docs/v4/api/effect/encoding/Yaml",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/encoding/Yaml.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "eventlog",
+      "module": "Event",
+      "api_url": "https://effect.website/docs/v4/api/effect/eventlog/Event",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/eventlog/Event.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "eventlog",
+      "module": "EventGroup",
+      "api_url": "https://effect.website/docs/v4/api/effect/eventlog/EventGroup",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/eventlog/EventGroup.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "eventlog",
+      "module": "EventJournal",
+      "api_url": "https://effect.website/docs/v4/api/effect/eventlog/EventJournal",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/eventlog/EventJournal.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "eventlog",
+      "module": "EventLog",
+      "api_url": "https://effect.website/docs/v4/api/effect/eventlog/EventLog",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/eventlog/EventLog.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "eventlog",
+      "module": "EventLogEncryption",
+      "api_url": "https://effect.website/docs/v4/api/effect/eventlog/EventLogEncryption",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/eventlog/EventLogEncryption.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "eventlog",
+      "module": "EventLogMessage",
+      "api_url": "https://effect.website/docs/v4/api/effect/eventlog/EventLogMessage",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/eventlog/EventLogMessage.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "eventlog",
+      "module": "EventLogRemote",
+      "api_url": "https://effect.website/docs/v4/api/effect/eventlog/EventLogRemote",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/eventlog/EventLogRemote.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "eventlog",
+      "module": "EventLogServer",
+      "api_url": "https://effect.website/docs/v4/api/effect/eventlog/EventLogServer",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/eventlog/EventLogServer.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "eventlog",
+      "module": "EventLogServerEncrypted",
+      "api_url": "https://effect.website/docs/v4/api/effect/eventlog/EventLogServerEncrypted",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/eventlog/EventLogServerEncrypted.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "eventlog",
+      "module": "EventLogServerUnencrypted",
+      "api_url": "https://effect.website/docs/v4/api/effect/eventlog/EventLogServerUnencrypted",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/eventlog/EventLogServerUnencrypted.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "eventlog",
+      "module": "EventLogSessionAuth",
+      "api_url": "https://effect.website/docs/v4/api/effect/eventlog/EventLogSessionAuth",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/eventlog/EventLogSessionAuth.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "eventlog",
+      "module": "SqlEventJournal",
+      "api_url": "https://effect.website/docs/v4/api/effect/eventlog/SqlEventJournal",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/eventlog/SqlEventJournal.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "eventlog",
+      "module": "SqlEventLogServerEncrypted",
+      "api_url": "https://effect.website/docs/v4/api/effect/eventlog/SqlEventLogServerEncrypted",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/eventlog/SqlEventLogServerEncrypted.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "eventlog",
+      "module": "SqlEventLogServerUnencrypted",
+      "api_url": "https://effect.website/docs/v4/api/effect/eventlog/SqlEventLogServerUnencrypted",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/eventlog/SqlEventLogServerUnencrypted.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http-api",
+      "module": "HttpApi",
+      "api_url": "https://effect.website/docs/v4/api/effect/http-api/HttpApi",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http-api/HttpApi.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http-api",
+      "module": "HttpApiBuilder",
+      "api_url": "https://effect.website/docs/v4/api/effect/http-api/HttpApiBuilder",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http-api/HttpApiBuilder.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http-api",
+      "module": "HttpApiClient",
+      "api_url": "https://effect.website/docs/v4/api/effect/http-api/HttpApiClient",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http-api/HttpApiClient.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http-api",
+      "module": "HttpApiEndpoint",
+      "api_url": "https://effect.website/docs/v4/api/effect/http-api/HttpApiEndpoint",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http-api/HttpApiEndpoint.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http-api",
+      "module": "HttpApiError",
+      "api_url": "https://effect.website/docs/v4/api/effect/http-api/HttpApiError",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http-api/HttpApiError.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http-api",
+      "module": "HttpApiGroup",
+      "api_url": "https://effect.website/docs/v4/api/effect/http-api/HttpApiGroup",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http-api/HttpApiGroup.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http-api",
+      "module": "HttpApiMiddleware",
+      "api_url": "https://effect.website/docs/v4/api/effect/http-api/HttpApiMiddleware",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http-api/HttpApiMiddleware.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http-api",
+      "module": "HttpApiScalar",
+      "api_url": "https://effect.website/docs/v4/api/effect/http-api/HttpApiScalar",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http-api/HttpApiScalar.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http-api",
+      "module": "HttpApiSchema",
+      "api_url": "https://effect.website/docs/v4/api/effect/http-api/HttpApiSchema",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http-api/HttpApiSchema.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http-api",
+      "module": "HttpApiSecurity",
+      "api_url": "https://effect.website/docs/v4/api/effect/http-api/HttpApiSecurity",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http-api/HttpApiSecurity.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http-api",
+      "module": "HttpApiSwagger",
+      "api_url": "https://effect.website/docs/v4/api/effect/http-api/HttpApiSwagger",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http-api/HttpApiSwagger.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http-api",
+      "module": "HttpApiTest",
+      "api_url": "https://effect.website/docs/v4/api/effect/http-api/HttpApiTest",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http-api/HttpApiTest.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http-api",
+      "module": "OpenApi",
+      "api_url": "https://effect.website/docs/v4/api/effect/http-api/OpenApi",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http-api/OpenApi.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "Cookies",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/Cookies",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/Cookies.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "Etag",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/Etag",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/Etag.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "FetchHttpClient",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/FetchHttpClient",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/FetchHttpClient.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "FindMyWay",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/FindMyWay",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/FindMyWay.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "Headers",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/Headers",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/Headers.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "HttpBody",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/HttpBody",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/HttpBody.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "HttpClient",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/HttpClient",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/HttpClient.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "HttpClientError",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/HttpClientError",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/HttpClientError.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "HttpClientRequest",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/HttpClientRequest",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/HttpClientRequest.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "HttpClientResponse",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/HttpClientResponse",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/HttpClientResponse.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "HttpEffect",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/HttpEffect",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/HttpEffect.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "HttpIncomingMessage",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/HttpIncomingMessage",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/HttpIncomingMessage.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "HttpMethod",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/HttpMethod",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/HttpMethod.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "HttpMiddleware",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/HttpMiddleware",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/HttpMiddleware.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "HttpPlatform",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/HttpPlatform",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/HttpPlatform.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "HttpRouter",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/HttpRouter",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/HttpRouter.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "HttpServer",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/HttpServer",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/HttpServer.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "HttpServerError",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/HttpServerError",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/HttpServerError.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "HttpServerRequest",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/HttpServerRequest",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/HttpServerRequest.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "HttpServerRespondable",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/HttpServerRespondable",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/HttpServerRespondable.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "HttpServerResponse",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/HttpServerResponse",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/HttpServerResponse.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "HttpStaticServer",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/HttpStaticServer",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/HttpStaticServer.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "HttpStatus",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/HttpStatus",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/HttpStatus.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "HttpTraceContext",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/HttpTraceContext",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/HttpTraceContext.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "Mime",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/Mime",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/Mime.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "Multipart",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/Multipart",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/Multipart.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "MultipartParser",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/MultipartParser",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/MultipartParser.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "MultipartParser/HeadersParser",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/MultipartParser/HeadersParser",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/MultipartParser/HeadersParser.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "MultipartParser/Search",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/MultipartParser/Search",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/MultipartParser/Search.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "Template",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/Template",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/Template.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "Url",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/Url",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/Url.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "http",
+      "module": "UrlParams",
+      "api_url": "https://effect.website/docs/v4/api/effect/http/UrlParams",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/http/UrlParams.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "net",
+      "module": "IpInterface",
+      "api_url": "https://effect.website/docs/v4/api/effect/net/IpInterface",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/net/IpInterface.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "net",
+      "module": "IpNetwork",
+      "api_url": "https://effect.website/docs/v4/api/effect/net/IpNetwork",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/net/IpNetwork.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "net",
+      "module": "NetAddress",
+      "api_url": "https://effect.website/docs/v4/api/effect/net/NetAddress",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/net/NetAddress.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "observability",
+      "module": "Otlp",
+      "api_url": "https://effect.website/docs/v4/api/effect/observability/Otlp",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/observability/Otlp.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "observability",
+      "module": "OtlpExporter",
+      "api_url": "https://effect.website/docs/v4/api/effect/observability/OtlpExporter",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/observability/OtlpExporter.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "observability",
+      "module": "OtlpLogger",
+      "api_url": "https://effect.website/docs/v4/api/effect/observability/OtlpLogger",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/observability/OtlpLogger.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "observability",
+      "module": "OtlpMetrics",
+      "api_url": "https://effect.website/docs/v4/api/effect/observability/OtlpMetrics",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/observability/OtlpMetrics.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "observability",
+      "module": "OtlpResource",
+      "api_url": "https://effect.website/docs/v4/api/effect/observability/OtlpResource",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/observability/OtlpResource.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "observability",
+      "module": "OtlpSerialization",
+      "api_url": "https://effect.website/docs/v4/api/effect/observability/OtlpSerialization",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/observability/OtlpSerialization.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "observability",
+      "module": "OtlpTracer",
+      "api_url": "https://effect.website/docs/v4/api/effect/observability/OtlpTracer",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/observability/OtlpTracer.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "observability",
+      "module": "PrometheusMetrics",
+      "api_url": "https://effect.website/docs/v4/api/effect/observability/PrometheusMetrics",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/observability/PrometheusMetrics.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "persistence",
+      "module": "KeyValueStore",
+      "api_url": "https://effect.website/docs/v4/api/effect/persistence/KeyValueStore",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/persistence/KeyValueStore.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "persistence",
+      "module": "Persistable",
+      "api_url": "https://effect.website/docs/v4/api/effect/persistence/Persistable",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/persistence/Persistable.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "persistence",
+      "module": "PersistedCache",
+      "api_url": "https://effect.website/docs/v4/api/effect/persistence/PersistedCache",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/persistence/PersistedCache.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "persistence",
+      "module": "PersistedQueue",
+      "api_url": "https://effect.website/docs/v4/api/effect/persistence/PersistedQueue",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/persistence/PersistedQueue.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "persistence",
+      "module": "Persistence",
+      "api_url": "https://effect.website/docs/v4/api/effect/persistence/Persistence",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/persistence/Persistence.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "persistence",
+      "module": "RateLimiter",
+      "api_url": "https://effect.website/docs/v4/api/effect/persistence/RateLimiter",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/persistence/RateLimiter.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "persistence",
+      "module": "Redis",
+      "api_url": "https://effect.website/docs/v4/api/effect/persistence/Redis",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/persistence/Redis.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "process",
+      "module": "ChildProcess",
+      "api_url": "https://effect.website/docs/v4/api/effect/process/ChildProcess",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/process/ChildProcess.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "process",
+      "module": "ChildProcessSpawner",
+      "api_url": "https://effect.website/docs/v4/api/effect/process/ChildProcessSpawner",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/process/ChildProcessSpawner.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "reactivity",
+      "module": "AsyncResult",
+      "api_url": "https://effect.website/docs/v4/api/effect/reactivity/AsyncResult",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/reactivity/AsyncResult.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "reactivity",
+      "module": "Atom",
+      "api_url": "https://effect.website/docs/v4/api/effect/reactivity/Atom",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/reactivity/Atom.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "reactivity",
+      "module": "AtomHttpApi",
+      "api_url": "https://effect.website/docs/v4/api/effect/reactivity/AtomHttpApi",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/reactivity/AtomHttpApi.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "reactivity",
+      "module": "AtomRef",
+      "api_url": "https://effect.website/docs/v4/api/effect/reactivity/AtomRef",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/reactivity/AtomRef.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "reactivity",
+      "module": "AtomRegistry",
+      "api_url": "https://effect.website/docs/v4/api/effect/reactivity/AtomRegistry",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/reactivity/AtomRegistry.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "reactivity",
+      "module": "AtomRpc",
+      "api_url": "https://effect.website/docs/v4/api/effect/reactivity/AtomRpc",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/reactivity/AtomRpc.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "reactivity",
+      "module": "Hydration",
+      "api_url": "https://effect.website/docs/v4/api/effect/reactivity/Hydration",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/reactivity/Hydration.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "reactivity",
+      "module": "Reactivity",
+      "api_url": "https://effect.website/docs/v4/api/effect/reactivity/Reactivity",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/reactivity/Reactivity.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "rpc",
+      "module": "Rpc",
+      "api_url": "https://effect.website/docs/v4/api/effect/rpc/Rpc",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/rpc/Rpc.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "rpc",
+      "module": "RpcClient",
+      "api_url": "https://effect.website/docs/v4/api/effect/rpc/RpcClient",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/rpc/RpcClient.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "rpc",
+      "module": "RpcClientError",
+      "api_url": "https://effect.website/docs/v4/api/effect/rpc/RpcClientError",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/rpc/RpcClientError.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "rpc",
+      "module": "RpcGroup",
+      "api_url": "https://effect.website/docs/v4/api/effect/rpc/RpcGroup",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/rpc/RpcGroup.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "rpc",
+      "module": "RpcMessage",
+      "api_url": "https://effect.website/docs/v4/api/effect/rpc/RpcMessage",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/rpc/RpcMessage.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "rpc",
+      "module": "RpcMiddleware",
+      "api_url": "https://effect.website/docs/v4/api/effect/rpc/RpcMiddleware",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/rpc/RpcMiddleware.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "rpc",
+      "module": "RpcSchema",
+      "api_url": "https://effect.website/docs/v4/api/effect/rpc/RpcSchema",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/rpc/RpcSchema.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "rpc",
+      "module": "RpcSerialization",
+      "api_url": "https://effect.website/docs/v4/api/effect/rpc/RpcSerialization",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/rpc/RpcSerialization.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "rpc",
+      "module": "RpcServer",
+      "api_url": "https://effect.website/docs/v4/api/effect/rpc/RpcServer",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/rpc/RpcServer.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "rpc",
+      "module": "RpcTest",
+      "api_url": "https://effect.website/docs/v4/api/effect/rpc/RpcTest",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/rpc/RpcTest.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "rpc",
+      "module": "RpcWorker",
+      "api_url": "https://effect.website/docs/v4/api/effect/rpc/RpcWorker",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/rpc/RpcWorker.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "rpc",
+      "module": "Utils",
+      "api_url": "https://effect.website/docs/v4/api/effect/rpc/Utils",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/rpc/Utils.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "schema",
+      "module": "Model",
+      "api_url": "https://effect.website/docs/v4/api/effect/schema/Model",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/schema/Model.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "schema",
+      "module": "SchemaAOTCompiler",
+      "api_url": "https://effect.website/docs/v4/api/effect/schema/SchemaAOTCompiler",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/schema/SchemaAOTCompiler.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "schema",
+      "module": "SchemaAOTCompiler/Build",
+      "api_url": "https://effect.website/docs/v4/api/effect/schema/SchemaAOTCompiler/Build",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/schema/SchemaAOTCompiler/Build.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "schema",
+      "module": "SchemaCompiler",
+      "api_url": "https://effect.website/docs/v4/api/effect/schema/SchemaCompiler",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/schema/SchemaCompiler.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "schema",
+      "module": "SchemaCompiler/runtime",
+      "api_url": "https://effect.website/docs/v4/api/effect/schema/SchemaCompiler/runtime",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/schema/SchemaCompiler/runtime.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "schema",
+      "module": "SchemaJITCompiler",
+      "api_url": "https://effect.website/docs/v4/api/effect/schema/SchemaJITCompiler",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/schema/SchemaJITCompiler.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "schema",
+      "module": "SchemaJITCompiler/enable",
+      "api_url": "https://effect.website/docs/v4/api/effect/schema/SchemaJITCompiler/enable",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/schema/SchemaJITCompiler/enable.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "schema",
+      "module": "VariantSchema",
+      "api_url": "https://effect.website/docs/v4/api/effect/schema/VariantSchema",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/schema/VariantSchema.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "socket",
+      "module": "Socket",
+      "api_url": "https://effect.website/docs/v4/api/effect/socket/Socket",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/socket/Socket.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "socket",
+      "module": "SocketServer",
+      "api_url": "https://effect.website/docs/v4/api/effect/socket/SocketServer",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/socket/SocketServer.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "sql",
+      "module": "Migrator",
+      "api_url": "https://effect.website/docs/v4/api/effect/sql/Migrator",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/sql/Migrator.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "sql",
+      "module": "SqlClient",
+      "api_url": "https://effect.website/docs/v4/api/effect/sql/SqlClient",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/sql/SqlClient.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "sql",
+      "module": "SqlConnection",
+      "api_url": "https://effect.website/docs/v4/api/effect/sql/SqlConnection",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/sql/SqlConnection.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "sql",
+      "module": "SqlError",
+      "api_url": "https://effect.website/docs/v4/api/effect/sql/SqlError",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/sql/SqlError.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "sql",
+      "module": "SqlModel",
+      "api_url": "https://effect.website/docs/v4/api/effect/sql/SqlModel",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/sql/SqlModel.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "sql",
+      "module": "SqlResolver",
+      "api_url": "https://effect.website/docs/v4/api/effect/sql/SqlResolver",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/sql/SqlResolver.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "sql",
+      "module": "SqlSchema",
+      "api_url": "https://effect.website/docs/v4/api/effect/sql/SqlSchema",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/sql/SqlSchema.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "sql",
+      "module": "SqlStream",
+      "api_url": "https://effect.website/docs/v4/api/effect/sql/SqlStream",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/sql/SqlStream.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "sql",
+      "module": "Statement",
+      "api_url": "https://effect.website/docs/v4/api/effect/sql/Statement",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/sql/Statement.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "testing",
+      "module": "TestClock",
+      "api_url": "https://effect.website/docs/v4/api/effect/testing/TestClock",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/testing/TestClock.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "testing",
+      "module": "TestConsole",
+      "api_url": "https://effect.website/docs/v4/api/effect/testing/TestConsole",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/testing/TestConsole.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "testing",
+      "module": "TestSchema",
+      "api_url": "https://effect.website/docs/v4/api/effect/testing/TestSchema",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/testing/TestSchema.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "workers",
+      "module": "Transferable",
+      "api_url": "https://effect.website/docs/v4/api/effect/workers/Transferable",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/workers/Transferable.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "workers",
+      "module": "Worker",
+      "api_url": "https://effect.website/docs/v4/api/effect/workers/Worker",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/workers/Worker.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "workers",
+      "module": "WorkerError",
+      "api_url": "https://effect.website/docs/v4/api/effect/workers/WorkerError",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/workers/WorkerError.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "workers",
+      "module": "WorkerRunner",
+      "api_url": "https://effect.website/docs/v4/api/effect/workers/WorkerRunner",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/workers/WorkerRunner.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "workflow",
+      "module": "Activity",
+      "api_url": "https://effect.website/docs/v4/api/effect/workflow/Activity",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/workflow/Activity.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "workflow",
+      "module": "DurableClock",
+      "api_url": "https://effect.website/docs/v4/api/effect/workflow/DurableClock",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/workflow/DurableClock.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "workflow",
+      "module": "DurableDeferred",
+      "api_url": "https://effect.website/docs/v4/api/effect/workflow/DurableDeferred",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/workflow/DurableDeferred.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "workflow",
+      "module": "DurableQueue",
+      "api_url": "https://effect.website/docs/v4/api/effect/workflow/DurableQueue",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/workflow/DurableQueue.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "workflow",
+      "module": "Workflow",
+      "api_url": "https://effect.website/docs/v4/api/effect/workflow/Workflow",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/workflow/Workflow.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "workflow",
+      "module": "WorkflowEngine",
+      "api_url": "https://effect.website/docs/v4/api/effect/workflow/WorkflowEngine",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/workflow/WorkflowEngine.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "workflow",
+      "module": "WorkflowProxy",
+      "api_url": "https://effect.website/docs/v4/api/effect/workflow/WorkflowProxy",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/workflow/WorkflowProxy.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    },
+    {
+      "group": "workflow",
+      "module": "WorkflowProxyServer",
+      "api_url": "https://effect.website/docs/v4/api/effect/workflow/WorkflowProxyServer",
+      "source_url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/workflow/WorkflowProxyServer.ts",
+      "coverage": "indexed; consult module source for exact signatures and stability"
+    }
+  ]
+}

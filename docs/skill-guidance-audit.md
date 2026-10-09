@@ -2,6 +2,10 @@
 
 Date: 2026-09-05. Baseline: `cill-i-am/skills@e6072592f3d64c411af81f1e07a653e38a1f1140`.
 
+The Effect entry below links to its archived repository snapshot. The active
+replacement is [effect-v4](../skills/stack/effect-v4/SKILL.md). This audit and its
+inventory retain their original measurements; they do not describe the replacement.
+
 ## Decision and scope
 
 Keep all 36 capabilities, with `linear-setup` renamed to `workflow-setup`. The initial pass ports improvements to 17 existing skills from [Meal Planner PR #206](https://github.com/cill-i-am/meal-planner/pull/206) in a portable form. The subsequent approved change makes planning and delivery work with either Linear or versioned repository files. In total, 28 skill directories are updated and eight remain audit-only.
@@ -30,7 +34,7 @@ Across the initial 17 ported `SKILL.md` files, entrypoint words fall from **15,7
 | [grilling](../skills/planning/grilling/SKILL.md) | 851 → 195 | Resolve consequential questions without a fixed interview format or a second permission step for authorized follow-through. |
 | [deep-research](../skills/research/deep-research/SKILL.md) | 424 → 167 | Research to the decision and evidence needed; allow a brief-only request without running the investigation. |
 | [app-forms](../skills/stack/app-forms/SKILL.md) | 488 → 163 | Keep form state and submit decoding correct without banning unrelated local UI state. |
-| [effect-ts](../skills/stack/effect-ts/SKILL.md) | 1233 → 305 | Use the installed version and real lifecycle semantics; compile changed code before demanding extra probes. |
+| [effect-ts](https://github.com/cill-i-am/skills/blob/5f0444701d83f8b30aa6f18b58c72273cd63f49d/skills/stack/effect-ts/SKILL.md) | 1233 → 305 | Use the installed version and real lifecycle semantics; compile changed code before demanding extra probes. |
 | [tanstack-react-best-practices](../skills/stack/tanstack-react-best-practices/SKILL.md) | 1356 → 241 | Use performance rules for credible problems; preserve local state, version semantics, and equivalent example behavior. |
 | [tanstack-routing](../skills/stack/tanstack-routing/SKILL.md) | 674 → 317 | Use installed framework evidence; missing bundled guides alone do not block work or force installation. |
 
@@ -59,7 +63,7 @@ The shared planning and delivery skills read the selection reference, then only 
 
 - Linear mode uses current Project/PRD records, issues, and native blockers. It preserves existing locations and live state vocabulary. Missing access leaves a dependent operation unverified; it does not create a repository backlog.
 - Repository mode uses versioned Markdown at declared locations. It covers stable identifiers, grouping versus dependencies, decision versus delivery records, readiness, ownership, branch concurrency, evidence, and completion. Local proposals remain distinguishable from published shared records.
-- Repository completion follows the declared acceptance event. A pre-merge record cannot truthfully include a future merge result; a coordinator may need a small authorized record update afterward. The guide makes that pending publication explicit.
+- Repository acceptance and publication are exercised against a disposable local Git origin; the guide makes pending publication explicit.
 - Code, domain language, ADRs, and PR/check evidence retain their natural authoritative homes. Each planning or delivery record has one owner, with links elsewhere.
 - Source changes require an explicit migration request. The guide calls for verifying the new owner and retiring superseded records rather than maintaining two writable trackers.
 

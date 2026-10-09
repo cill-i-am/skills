@@ -74,7 +74,7 @@ The same planning and delivery skills work in both modes. They read only the sel
 
 ## Use The Capabilities You Need
 
-A typical flow is product clarification, a PRD, bounded work items, implementation, review, and an authorized acceptance decision. Use `wayfinder` for interdependent decisions before a PRD; skip stages whose outcomes already exist. An ordinary review, debugging task, or CI check does not require workflow setup.
+A typical flow is product clarification, a PRD, bounded work items, implementation, review, and an authorized acceptance decision. Use `wayfinder` for interdependent decisions before a PRD is ready; skip stages whose outcomes already exist. An ordinary review, debugging task, or CI check does not require workflow setup.
 
 Install a subset by naming skills with `--skill`. Include `workflow-setup` with the planning and delivery skills that consume its source-selection references. Engineering, stack, research, and personal skills can be used independently. Linear-specific tools are optional and needed only in Linear mode; separate copies of each role are unnecessary.
 
@@ -86,11 +86,18 @@ Use stack and infrastructure skills inside that loop as needed:
   `tech-spec` for implementation-ready technical specifications.
 - `domain-modeling` for canonical language and minimal qualifying ADRs;
   `wayfinder` for decision discovery before a PRD is ready.
-- `effect-ts`, `tanstack-routing`, `tanstack-react-best-practices`, and
+- `effect-v4`, `tanstack-routing`, `tanstack-react-best-practices`, and
   `app-forms` for the default TypeScript app stack.
 - `alchemy` for infrastructure, local dev, CI stages, and deployment.
 - `simplify`, `systematic-debugging`, `review-swarm`, and
   `subagent-execution` as helper skills during implementation and review.
+
+The [Effect v4 skill](skills/stack/effect-v4/SKILL.md) includes focused references,
+examples, authored tests, and evaluation scenarios. Read its
+[verification record](skills/stack/effect-v4/VERIFICATION.md) for executed checks
+and the [evaluation plan](docs/effect-v4-evaluation-plan.md) for proposed comparative
+runs. The replacement uses `$effect-v4`; remove any stale installed copy of the
+previous Effect skill separately after verifying the new installation.
 
 Use research and personal utility skills outside the delivery loop when the task
 calls for them:
