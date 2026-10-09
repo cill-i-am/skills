@@ -1,0 +1,157 @@
+[
+  {
+    "file": "src/basics.ts",
+    "guide": "../references/01-mental-model.md",
+    "block": 0
+  },
+  {
+    "file": "src/foreign-promises.ts",
+    "guide": "../references/02-creating-and-composing.md",
+    "block": 0
+  },
+  {
+    "file": "src/callback.ts",
+    "guide": "../references/02-creating-and-composing.md",
+    "block": 1
+  },
+  {
+    "file": "src/errors.ts",
+    "guide": "../references/03-errors-and-recovery.md",
+    "block": 0
+  },
+  {
+    "file": "src/schema.ts",
+    "guide": "../references/04-schema-and-domain-models.md",
+    "block": 0
+  },
+  {
+    "file": "src/codecs.ts",
+    "guide": "../references/05-schema-codecs-and-tooling.md",
+    "block": 0
+  },
+  {
+    "file": "src/services.ts",
+    "guide": "../references/06-services-and-context.md",
+    "block": 0
+  },
+  {
+    "file": "src/layers.ts",
+    "guide": "../references/07-layers-and-wiring.md",
+    "block": 0
+  },
+  {
+    "file": "src/resources.ts",
+    "guide": "../references/08-resources-and-scopes.md",
+    "block": 0
+  },
+  {
+    "file": "src/runtime.ts",
+    "guide": "../references/09-runtime-boundaries.md",
+    "block": 0
+  },
+  {
+    "file": "src/concurrency.ts",
+    "guide": "../references/10-fibers-and-concurrency.md",
+    "block": 0
+  },
+  {
+    "file": "src/queue.ts",
+    "guide": "../references/11-queues-and-coordination.md",
+    "block": 0
+  },
+  {
+    "file": "src/ref.ts",
+    "guide": "../references/12-state-and-transactions.md",
+    "block": 0
+  },
+  {
+    "file": "src/transaction.ts",
+    "guide": "../references/12-state-and-transactions.md",
+    "block": 1
+  },
+  {
+    "file": "src/retry.ts",
+    "guide": "../references/13-retries-timeouts-and-scheduling.md",
+    "block": 0
+  },
+  {
+    "file": "src/cache.ts",
+    "guide": "../references/14-caching-and-batching.md",
+    "block": 0
+  },
+  {
+    "file": "src/stream.ts",
+    "guide": "../references/15-streams.md",
+    "block": 0
+  },
+  {
+    "file": "src/sink.ts",
+    "guide": "../references/16-sinks-channels-and-encoding.md",
+    "block": 0
+  },
+  {
+    "file": "src/config.ts",
+    "guide": "../references/17-configuration-and-secrets.md",
+    "block": 0
+  },
+  {
+    "file": "src/option.ts",
+    "guide": "../references/18-data-types-and-utilities.md",
+    "block": 0
+  },
+  {
+    "file": "src/time.ts",
+    "guide": "../references/19-time-numbers-and-units.md",
+    "block": 0
+  },
+  {
+    "file": "src/observability.ts",
+    "guide": "../references/20-observability.md",
+    "block": 0
+  },
+  {
+    "file": "src/http-client.ts",
+    "guide": "../references/21-http-clients.md",
+    "block": 0
+  },
+  {
+    "file": "src/http-api.ts",
+    "guide": "../references/22-http-apis.md",
+    "block": 0
+  },
+  {
+    "file": "src/rpc.ts",
+    "guide": "../references/23-rpc-and-sockets.md",
+    "block": 0
+  },
+  {
+    "file": "src/sql.ts",
+    "guide": "../references/24-sql.md",
+    "block": 0
+  },
+  {
+    "file": "src/atom.ts",
+    "guide": "../references/28-reactivity-and-frontend.md",
+    "block": 0
+  },
+  {
+    "file": "src/ai.ts",
+    "guide": "../references/31-ai-and-tools.md",
+    "block": 0
+  },
+  {
+    "file": "src/tools.ts",
+    "guide": "../references/31-ai-and-tools.md",
+    "block": 1
+  },
+  {
+    "file": "src/workflow.ts",
+    "guide": "../references/32-workflows.md",
+    "block": 0
+  },
+  {
+    "file": "src/entity.ts",
+    "guide": "../references/33-cluster.md",
+    "block": 0
+  }
+]

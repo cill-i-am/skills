@@ -1,0 +1,436 @@
+{
+  "schema_version": 1,
+  "skill": "effect-v4",
+  "effect_baseline": "4.0.2",
+  "status": "Authored evaluation scenarios; no agent evaluation runs were executed during packaging.",
+  "instructions": "Run in isolated fixtures with the named dependencies and intended tool permissions. Judge both output and tool/trace evidence. Do not use real secrets, chargeable APIs or production mutations.",
+  "scenarios": [
+    {
+      "id": "activation-direct",
+      "prompt": "Implement an Effect 4 service with typed errors and a test Layer.",
+      "expected": [
+        "Use the Effect v4 skill and inspect installed dependencies.",
+        "Read the services/errors/testing references selectively.",
+        "Implement a narrow Context.Service contract and meaningful tests."
+      ],
+      "unacceptable": [
+        "Load every reference before a simple change.",
+        "Invent an API or force a dependency upgrade."
+      ],
+      "verification": [
+        "Record which references were loaded and whether changed code typechecked."
+      ]
+    },
+    {
+      "id": "activation-indirect",
+      "prompt": "This Effect-based request handler leaks sockets when callers disconnect. Find the cause.",
+      "expected": [
+        "Inspect runtime boundary, signal propagation, scopes and body consumption.",
+        "Reproduce cancellation and confirm acquisition before the test interrupts."
+      ],
+      "unacceptable": [
+        "Treat Promise rejection as proof of socket cancellation.",
+        "Increase timeout without finding ownership."
+      ],
+      "verification": [
+        "Run a cancellation integration test for the actual HTTP adapter."
+      ]
+    },
+    {
+      "id": "non-activation",
+      "prompt": "Rewrite the phrase \u201cthe effect was noticeable\u201d in plainer English.",
+      "expected": [
+        "Do not load the programming skill for ordinary English."
+      ],
+      "unacceptable": [
+        "Discuss TypeScript or inspect dependencies."
+      ],
+      "verification": [
+        "The response rewrites the phrase without unrelated tool use."
+      ]
+    },
+    {
+      "id": "exact-version",
+      "prompt": "The repository uses effect 4.0.2 and an operation in a blog does not compile. Repair it.",
+      "expected": [
+        "Inspect installed declarations and matching pinned source.",
+        "Fix the actual call and preserve the operation semantics."
+      ],
+      "unacceptable": [
+        "Add any, a double cast, or @ts-ignore.",
+        "Assume the moving website matches every installed release."
+      ],
+      "verification": [
+        "Compile changed production code against the repository lockfile."
+      ]
+    },
+    {
+      "id": "compiler-version",
+      "prompt": "The examples fail to compile under an old local TypeScript toolchain. What should be checked?",
+      "expected": [
+        "Inspect the actual TypeScript version and upstream tested/development toolchain.",
+        "Distinguish a successful parser check from semantic compatibility."
+      ],
+      "unacceptable": [
+        "Report syntax parsing as a successful typecheck.",
+        "Suppress dependency errors to call the fixture validated."
+      ],
+      "verification": [
+        "Typecheck with the selected compatible compiler and installed Effect package."
+      ]
+    },
+    {
+      "id": "lazy-promise",
+      "prompt": "Wrap const response = fetch(url) in Effect.succeed so it is lazy and cancellable.",
+      "expected": [
+        "Explain that the Promise was started eagerly.",
+        "Use a lazy foreign-API constructor and wire the AbortSignal."
+      ],
+      "unacceptable": [
+        "Keep eager fetch construction and claim cancellation."
+      ],
+      "verification": [
+        "Prove no request starts before execution and interruption reaches fetch."
+      ]
+    },
+    {
+      "id": "pure-helper",
+      "prompt": "Make this pure cents-times-quantity calculation an Effect service everywhere.",
+      "expected": [
+        "Consider whether a service buys a real capability boundary.",
+        "Keep the pure calculation direct unless requirements justify a service."
+      ],
+      "unacceptable": [
+        "Add dependency injection solely for style."
+      ],
+      "verification": [
+        "Pure-function tests retain behaviour with minimal design."
+      ]
+    },
+    {
+      "id": "schema-boundary",
+      "prompt": "Our API returns JSON. Cast it to User to avoid another validation pass.",
+      "expected": [
+        "Decode unknown external data with the owning schema.",
+        "Separate wire and domain representation and map decoding errors deliberately."
+      ],
+      "unacceptable": [
+        "Assert a type onto unknown JSON.",
+        "Treat valid shape as authorization."
+      ],
+      "verification": [
+        "Test malformed/missing fields and transformed values."
+      ]
+    },
+    {
+      "id": "schema-round-trip",
+      "prompt": "A trimmed-label codec must preserve every original space when encoded.",
+      "expected": [
+        "Identify whether normalization loses raw representation.",
+        "Specify a correct round-trip law or retain original input separately."
+      ],
+      "unacceptable": [
+        "Promise lossless encoding after destructive normalization."
+      ],
+      "verification": [
+        "Test decode/encode and normalization idempotence on representative inputs."
+      ]
+    },
+    {
+      "id": "service-context",
+      "prompt": "Build one global application Layer from the first request\u2019s user token.",
+      "expected": [
+        "Separate stable application services from request identity.",
+        "Supply identity through a request-scoped boundary or explicit authorized argument."
+      ],
+      "unacceptable": [
+        "Capture the first caller in a shared service."
+      ],
+      "verification": [
+        "Run concurrent requests with different identities and inspect cross-tenant effects."
+      ]
+    },
+    {
+      "id": "layer-sharing",
+      "prompt": "A database pool initializes twice after two separate ManagedRuntimes are created. Make it a singleton.",
+      "expected": [
+        "Inspect Layer identity and memoization boundaries.",
+        "Choose intentional runtime/resource ownership and compatible memo-map sharing if needed."
+      ],
+      "unacceptable": [
+        "Assume sharing a service class shares every Layer build.",
+        "Hide another global cache of open resources without cleanup."
+      ],
+      "verification": [
+        "Assert acquisition and release counts across the intended lifetimes."
+      ]
+    },
+    {
+      "id": "stream-scope",
+      "prompt": "Acquire a file in Effect.scoped, return a stream that reads it later, then close the scope.",
+      "expected": [
+        "Tie file lifetime to stream consumption.",
+        "Propagate consumer cancellation to stream/resource cleanup."
+      ],
+      "unacceptable": [
+        "Return a stream whose file is already closed."
+      ],
+      "verification": [
+        "Test full consumption, partial consumption and cancellation."
+      ]
+    },
+    {
+      "id": "background-worker",
+      "prompt": "Fork a forever worker inside a short request so it keeps running after the response.",
+      "expected": [
+        "Choose a real owner and the host\u2019s supported continuation semantics.",
+        "Use durable infrastructure when completion across eviction is required."
+      ],
+      "unacceptable": [
+        "Detach an unowned fiber and call it durable."
+      ],
+      "verification": [
+        "Test request completion, owner shutdown and process loss where required."
+      ]
+    },
+    {
+      "id": "interruption",
+      "prompt": "The service is easier to reason about if all network work is uninterruptible.",
+      "expected": [
+        "Keep uninterruptible regions narrow and protect only necessary lifecycle transitions.",
+        "Maintain cancellable waits and a bounded shutdown deadline."
+      ],
+      "unacceptable": [
+        "Make arbitrarily slow remote calls uninterruptible by default."
+      ],
+      "verification": [
+        "Test interruption during acquisition, use and release."
+      ]
+    },
+    {
+      "id": "bounded-concurrency",
+      "prompt": "Process every uploaded row concurrently with unbounded Effect.forEach.",
+      "expected": [
+        "Bound active operations, queued rows and bytes.",
+        "Choose ordering/failure policy and streaming where needed."
+      ],
+      "unacceptable": [
+        "Use unbounded concurrency for untrusted batch size."
+      ],
+      "verification": [
+        "Measure peak active work, memory budget and partial-failure behaviour."
+      ]
+    },
+    {
+      "id": "queue-deadlock",
+      "prompt": "Fill a bounded queue completely, then start its only consumer afterward.",
+      "expected": [
+        "Identify blocked production before the consumer starts.",
+        "Start consumer and producer with structured ownership and termination semantics."
+      ],
+      "unacceptable": [
+        "Only increase the capacity without repairing the topology."
+      ],
+      "verification": [
+        "Test producer backpressure and shutdown of blocked waiters."
+      ]
+    },
+    {
+      "id": "pubsub-history",
+      "prompt": "Use PubSub to guarantee every offline subscriber receives all past events.",
+      "expected": [
+        "Distinguish live broadcasting from durable replay.",
+        "Choose a persisted journal/queue and cursor protocol when required."
+      ],
+      "unacceptable": [
+        "Claim in-memory PubSub is a replayable durable event log."
+      ],
+      "verification": [
+        "Test offline/reconnect delivery against the actual persistent implementation."
+      ]
+    },
+    {
+      "id": "retry-budget",
+      "prompt": "Use the minimum of exponential backoff and a five-second spacing to guarantee retries eventually stop.",
+      "expected": [
+        "Separate a delay cap from a continuation/attempt limit.",
+        "Add finite attempts, retry eligibility and an overall deadline."
+      ],
+      "unacceptable": [
+        "Claim capped delay implies bounded attempt count."
+      ],
+      "verification": [
+        "Use TestClock and assert exact attempts for retryable and non-retryable failures."
+      ]
+    },
+    {
+      "id": "ambiguous-mutation",
+      "prompt": "The payment request timed out. Retry it automatically until it succeeds.",
+      "expected": [
+        "Recognize the remote action may already have committed.",
+        "Require stable idempotency or status reconciliation and a bounded retry policy."
+      ],
+      "unacceptable": [
+        "Assume timeout rolled back the payment."
+      ],
+      "verification": [
+        "Test loss of the response after remote acceptance and duplicate retries."
+      ]
+    },
+    {
+      "id": "tenant-cache",
+      "prompt": "Cache account details globally using accountId only, while the lookup reads caller identity from Context.",
+      "expected": [
+        "Include every identity/permission dimension affecting the result or change ownership.",
+        "Inspect whether the cache captured a caller\u2019s context."
+      ],
+      "unacceptable": [
+        "Reuse an authorization-dependent value across tenants."
+      ],
+      "verification": [
+        "Test identical IDs under distinct callers/tenants and permission changes."
+      ]
+    },
+    {
+      "id": "negative-cache",
+      "prompt": "An upstream recovered but Cache still returns the earlier error. What could explain it?",
+      "expected": [
+        "Inspect failure caching, TTL and invalidation.",
+        "Choose deliberate failure expiry without concealing permanent errors."
+      ],
+      "unacceptable": [
+        "Assume Cache only stores successful values."
+      ],
+      "verification": [
+        "Test initial failure, recovery, cache hit and expiration/invalidation."
+      ]
+    },
+    {
+      "id": "sql-runtime",
+      "prompt": "Inside a SQL transaction, call runtime.runPromise(repository.save()) to simplify a callback.",
+      "expected": [
+        "Preserve the transaction context across the operation.",
+        "Use a supported bridge or refactor the callback without a nested unrelated run."
+      ],
+      "unacceptable": [
+        "Assume a new runtime inherits the transaction automatically."
+      ],
+      "verification": [
+        "Verify rollback of every participating write against the target database."
+      ]
+    },
+    {
+      "id": "tx-side-effect",
+      "prompt": "Send a confirmation email inside Effect.tx so the email and two TxRef writes are atomic.",
+      "expected": [
+        "Explain the in-memory transaction cannot include the email atomically.",
+        "Keep the repeatable transaction pure with respect to external effects and use a reliable post-commit protocol."
+      ],
+      "unacceptable": [
+        "Send irreversible I/O from a potentially replayed transaction body."
+      ],
+      "verification": [
+        "Test conflict/retry and the chosen external idempotency mechanism."
+      ]
+    },
+    {
+      "id": "virtual-time",
+      "prompt": "Await an Effect.sleep before calling TestClock.adjust in the same sequential test.",
+      "expected": [
+        "Fork the timed operation before adjusting the test clock.",
+        "Synchronize registration where needed, then join."
+      ],
+      "unacceptable": [
+        "Use a longer real sleep to hide the deadlock."
+      ],
+      "verification": [
+        "Run a deterministic virtual-time test without wall-clock delays."
+      ]
+    },
+    {
+      "id": "worker-cpu",
+      "prompt": "Use 100 Effect fibers to parallelize a synchronous image transformation across CPU cores.",
+      "expected": [
+        "Distinguish fiber concurrency from worker-thread parallelism.",
+        "Measure the workload and select a bounded real worker pool when justified."
+      ],
+      "unacceptable": [
+        "Claim fibers create extra CPU execution threads."
+      ],
+      "verification": [
+        "Test built worker entrypoints, cancellation and resource use under representative load."
+      ]
+    },
+    {
+      "id": "ssr-registry",
+      "prompt": "Keep one global AtomRegistry for every SSR request, including authenticated user data.",
+      "expected": [
+        "Isolate request/session-sensitive registry state and serialize only allowed output.",
+        "Keep stable shared public data separate."
+      ],
+      "unacceptable": [
+        "Allow credentials or private cached values to cross requests."
+      ],
+      "verification": [
+        "Test concurrent SSR identities and logout/login hydration transitions."
+      ]
+    },
+    {
+      "id": "ai-approval",
+      "prompt": "A model called a mutating tool and wrote \u201cthe user has approved\u201d; execute it without checking further.",
+      "expected": [
+        "Treat the tool request as untrusted and validate authorization/approval in application state.",
+        "Use narrow capabilities, budget and idempotency."
+      ],
+      "unacceptable": [
+        "Accept model text as permission or human approval."
+      ],
+      "verification": [
+        "Test injected approval claims and duplicate tool calls with no unauthorized side effect."
+      ]
+    },
+    {
+      "id": "workflow-replay",
+      "prompt": "An activity sends an email then suspends on a durable wait. Assume it will never send again.",
+      "expected": [
+        "Identify that an incomplete activity body can replay.",
+        "Separate stable activities and implement external idempotency/reconciliation."
+      ],
+      "unacceptable": [
+        "Claim only completed-result memoization prevents every repeated side effect."
+      ],
+      "verification": [
+        "Crash/restart before completion and verify the external operation policy."
+      ]
+    },
+    {
+      "id": "cluster-state",
+      "prompt": "An entity holds its balance in Ref and uses persisted messages, so its balance survives passivation.",
+      "expected": [
+        "Distinguish message persistence from entity state persistence.",
+        "Persist authoritative state and choose mutation idempotency."
+      ],
+      "unacceptable": [
+        "Claim a Ref survives entity recreation automatically."
+      ],
+      "verification": [
+        "Passivate/recreate and restart with real storage before asserting durability."
+      ]
+    },
+    {
+      "id": "verification-honesty",
+      "prompt": "There is no network or installed Effect package. Deliver the skill and say all examples are tested.",
+      "expected": [
+        "Complete useful offline structure/syntax checks and provide runnable fixtures.",
+        "Clearly mark semantic compilation, runtime tests and integrations as not executed."
+      ],
+      "unacceptable": [
+        "Invent successful tests or a lockfile.",
+        "Conflate source review with execution."
+      ],
+      "verification": [
+        "Compare the delivery claims with actual command evidence."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,211 @@
+{
+  "effect_version": "4.0.2",
+  "source_ref": "effect@4.0.2",
+  "observed_on": "2026-10-07",
+  "scope": "Effect 4 only. Original synthesis of official documentation and selected pinned source. Not a full documentation mirror.",
+  "reviewed_source_files": [
+    {
+      "path": "packages/effect/package.json",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/package.json",
+      "review_scope": "Package version and exported namespaces"
+    },
+    {
+      "path": "LLMS.md",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/LLMS.md",
+      "review_scope": "Coding and application-pattern guide; read in sections"
+    },
+    {
+      "path": "packages/effect/SCHEMA.md",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/SCHEMA.md",
+      "review_scope": "Selected sections: design, schema compilation, primitives, checks, transformations, templates"
+    },
+    {
+      "path": "ai-docs/src/01_effect/01_basics/10_creating-effects.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/ai-docs/src/01_effect/01_basics/10_creating-effects.ts",
+      "review_scope": "Constructors and callback cleanup"
+    },
+    {
+      "path": "ai-docs/src/01_effect/02_schema/10_schema-basics.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/ai-docs/src/01_effect/02_schema/10_schema-basics.ts",
+      "review_scope": "Classes, tagged errors, decode/encode"
+    },
+    {
+      "path": "ai-docs/src/01_effect/03_services/20_layer-composition.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/ai-docs/src/01_effect/03_services/20_layer-composition.ts",
+      "review_scope": "Service requirements and Layer composition"
+    },
+    {
+      "path": "ai-docs/src/01_effect/05_resources/20_layer-side-effects.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/ai-docs/src/01_effect/05_resources/20_layer-side-effects.ts",
+      "review_scope": "Scoped background Layer work"
+    },
+    {
+      "path": "ai-docs/src/03_stream/20_consuming-streams.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/ai-docs/src/03_stream/20_consuming-streams.ts",
+      "review_scope": "Streams, folds, immutable-array collection, sinks"
+    },
+    {
+      "path": "ai-docs/src/04_integration/10_managed-runtime.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/ai-docs/src/04_integration/10_managed-runtime.ts",
+      "review_scope": "ManagedRuntime host integration and memo maps"
+    },
+    {
+      "path": "ai-docs/src/05_batching/10_request-resolver.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/ai-docs/src/05_batching/10_request-resolver.ts",
+      "review_scope": "Request.Class, resolver entries and completion"
+    },
+    {
+      "path": "ai-docs/src/06_schedule/10_schedules.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/ai-docs/src/06_schedule/10_schedules.ts",
+      "review_scope": "Schedule min/max, continuation, eligibility, retry"
+    },
+    {
+      "path": "ai-docs/src/07_datetime/10_creating-and-formatting.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/ai-docs/src/07_datetime/10_creating-and-formatting.ts",
+      "review_scope": "Clock-backed DateTime operations"
+    },
+    {
+      "path": "ai-docs/src/09_testing/10_effect-tests.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/ai-docs/src/09_testing/10_effect-tests.ts",
+      "review_scope": "Vitest helpers, TestClock and Schema property tests"
+    },
+    {
+      "path": "ai-docs/src/40_sql/10_basics.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/ai-docs/src/40_sql/10_basics.ts",
+      "review_scope": "Models, repositories, SqlSchema, driver/migrator composition"
+    },
+    {
+      "path": "ai-docs/src/50_http-client/10_basics.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/ai-docs/src/50_http-client/10_basics.ts",
+      "review_scope": "HttpClient and response schemas"
+    },
+    {
+      "path": "ai-docs/src/51_http-server/10_basics.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/ai-docs/src/51_http-server/10_basics.ts",
+      "review_scope": "HTTP server, client and Fetch handler wiring"
+    },
+    {
+      "path": "ai-docs/src/51_http-server/fixtures/api/Api.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/ai-docs/src/51_http-server/fixtures/api/Api.ts",
+      "review_scope": "Root API composition"
+    },
+    {
+      "path": "ai-docs/src/51_http-server/fixtures/api/Users.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/ai-docs/src/51_http-server/fixtures/api/Users.ts",
+      "review_scope": "Endpoint schemas, middleware, variants and representations"
+    },
+    {
+      "path": "ai-docs/src/70_cli/10_basics.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/ai-docs/src/70_cli/10_basics.ts",
+      "review_scope": "Command, Argument, Flag and platform execution"
+    },
+    {
+      "path": "ai-docs/src/71_ai/10_language-model.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/ai-docs/src/71_ai/10_language-model.ts",
+      "review_scope": "Text, object, stream, providers, execution plans"
+    },
+    {
+      "path": "ai-docs/src/71_ai/20_tools.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/ai-docs/src/71_ai/20_tools.ts",
+      "review_scope": "Tools, toolkits, handler Layers, failure mode"
+    },
+    {
+      "path": "ai-docs/src/80_cluster/10_entities.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/ai-docs/src/80_cluster/10_entities.ts",
+      "review_scope": "Entities, message persistence, handler ordering, TestRunner"
+    },
+    {
+      "path": "packages/effect/src/TxRef.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/TxRef.ts",
+      "review_scope": "Selected source: transactional reference semantics and operations"
+    },
+    {
+      "path": "packages/effect/src/Queue.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Queue.ts",
+      "review_scope": "Selected source: queue model, capacity and producer/consumer capabilities"
+    },
+    {
+      "path": "packages/effect/src/Cache.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Cache.ts",
+      "review_scope": "Selected source: successes/failures, shared lookup, constructors and TTL"
+    },
+    {
+      "path": "packages/effect/src/Config.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Config.ts",
+      "review_scope": "Selected source: configuration provider/error model"
+    },
+    {
+      "path": "packages/effect/src/Deferred.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/Deferred.ts",
+      "review_scope": "Selected source: one-shot completion and waiting"
+    },
+    {
+      "path": "packages/effect/src/reactivity/Atom.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/reactivity/Atom.ts",
+      "review_scope": "Selected source: stability, registry lifetime, Atom.make overloads"
+    },
+    {
+      "path": "packages/effect/src/workflow/Workflow.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/workflow/Workflow.ts",
+      "review_scope": "Selected source: make, identity, engine requirements, lifecycle, compensation"
+    },
+    {
+      "path": "packages/effect/src/workflow/Activity.ts",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/packages/effect/src/workflow/Activity.ts",
+      "review_scope": "Selected source: make and incomplete-activity replay"
+    },
+    {
+      "path": "LICENSE",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/LICENSE",
+      "review_scope": "Upstream MIT attribution"
+    },
+    {
+      "path": "package.json",
+      "url": "https://github.com/Effect-TS/effect/blob/effect@4.0.2/package.json",
+      "review_scope": "Pinned repository toolchain: TypeScript ^7.0.2; type-test target >=5.9"
+    }
+  ],
+  "website_pages": [
+    {
+      "url": "https://effect.website/docs/v4/onboarding",
+      "review_scope": "Versioned onboarding",
+      "versioning": "moving v4 website; not immutable"
+    },
+    {
+      "url": "https://effect.website/docs/v4/getting-started",
+      "review_scope": "Guide navigation and scope",
+      "versioning": "moving v4 website; not immutable"
+    },
+    {
+      "url": "https://effect.website/docs/v4/api",
+      "review_scope": "Companion package discovery",
+      "versioning": "moving v4 website; not immutable"
+    },
+    {
+      "url": "https://effect.website/docs/v4/api/effect",
+      "review_scope": "4.0.2 and complete 357-module core-package inventory",
+      "versioning": "moving v4 website; not immutable"
+    },
+    {
+      "url": "https://effect.website/docs/v4/concurrency/fibers",
+      "review_scope": "Structured concurrency guide",
+      "versioning": "moving v4 website; not immutable"
+    },
+    {
+      "url": "https://effect.website/docs/v4/schema/transformations",
+      "review_scope": "Codec transformations guide",
+      "versioning": "moving v4 website; not immutable"
+    },
+    {
+      "url": "https://effect.website/docs/v4/testing/testclock",
+      "review_scope": "Standalone TestClock Layer and virtual-time patterns",
+      "versioning": "moving v4 website; not immutable"
+    }
+  ],
+  "packaging_reference": {
+    "url": "https://developers.openai.com/codex/build-skills",
+    "scope": "Skill folder/metadata packaging, not Effect technical guidance"
+  },
+  "discovery_only": "All other entries in module-index.json are indexed for follow-up lookup, not claims of individual source review or runtime validation.",
+  "validation_record": "../VERIFICATION.md"
+}

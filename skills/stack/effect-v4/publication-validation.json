@@ -1,0 +1,64 @@
+{
+  "checked_on": "2026-10-09",
+  "scope": "Publication packaging and syntax checks only",
+  "bundle": {
+    "status": "passed",
+    "markdown_files": 48,
+    "local_links_checked": 150,
+    "errors": [],
+    "scope": "Offline structure, local-path links, JSON, baseline inventory, and mirrored source snippets only.",
+    "not_checked": [
+      "External URL reachability",
+      "Effect semantic typechecking",
+      "Example runtime tests",
+      "Agent evaluations",
+      "Production integrations"
+    ]
+  },
+  "typescript_syntax": {
+    "check": "TypeScript syntax parsing only",
+    "typescript": "5.8.3",
+    "sources": 67,
+    "errors": [],
+    "status": "passed",
+    "limitation": "Does not resolve Effect imports, validate overloads/types, execute code, or prove runtime behaviour."
+  },
+  "javascript_syntax": {
+    "status": "passed",
+    "files": 5
+  },
+  "python_syntax": {
+    "status": "passed",
+    "files": 3
+  },
+  "yaml_metadata": {
+    "status": "passed",
+    "documents": 3
+  },
+  "atlas_inventory_consistency": {
+    "status": "passed",
+    "entries": 357
+  },
+  "flattened_single_skill": {
+    "status": "passed",
+    "markdown_files": 48,
+    "local_links_checked": 150,
+    "errors": [],
+    "scope": "Offline structure, local-path links, JSON, baseline inventory, and mirrored source snippets only.",
+    "not_checked": [
+      "External URL reachability",
+      "Effect semantic typechecking",
+      "Example runtime tests",
+      "Agent evaluations",
+      "Production integrations"
+    ]
+  },
+  "not_executed": [
+    "Complete repository validator",
+    "Skills CLI installation smoke test",
+    "Semantic TypeScript compilation against declared dependencies",
+    "Effect runtime tests",
+    "Agent benchmark",
+    "Real adapter integrations"
+  ]
+}
