@@ -63,3 +63,7 @@ Some quick-start CI snippets use floating `dlx` invocations, broad IAM policies,
 Documentation snapshot: 7 October 2026. Resolve exact APIs against the target project’s installed version; see [version policy](version-policy.md).
 
 Pinned dependency catalogue: [pnpm-workspace.yaml](https://github.com/alchemy-run/alchemy/blob/fbe6ece368c6898234592e897d852bb47b88ebb1/pnpm-workspace.yaml).
+
+## Drizzle release tracks
+
+The [Drizzle chapter](drizzle.md) records the 9 October 2026 release check, the stable/prerelease distinction, and the exact inspected Effect-compatible tuple. Do not replace that tuple with the stable npm default or assume an RC package is stable. The new fixture still requires real dependency resolution and typechecking.

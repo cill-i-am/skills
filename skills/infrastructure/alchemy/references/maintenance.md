@@ -47,3 +47,7 @@ Include negative triggers: a chemistry question or the unrelated Alchemy blockch
 Validate frontmatter, all local links, JSON/YAML syntax, script tests, TypeScript parsing, and code/example status labels. Run dependency typechecks and runtime tests where available and report any omitted level honestly. Remove caches, credentials, node_modules, logs, and unrelated build files before packaging. Include license/provenance for adapted material and keep the full folder intact.
 
 Sources: [OpenAI Skill Creator](https://github.com/openai/skills/blob/main/skills/.system/skill-creator/SKILL.md), [Alchemy documentation](https://alchemy.run/), and the pinned-source map in this package.
+
+## Drizzle/monorepo follow-up
+
+See the [iteration checklist](iteration-checklist.md) and [additional authored cases](../evals/drizzle-monorepo-cases.json). Compare old/new/no-skill on identical fixtures; with/without alone cannot demonstrate that replacing the old skill is better. Keep eval expectations outside the installed skill available to a tested agent. The fixture-backed runner and hidden acceptance suite are still outstanding.

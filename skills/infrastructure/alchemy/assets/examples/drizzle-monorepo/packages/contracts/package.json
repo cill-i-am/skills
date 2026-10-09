@@ -1,0 +1,12 @@
+{
+  "name": "@example/contracts",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./notes": "./src/notes.ts",
+    "./health": "./src/health.ts"
+  },
+  "dependencies": {
+    "effect": "catalog:"
+  }
+}

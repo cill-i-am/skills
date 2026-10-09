@@ -1,0 +1,6 @@
+node_modules/
+.alchemy/
+.env
+.env.*
+!.env.example
+dist/

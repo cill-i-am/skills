@@ -18,3 +18,10 @@ upstream Alchemy release or an endorsement by its maintainers.
 Alchemy, Effect, provider SDKs, GitHub Actions, fonts, and other third-party
 runtime packages are not bundled. Links to external primary documentation and
 action commit identities are references, not copies of those dependencies.
+
+Drizzle/monorepo revision, researched 9 October 2026: additional modified examples
+and instructional synthesis reference the Drizzle ORM project's Apache-2.0 source
+and documentation. Upstream: https://github.com/drizzle-team/drizzle-orm
+Attribution: Drizzle Team and contributors; see its source notices and history.
+Inspected prerelease source: ab785fcd99710d6d136ffbfd121b7aeb96e4d51d.
+No Drizzle implementation or dependency distribution is bundled.

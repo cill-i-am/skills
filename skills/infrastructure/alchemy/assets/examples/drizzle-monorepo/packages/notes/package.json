@@ -1,0 +1,23 @@
+{
+  "name": "@example/notes",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./service": "./src/Notes.ts",
+    "./d1": "./src/NotesD1Live.ts",
+    "./postgres": "./src/NotesPostgresLive.ts"
+  },
+  "dependencies": {
+    "@example/contracts": "workspace:*",
+    "alchemy": "catalog:",
+    "effect": "catalog:",
+    "drizzle-orm": "catalog:",
+    "@effect/sql-d1": "catalog:",
+    "@effect/sql-pg": "catalog:",
+    "pg": "8.22.0"
+  },
+  "devDependencies": {
+    "drizzle-kit": "catalog:",
+    "@types/pg": "8.20.0"
+  }
+}

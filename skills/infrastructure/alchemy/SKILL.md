@@ -11,6 +11,14 @@ The reference baseline is Alchemy `2.0.0-beta.81` at upstream commit
 The pinned workspace catalogue uses Effect `^4.0.0`; some setup prose still
 mentions RC tags. The project's installed version wins over this snapshot.
 
+## Defaults for new projects
+
+Prefer Drizzle for application SQL and pnpm monorepos for packaging. These are
+Cillian's defaults, not upstream requirements or permission to migrate existing
+projects. Use feature-local implementation Layers for resource/binding ownership,
+with one explicit owner for shared databases and migration histories. Keep pure
+business rules and browser contracts separate; see [colocation](references/infra-colocation.md).
+
 ## Required workflow
 
 1. **Identify the task and target.** Read the relevant manifests, lockfile,
@@ -74,7 +82,8 @@ mentions RC tags. The project's installed version wins over this snapshot.
 | Entity state, realtime, WebSockets | [Durable Objects](references/durable-objects.md) |
 | Queues, durable jobs, approval, schedules | [Workflows and messaging](references/workflows-and-messaging.md) |
 | SSR, SPA, TanStack Start, framework builds | [Frontends](references/frontends.md) |
-| Drizzle, Prisma, SQL, database migrations | [SQL and migrations](references/sql-and-migrations.md) |
+| Drizzle integrations, drivers, relations, typed queries | [Drizzle](references/drizzle.md) |
+| Migration ownership or a non-Drizzle SQL/Prisma path | [SQL and migrations](references/sql-and-migrations.md) |
 | Containers, Browser Rendering, AI, dynamic Workers | [Advanced Cloudflare](references/cloudflare-advanced.md) |
 | Access, Turnstile, secrets, domains, DNS, email | [Security and networking](references/security-and-networking.md) |
 | Lambda, S3, AWS events, containers, IAM | [AWS](references/aws.md) |
@@ -83,7 +92,8 @@ mentions RC tags. The project's installed version wins over this snapshot.
 | Fly, Railway, Hetzner, managed database platforms | [Managed platforms](references/managed-platforms.md) |
 | GitHub, Stripe, Better Auth, ACME, secret services | [Integrations](references/integrations.md) |
 | Native RPC, Effect RPC, schema-driven HTTP | [API boundaries](references/apis.md) |
-| Workspace layout, feature Layers, multiple stacks | [Monorepos](references/monorepos.md) |
+| Workspace layout, package exports, build cache, multiple stacks | [Monorepos](references/monorepos.md) |
+| Colocate infrastructure and logic; shared database Layers | [Infrastructure colocation](references/infra-colocation.md) |
 | New provider, local provider, auth, state, runtime | [Extensions](references/extensions.md) |
 | Logs, traces, metrics, alerts, incident evidence | [Observability](references/observability.md) |
 | v1 migration or a consequential v2 upgrade | [Migration](references/migration.md) |
@@ -91,7 +101,7 @@ mentions RC tags. The project's installed version wins over this snapshot.
 | Release or requested infrastructure audit | [Production review](references/production-review.md) |
 | Complete architecture/use-case selection | [Recipes](references/recipes.md) |
 | Copy/adapt code or inspect its limitations | [Examples](references/examples.md) |
-| Update or evaluate this skill | [Maintenance](references/maintenance.md) |
+| Update or evaluate this skill | [Maintenance](references/maintenance.md), [iteration checklist](references/iteration-checklist.md) |
 
 ## Tools and assets
 

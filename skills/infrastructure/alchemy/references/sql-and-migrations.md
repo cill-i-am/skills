@@ -1,5 +1,10 @@
 # SQL, Drizzle, Prisma, and schema migrations
 
+For the default Drizzle path, start with [Drizzle integrations](drizzle.md) and the
+[worked monorepo](../assets/examples/drizzle-monorepo/README.md). This chapter owns
+cross-ORM migration policy and the Effect SQL/Prisma alternatives; do not force an
+ORM change on an existing project.
+
 ## Separate four responsibilities
 
 Database provisioning creates the database and credentials. Migration generation computes candidate schema changes. Migration application changes a particular database. Runtime querying executes application work. Keep their permissions, environments, and verification distinct even when Alchemy models several in one graph.

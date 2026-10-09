@@ -31,6 +31,11 @@ Use the narrowest supported read/write/operation binding. Avoid passing a cloud 
 
 ## Services that own their infrastructure
 
+For a worked Drizzle service, server contract, pure rules, and a shared-database
+variant, read [infrastructure colocation](infra-colocation.md). Monorepo package
+boundaries and build caching are covered in [monorepos](monorepos.md).
+
+
 A feature Layer can create resources, bind their capabilities, and return a domain-facing service. Consumers depend on the service contract instead of on a global `env` object. This makes local fakes possible and keeps resource ownership near the feature that needs it.
 
 For example, an `Uploads` service can own its bucket and expose `putDocument` and `getDocument`. A Worker provides that implementation once at its platform boundary. Tests of business logic provide an in-memory implementation; integration tests exercise the real binding. Avoid one generic “cloud service” that exposes every SDK operation.

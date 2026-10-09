@@ -51,3 +51,14 @@ For interactive development, change into the chosen app directory before running
 The text APIs buffer a small body before their example size check; enforce a pre-buffering/ingress limit for arbitrary production input. The static bearer token is a narrow demo mechanism, not a full multi-user identity or tenant system. D1 fixture data is intentionally non-sensitive. The Workflow and queue fragments do not expose an unauthenticated general-purpose job runner. The provider scaffold does not fake successful lifecycle operations.
 
 Do not copy `--yes` or live-test defaults into an unreviewed script. Read [testing](testing.md), [CI/CD](ci-cd.md), and [production review](production-review.md) for the actual deployment requirements.
+
+## Drizzle-first monorepo revision
+
+The [independent Drizzle workspace](../assets/examples/drizzle-monorepo/README.md)
+adds D1 and Neon/Postgres implementation Layers, shared contracts, a small HTTP
+service and Vite health client, package exports, generation configs, and a
+root-command migration-input guard. Install/typecheck inside that workspace,
+not the parent example package. It deliberately requires first-time SQL/snapshot
+generation and a real lockfile. Only syntax, pure title tests, and guard behavior
+have been checked here; no dependency compilation or database execution is claimed.
+See [revision evidence](../evals/drizzle-monorepo-validation.md).
