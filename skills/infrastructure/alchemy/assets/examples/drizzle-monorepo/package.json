@@ -1,0 +1,29 @@
+{
+  "name": "alchemy-drizzle-monorepo-example",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.9.1",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test:unit": "node --experimental-strip-types --test packages/notes/test/*.test.ts",
+    "db:generate:sqlite": "pnpm --filter @example/notes exec drizzle-kit generate --config drizzle.sqlite.config.ts",
+    "db:generate:postgres": "pnpm --filter @example/notes exec drizzle-kit generate --config drizzle.postgres.config.ts",
+    "dev": "node scripts/require-migrations.mjs sqlite && alchemy dev --config alchemy.run.ts",
+    "plan": "node scripts/require-migrations.mjs sqlite && alchemy plan --config alchemy.run.ts",
+    "deploy": "node scripts/require-migrations.mjs sqlite && alchemy deploy --config alchemy.run.ts",
+    "dev:postgres": "node scripts/require-migrations.mjs postgres && alchemy dev --config alchemy.postgres.run.ts",
+    "plan:postgres": "node scripts/require-migrations.mjs postgres && alchemy plan --config alchemy.postgres.run.ts",
+    "deploy:postgres": "node scripts/require-migrations.mjs postgres && alchemy deploy --config alchemy.postgres.run.ts",
+    "test:guards": "node --test tests/migration-guard.test.mjs"
+  },
+  "devDependencies": {
+    "alchemy": "catalog:",
+    "effect": "catalog:",
+    "@effect/platform-node": "catalog:",
+    "typescript": "7.0.2",
+    "@types/node": "26.2.0"
+  }
+}

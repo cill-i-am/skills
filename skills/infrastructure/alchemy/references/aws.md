@@ -1,149 +1,71 @@
-# AWS
+# AWS compute, data, events, and IAM
 
-Use this file for Alchemy v2 applications on AWS. Open the narrow guide under `https://alchemy.run/aws/` and the generated provider page before writing exact resource props.
+## Select the runtime by workload
 
-## Baseline
+Use Lambda for request/event functions when its runtime and execution model fit. Use ECS/Fargate for container services and run-to-completion tasks. Use EC2 for a VM-level requirement. Use EKS when Kubernetes is an explicit operational choice, not merely because the app uses containers. MicroVM support is a distinct isolated-execution capability; use the current guide rather than inferring its image or lifecycle API from EC2.
 
-```ts
-import * as Alchemy from "alchemy";
-import * as AWS from "alchemy/AWS";
-import * as Effect from "effect/Effect";
+Before designing, establish account, region, credentials, state backend, network exposure, data ownership, and cost constraints. Use an explicit sandbox profile locally and short-lived credentials in CI. Avoid cross-region defaults hidden in SDK environment configuration.
 
-export default Alchemy.Stack(
-  "MyApp",
-  {
-    providers: AWS.providers(),
-    state: AWS.state(),
-  },
-  Effect.gen(function* () {
-    return {};
-  }),
-);
-```
-
-`AWS.state()` stores state in the target account and region. Keep the account, region, profile, and stage explicit before any mutation. `alchemy aws bootstrap` creates the per-account assets bucket used by Lambda deployments and therefore requires confirmation.
-
-## Choose A Runtime
-
-- `AWS.Lambda.Function`: default for serverless HTTP and event-driven workloads.
-- Lambda MicroVMs: isolated or long-running compute driven by Lambda through internal RPC.
-- ECS/Fargate: long-running services packaged as containers.
-- EC2: full machine and networking control.
-- EKS/Kubernetes: Kubernetes-native workloads where the orchestration overhead is justified.
-
-Do not choose ECS, EC2, or EKS merely because the application uses Docker. Start with Lambda unless runtime duration, protocols, process model, hardware, or operational constraints require another host.
-
-## Lambda Pattern
+## Lambda with a typed S3 capability
 
 ```ts
 import * as AWS from "alchemy/AWS";
-import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
-
-export default class Api extends AWS.Lambda.Function<Api>()(
-  "Api",
-  { main: import.meta.url, url: true },
-  Effect.gen(function* () {
-    return {
-      fetch: Effect.succeed(HttpServerResponse.text("ok")),
-    };
-  }),
-) {}
-```
-
-The class is both runtime declaration and typed binding target. Yield it from the stack to register it and return `functionUrl`, ARN, role, or log outputs needed by tests and operators.
-
-Use `Stack.useSync` for synchronous stage-aware props such as memory. Keep request/event work in the returned runtime API, not in outer initialization.
-
-## Bindings Are IAM
-
-AWS capabilities are operation-specific bindings:
-
-```ts
 import * as S3 from "alchemy/AWS/S3";
+import * as Effect from "effect/Effect";
+import * as Layer from "effect/Layer";
 
-const bucket = yield* S3.Bucket("Blobs");
-const putObject = yield* S3.PutObject(bucket);
+// Inside Lambda construction:
+const bucket = yield* S3.Bucket("Documents");
 const getObject = yield* S3.GetObject(bucket);
+// In a request handler:
+const object = yield* getObject({ Key: "example.txt" });
 ```
 
-Each binding provides a typed runtime operation and contributes the corresponding least-privilege IAM statement. Prefer the narrow operation binding over passing a broad SDK client or hand-writing wildcard policies.
+Provide `S3.GetObjectHttp` at the runtime boundary. A binding's capability declaration and its HTTP implementation Layer are separate. Add `PutObject`/`PutObjectHttp` only for consumers that write. The AWS SDK-shaped request omits the bound Bucket field; Alchemy supplies the resource and wires the corresponding permission.
 
-Rules:
+The complete [Lambda asset](examples.md) uses `AWS.Lambda.Function`, `main: import.meta.url`, and the documented Function URL option. `functionUrl: true` makes a public endpoint in the tutorial form; it is not protected by default. Add application authentication or the appropriate AWS endpoint policy before handling private data.
 
-- Bind only operations the runtime actually uses.
-- Provide the matching `*Http`/runtime Layer required by the host.
-- Review generated IAM scope during plan and tests.
-- Keep resource creation, event subscription, and runtime calls in the same typed graph.
+## Data choices
 
-## Data
+S3 suits objects; DynamoDB suits access-pattern-driven key/value and document data; relational systems suit SQL joins and transactions. Define partitioning, indexes, retention, backups, and migration strategy before picking a resource solely because it is easy to declare. DynamoDB table key changes can be replacements, not a transparent schema migration.
 
-- S3: object storage, multipart operations, streaming bodies, and bucket events.
-- DynamoDB: typed operation bindings and DynamoDB Streams.
-- RDS/Aurora: managed Postgres/MySQL, generated connectivity, Data API, and runtime `Connect` bindings.
+Bind the minimum operation needed. Test missing objects/items, conditional writes, duplicate operations, and permission failure. Stream S3 bodies instead of buffering large objects. Distinguish an absent object from an AccessDenied or network error; catching all reads as NotFound can hide a production incident.
 
-Prefer streaming S3 reads for large objects. Treat DynamoDB attribute shapes and database rows as external data; decode them at the adapter boundary. Keep database credentials redacted and connection lifetimes appropriate to the runtime.
+For relational databases, separate cluster provisioning, credentials, network access, schema migration, and runtime connection management. A Lambda or ECS service in a VPC must still have the appropriate path to the database and any external endpoints. Avoid granting broad network access as the default fix for a timeout.
 
-## Messaging And Events
+## Events and asynchronous work
 
-- SQS: `Queue`, send bindings, queue sinks, and `consumeQueueMessages` event sources.
-- SNS: topics, publish bindings, and fan-out.
-- Kinesis: ordered streams, put bindings, and Lambda stream consumers.
-- EventBridge: buses and rules.
-- Scheduler: cron/rate invocation.
-- S3 events and DynamoDB Streams: source-specific Lambda subscriptions.
+Use SQS for queued delivery, SNS for publish/subscribe, and other documented event sources for their actual semantics. Bind the consumer through Alchemy's event-source mechanism and supply the matching runtime Layer. Do not manually duplicate an event mapping already created by the binding.
 
-Example producer shape:
+Delivery retries require idempotency. Bound batches and concurrency, configure a dead-letter policy, and distinguish retryable provider failures from invalid messages. For streams, checkpoints and partial batch failure semantics are resource-specific. Read the exact guide before assuming an acknowledgement model copied from Cloudflare Queues applies to AWS.
 
-```ts
-import * as SQS from "alchemy/AWS/SQS";
+## Containers and networks
 
-const jobs = yield* SQS.Queue("Jobs");
-const send = yield* SQS.SendMessage(jobs);
-```
+ECS Tasks and Services differ: a Task finishes; a Service maintains desired running capacity. Specify image provenance, startup health, ports, resource sizing, logs, graceful termination, and task identity. Image build can occur during planning/diff and may need Docker; a plan is not guaranteed to be computationally cheap or side-effect-free locally.
 
-Consumer APIs take Effect Streams. Make handlers idempotent, configure retries and dead-letter behavior deliberately, and test duplicate delivery where the source is at-least-once.
+For public HTTP, make the load balancer/endpoint and TLS path explicit. For private services, verify subnet routes, security groups, DNS, and calling identity. Separate application secrets from image layers and build arguments. Use immutable image references in reproducible releases.
 
-## APIs And Websites
+## IAM and CI
 
-- Function URL: simplest public Lambda HTTP endpoint.
-- Schemaless RPC: trusted internal Lambda/MicroVM or service communication.
-- Effect RPC: schema-validated Effect/TypeScript client boundary.
-- Effect HTTP: schema-validated ordinary HTTP boundary.
-- API Gateway: stages, authorizers, API keys, usage plans, or gateway-specific controls.
-- StaticSite/Vite website resources: S3 plus CloudFront composition.
+Prefer capabilities that generate narrowly scoped statements, then inspect the actual policy. Runtime and deployment roles are different. A function that can read one bucket does not need the deployment role's authority. For GitHub OIDC, restrict audience and subject and protect the referenced environment; do not copy a tutorial's AdministratorAccess policy into production.
 
-Use `apis.md` before selecting a modality. Do not add API Gateway when a Function URL satisfies the actual requirements.
+## Verification and recovery
 
-## Networking And Domains
+Local emulation is useful but not proof of AWS IAM propagation, service quotas, VPC routing, or every event-source feature. Use a narrow approved integration suite and verify actual provider state independently. Record failed cleanup and retained resources. A resource replacement does not imply data transfer or zero downtime; rehearse it on a disposable copy before production.
 
-Use the `Network` helper when ECS/EC2/RDS needs a conventional VPC topology. Use primitives only when subnet, route, endpoint, ACL, NAT, or peering requirements differ from the helper.
+## Sources
 
-For custom domains, coordinate Route53, ACM, the serving resource, and validation records in one graph. Confirm the hosted zone and account before mutation; certificate and DNS changes can affect unrelated traffic.
+- [aws](https://alchemy.run/aws/)
+- [aws/setup](https://alchemy.run/aws/setup/)
+- [aws/compute/choosing-a-runtime](https://alchemy.run/aws/compute/choosing-a-runtime/)
+- [aws/compute/ecs](https://alchemy.run/aws/compute/ecs/)
+- [aws/compute/ec2](https://alchemy.run/aws/compute/ec2/)
+- [aws/compute/eks](https://alchemy.run/aws/compute/eks/)
+- [aws/compute/microvms](https://alchemy.run/aws/compute/microvms/)
+- [aws/tutorial/part-2](https://alchemy.run/aws/tutorial/part-2/)
+- [aws/data/s3](https://alchemy.run/aws/data/s3/)
+- [aws/data/dynamodb](https://alchemy.run/aws/data/dynamodb/)
+- [aws/local-development](https://alchemy.run/aws/local-development/)
+- [aws/tutorial/part-5](https://alchemy.run/aws/tutorial/part-5/)
 
-## Authentication And State
-
-Alchemy supports AWS SSO, standard environment credentials, and stored access keys through profiles.
-
-- Prefer SSO locally.
-- Prefer short-lived, federated CI credentials over long-lived keys.
-- Use a separate profile/account boundary for production when available.
-- Run `alchemy profile show` and AWS identity checks before high-impact plans or deploys.
-- Never copy local credentials into stack outputs or CI logs.
-
-## Observability
-
-- Lambda and service logs flow to CloudWatch.
-- Declare dashboards and metric alarms with the resources they observe.
-- Return useful URLs/ARNs and stable dimensions for tests and operations.
-- Add Effect spans and structured fields inside runtime handlers; use `observability.md` for cross-provider guidance.
-
-## Verification
-
-- `alchemy plan` targets the intended account, region, stage, and profile.
-- Lambda assets are bootstrapped before CI deploys.
-- IAM statements are operation- and resource-scoped.
-- Event consumers have retry, batch, failure, and dead-letter behavior.
-- Public URLs, API contracts, and domain records are integration-tested.
-- Real-cloud tests use unique stages and guaranteed cleanup.
-- Destructive tests never target production or shared persistent data.
+Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.

@@ -1,0 +1,11 @@
+{
+  "name": "@example/api",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@example/contracts": "workspace:*",
+    "@example/notes": "workspace:*",
+    "alchemy": "catalog:",
+    "effect": "catalog:"
+  }
+}

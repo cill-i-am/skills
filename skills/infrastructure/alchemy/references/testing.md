@@ -1,129 +1,73 @@
-# Testing
+# Testing strategy and Alchemy test harness
 
-Alchemy's integration model uses real cloud resources rather than mocks or provider emulators. Test isolation, deployment ownership, and teardown are part of the test design.
+## Choose the cheapest test that proves the claim
 
-## Testing Layers
+Use ordinary pure unit tests for parsing, authorization decisions, stage policy, and domain logic. Use service fakes for code that depends on capability contracts. Use local providers for runtime/binding integration. Use authorized live tests for actual IAM, DNS, cloud lifecycle, external integrations, and gaps in emulation. None of these layers substitutes for all the others.
 
-- Pure domain/unit tests: no Alchemy deployment; use Effect test services as needed.
-- Runtime adapter tests: test handlers/services with provided binding or repository Layers.
-- Stack integration tests: deploy the real stack once, exercise its outputs, destroy according to policy.
-- Provider lifecycle tests: use `test.provider` to prove create/update/no-op/replace/delete/read behavior.
-- Observability tests: inspect recorded lifecycle spans and annotations without scraping console text.
+`Test.make` defaults to **real cloud deployment**. An in-memory state store does not make the provider fake. Inspect provider Layers, explicit `remote()` selections, side effects at module load, and test hooks before running unfamiliar tests.
 
-Do not replace stack/provider tests with generic Effect tests. They prove different contracts.
+## End-to-end test shape
 
-## Harness Setup
-
-Use the adapter for the repository's runner:
+The full example at [the example catalogue](examples.md) uses this source-reviewed pattern:
 
 ```ts
-import * as Alchemy from "alchemy";
 import * as Cloudflare from "alchemy/Cloudflare";
-import * as Test from "alchemy/Test/Vitest";
+import * as Test from "alchemy/Test/Bun";
+import * as Effect from "effect/Effect";
+import * as HttpClient from "effect/http/HttpClient";
+import { expect } from "bun:test";
 import Stack from "../alchemy.run.ts";
 
 const { test, beforeAll, afterAll, deploy, destroy } = Test.make({
   providers: Cloudflare.providers(),
-  state: Alchemy.localState(),
-  stage: "test",
+  stage: "test-local-example",
+  dev: true,
 });
+const deployed = beforeAll(deploy(Stack));
+afterAll(destroy(Stack));
 
-const stack = beforeAll(deploy(Stack));
-afterAll.skipIf(!process.env.CI)(destroy(Stack));
+test("health endpoint", Effect.gen(function* () {
+  const { url } = yield* deployed;
+  const response = yield* HttpClient.get(`${url}/health`);
+  expect(response.status).toBe(200);
+}));
 ```
 
-`alchemy/Test/Bun` and `alchemy/Test/Vitest` expose the same harness shape. Import assertions from the underlying runner.
+This local example's fixed stage is for one isolated developer execution. Parallel CI requires a unique, sanitized stage including run/job/suite identity. `beforeAll` returns an Effect accessor: yield it inside a test. Do not await it as a Promise at module initialization. Hook timeouts can be configured with a second argument such as `{ timeout: 300_000 }`.
 
-`Test.make` accepts provider Layers plus optional state, profile, and stage. Its hooks return lazy Effect accessors, so tests can `yield* stack` after the one-time deployment.
+For Vitest, use `alchemy/Test/Vitest` and the documented `@effect/vitest` adapter. Preserve the repository's runner; do not install a second runner merely to use a sample. Hooks and deploy/destroy follow the same model.
 
-## Deployment Ownership
+## Useful harness controls
 
-- Deploy once per suite, not once per test.
-- Default to a unique stage per PR or concurrent test run.
-- Use a sandbox profile/account.
-- Share remote state only when multiple files/runners intentionally operate on the same deployed stack.
-- Increase hook timeout for containers, IAM propagation, domains, or slow provider reconciliation.
-- Decide and document whether local runs preserve a stack for iteration.
-- CI should normally destroy its unique stage even after test failure.
+`providers` is required. `state` defaults to local state for top-level deploys; `profile`, `stage`, `dev`, `adopt`, and `sidecar` tune execution. Persistent state can reuse unchanged infrastructure between runs, but then cleanup ownership must be explicit. Adoption is not a generic fix for colliding tests.
 
-Harness `deploy` and `destroy` do not prompt. Running such a suite is therefore a real cloud mutation and requires explicit user authorization in an agent session.
+`dev: true` selects emulated resources. `ALCHEMY_DEV` can supply the mode when omitted; `ALCHEMY_TEST_DEV` can override it. An explicitly remote resource is still live. The harness's local sidecar is useful for matching development behaviour; in-process execution can simplify provider debugging.
 
-## Exercise Real Behavior
+## Assert behaviour, not just status
 
-Return operator/test-friendly outputs such as URLs, names, and redacted identifiers from the stack. Tests should drive the public or bound interface rather than inspect implementation details.
+A storage API test should write a unique key, read the same value, verify missing-key handling, reject unauthenticated/invalid input, and check isolation between tenants. A queue test should verify eventual consumption and duplicate handling. A workflow test should cover a retry and a terminal failure, not merely instance creation. A frontend test should exercise a server route and a deep-link asset path, not only a homepage.
 
-```ts
-test(
-  "health endpoint is ready",
-  Effect.gen(function* () {
-    const { url } = yield* stack;
-    const response = yield* Test.getWhenReady(`${url}/health`);
-    expect(response.status).toBe(200);
-  }),
-);
-```
+Use bounded readiness polling and deadlines. Distinguish cold-start/transient readiness from an actual authorization or validation failure; retrying every 4xx hides bugs. Inspect `Test.getWhenReady` and `Test.executeWhenReady` in the installed harness before choosing their overloads. Never use unbounded polling or fixed multi-minute sleeps as the main readiness contract.
 
-Fresh routes, DNS, and IAM can converge after deployment. Use `getWhenReady`/`executeWhenReady` for initial HTTP availability or a bounded `Schedule` for specific async state. Retry only transient statuses/errors; do not hide authentication, validation, or deterministic failures.
+## Provider lifecycle proof
 
-For queues, workflows, streams, and event delivery:
+`test.provider(name, stack => effect)` gives a scratch stack with private in-memory state. Deploy one declaration, deploy it unchanged, update a mutable input, change a replacement-triggering input, and destroy. Compare physical IDs where identity matters. Read the provider API independently to verify the cloud matches reported outputs.
 
-- create a unique correlation ID;
-- trigger through the real producer interface;
-- poll an observable result with bounded backoff;
-- assert duplicate/idempotency behavior when delivery is at-least-once;
-- fail before the runner's global timeout;
-- clean up test data where the stage does not own the whole store.
+Add adoption/recovery tests, NotFound deletion, partial success followed by retry, throttling, invalid credentials, and secret redaction. A read that treats every error as NotFound can create duplicates during an outage; test that distinction explicitly. Use local fake clients for failure injection, then a narrow live suite for actual semantics.
 
-## Provider Lifecycle Tests
+## Cleanup is part of correctness
 
-Use `test.provider` for custom or changed providers. Cover:
+Register teardown before assertions can fail. A killed runner may never execute hooks, so use unique stages, ownership metadata, cost limits, and an orphan-cleanup process. Keep credentials available to teardown but not to unrelated logs/artifacts. A debug option that retains test infrastructure must be explicit and report its target.
 
-1. Create from no state and no cloud resource.
-2. No-op reconcile against matching observed state.
-3. Mutable update with fresh returned attributes.
-4. Drift correction based on observed cloud state.
-5. Replacement only for explicitly replacement-requiring fields.
-6. Idempotent delete, including already-missing resources.
-7. `read` recovery of owned resources.
-8. Refusal of unowned resources unless adoption is enabled.
-9. Secret redaction and typed provider errors.
-10. Partial failure and retry behavior.
+When testing an already-deployed environment, do not use deploy/destroy hooks at all. Supply its URL through a non-secret input and run an HTTP-only suite. Report separately which checks were syntax-only, typechecked, emulated, and live; a green unit suite is not evidence of a successful cloud deployment.
 
-Avoid provider tests that merely assert mocked SDK call order. The contract is convergent lifecycle behavior.
+## Sources
 
-## Test State
+- [testing](https://alchemy.run/testing/)
+- [testing/testing-a-stack](https://alchemy.run/testing/testing-a-stack/)
+- [testing/test-harness](https://alchemy.run/testing/test-harness/)
+- [testing/testing-providers](https://alchemy.run/testing/testing-providers/)
+- [cloudflare/tutorial/part-3](https://alchemy.run/cloudflare/tutorial/part-3/)
+- [cloudflare/tutorial/part-4](https://alchemy.run/cloudflare/tutorial/part-4/)
 
-- Local state speeds repeated local integration runs but must be isolated from normal development state.
-- Remote state lets CI files/runners share one deployment when necessary.
-- In-memory state is appropriate for provider lifecycle tests that do not need cross-process persistence.
-- Never point tests at production state.
-
-When a failed suite leaves resources behind, report the exact stack/stage/profile and obtain confirmation before cleanup. Do not run broad deletion commands as an automatic fallback.
-
-## Observability Tests
-
-Alchemy's testing observability can capture lifecycle spans and annotations. Assert semantic events, resource identity, operation status, and errors rather than terminal formatting. Use this for provider sequencing, retries, replacement, and cleanup evidence.
-
-Runtime observability remains an application concern: test logs/metrics/traces through the configured platform backend when those signals are part of the acceptance criteria.
-
-## CI Pattern
-
-```text
-install and cache
-  -> format/typecheck/unit tests
-  -> plan against explicit preview stage
-  -> authorized real-cloud integration suite
-  -> publish evidence
-  -> destroy preview stage on close/finalization
-```
-
-Parallel jobs need distinct stages or one deliberate deployment owner. Avoid races where several jobs deploy or destroy the same stack concurrently.
-
-## Completion Evidence
-
-- Resolved Alchemy version and test adapter.
-- Provider Layer, state store, stage, profile/account, and region.
-- Whether deployment occurred and who authorized it.
-- Assertions run and transient retries used.
-- Teardown result or exact resources intentionally retained.
-- Any skipped cloud test and the concrete reason.
+Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.
