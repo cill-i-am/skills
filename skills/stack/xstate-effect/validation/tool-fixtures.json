@@ -1,0 +1,26 @@
+{
+  "audit_bad_fixture": {
+    "passed": true,
+    "exit_code": 1,
+    "detected_codes": [
+      "discarded-effect",
+      "effect-major",
+      "inline-spawn",
+      "promise-bridge",
+      "vanilla-host",
+      "xstate-major"
+    ]
+  },
+  "audit_clean_fixture": {
+    "passed": true,
+    "exit_code": 0
+  },
+  "broken_link_fixture": {
+    "passed": true,
+    "exit_code": 1
+  },
+  "malformed_typescript_fixture": {
+    "passed": true,
+    "exit_code": 1
+  }
+}

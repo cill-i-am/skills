@@ -1,0 +1,24 @@
+{
+  "typescript": "5.8.3",
+  "files_checked": 16,
+  "files": [
+    "preview/restore.ts",
+    "src/actor-service.ts",
+    "src/approval.ts",
+    "src/background-actions.ts",
+    "src/composition.ts",
+    "src/contracts.typecheck.ts",
+    "src/demo.ts",
+    "src/matching.ts",
+    "src/protocol.ts",
+    "src/resources.ts",
+    "src/retry.ts",
+    "src/search.ts",
+    "src/statecharts.ts",
+    "src/streams.ts",
+    "src/tests.ts",
+    "ui/Review.tsx"
+  ],
+  "errors": [],
+  "scope": "Syntax parsing only. Includes preview syntax, NOT preview compatibility. No dependencies, semantic inference, or runtime behavior validated."
+}

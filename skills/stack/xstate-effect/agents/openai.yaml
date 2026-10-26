@@ -1,0 +1,4 @@
+interface:
+  display_name: "XState + Effect"
+  short_description: "Effect-first XState workflows, actors, UI, and testing"
+  default_prompt: "Use $xstate-effect to design, implement, or review this workflow using the official @xstate/effect integration and Effect 4. Inspect installed versions and ownership first."
