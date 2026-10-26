@@ -95,6 +95,8 @@ Use stack and infrastructure skills inside that loop as needed:
 Use research and personal utility skills outside the delivery loop when the task
 calls for them:
 
+- `be-ambitious` to deepen a task with expert methods, primary sources, and an
+  external check, then rewrite its prompt without expanding scope.
 - `research-prompt`, `deep-research`, and `youtube-transcript` for source-backed
   investigation and transcript extraction.
 - `psychopomp` for Rust motion graphics and source-grounded architecture or PR
@@ -161,7 +163,7 @@ rg --files --hidden .agents/skills -g SKILL.md | wc -l
 rg --files --hidden .agents/skills -g openai.yaml | wc -l
 ```
 
-Expected result today: 38 skills and 38 metadata files.
+Expected result today: 39 skills and 39 metadata files.
 
 ## Guidance Audit
 
