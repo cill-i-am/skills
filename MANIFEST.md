@@ -119,7 +119,7 @@ resolves existing doc topology rather than forcing a root `CONTEXT.md`.
 These encode the current preferred TypeScript application stack. Treat all four
 as first-class bundled skills, not optional external add-ons:
 
-- `effect-ts`
+- `effect-v4`
 - `tanstack-routing`
 - `tanstack-react-best-practices`
 - `app-forms`

@@ -1,0 +1,18 @@
+# Steps fragment, not a complete workflow.
+# Insert after your reviewed checkout and Node setup steps.
+# Set the working directory to the actual skill location in your repository.
+# Generate, review, and commit a real package-lock.json before using npm ci.
+- name: Validate skill bundle
+  working-directory: .agents/skills/effect-v4
+  run: python3 scripts/verify-package.py
+- name: Install locked example dependencies
+  working-directory: .agents/skills/effect-v4/examples
+  run: npm ci
+- name: Typecheck examples
+  working-directory: .agents/skills/effect-v4/examples
+  run: npm run check
+- name: Test examples
+  working-directory: .agents/skills/effect-v4/examples
+  run: npm test
+# Separately run the application's real adapter tests and production build.
+# These example tests are not a replacement for those checks.
