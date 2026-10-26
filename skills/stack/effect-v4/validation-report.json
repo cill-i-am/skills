@@ -1,0 +1,90 @@
+{
+  "checked_on": "2026-10-07",
+  "baseline": {
+    "effect": "4.0.2",
+    "source_ref": "effect@4.0.2",
+    "fixture_typescript": "7.0.2"
+  },
+  "offline_checks": {
+    "bundle": {
+      "status": "passed",
+      "markdown_files": 48,
+      "local_links_checked": 484,
+      "errors": [],
+      "scope": "Offline structure, local-path links, JSON, baseline inventory, and mirrored source snippets only.",
+      "not_checked": [
+        "External URL reachability",
+        "Effect semantic typechecking",
+        "Example runtime tests",
+        "Agent evaluations",
+        "Production integrations"
+      ]
+    },
+    "typescript_syntax": {
+      "check": "TypeScript syntax parsing only",
+      "typescript": "5.8.3",
+      "sources": 67,
+      "errors": [],
+      "status": "passed",
+      "limitation": "Does not resolve Effect imports, validate overloads/types, execute code, or prove runtime behaviour."
+    },
+    "javascript_syntax": {
+      "status": "passed",
+      "files": 5,
+      "command": "node --check"
+    },
+    "python_syntax": {
+      "status": "passed",
+      "files": 3,
+      "command": "py_compile"
+    },
+    "yaml_metadata": {
+      "status": "passed",
+      "documents": [
+        "SKILL.md frontmatter",
+        "agents/openai.yaml",
+        "templates/ci-steps.yml"
+      ]
+    },
+    "inspector_smoke_tests": {
+      "status": "passed",
+      "scope": "Synthetic JSON metadata, not an installed Effect library",
+      "cases": [
+        {
+          "case": "synthetic metadata version 4.0.2",
+          "status": "passed"
+        },
+        {
+          "case": "synthetic metadata version 5.0.0",
+          "status": "passed"
+        },
+        {
+          "case": "missing installed metadata",
+          "status": "passed"
+        }
+      ]
+    },
+    "module_lookup_smoke_test": {
+      "status": "passed",
+      "query": "durable",
+      "matches": 3
+    }
+  },
+  "effect_fixture_preflight": {
+    "status": "blocked",
+    "installed_effect_resolved": false,
+    "reason": "No installed Effect package and dependency downloads unavailable in the authoring environment."
+  },
+  "not_executed": [
+    "Semantic TypeScript checking against Effect 4.0.2 and TypeScript 7.0.2",
+    "The three Effect runtime test suites",
+    "Agent evaluation scenarios",
+    "Real database/provider/socket/worker/browser/workflow-engine/cluster/cloud integrations"
+  ],
+  "not_claimed": [
+    "All external links are reachable",
+    "Every API symbol was reviewed",
+    "Production correctness",
+    "Performance benchmarks"
+  ]
+}

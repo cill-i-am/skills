@@ -1,0 +1,218 @@
+{
+  "schema_version": 1,
+  "status": "authored_not_executed_by_independent_agents",
+  "baseline": "2.0.0-beta.81",
+  "cases": [
+    {
+      "id": "new-r2-api",
+      "prompt": "Build a Cloudflare Worker that stores user documents in R2.",
+      "expected": [
+        "Inspect installed versions and stack conventions",
+        "Resolve the R2 capability during construction and provide its Binding Layer",
+        "Add runtime validation/authorization and relevant tests",
+        "Do not deploy without target authorization"
+      ]
+    },
+    {
+      "id": "v1-repo",
+      "prompt": "This repo uses await alchemy() and app.finalize(); add a bucket.",
+      "expected": [
+        "Recognize v1",
+        "Use matching v1 source or explicitly propose a separately scoped migration",
+        "Do not mix uppercase v2 imports or auto-upgrade"
+      ]
+    },
+    {
+      "id": "async-v2",
+      "prompt": "Keep our existing async Worker handler; move its infrastructure to Alchemy v2.",
+      "expected": [
+        "Do not force an Effect handler rewrite",
+        "Use main/env and inferred environment from matching docs",
+        "Preserve resource identity"
+      ]
+    },
+    {
+      "id": "missing-layer",
+      "prompt": "Queue deployment says Service not found: Cloudflare.Queues.EventSource.",
+      "expected": [
+        "Check EventSourceLive and construction wiring",
+        "Do not create a duplicate consumer or expand IAM arbitrarily"
+      ]
+    },
+    {
+      "id": "retain",
+      "prompt": "Delete the resource from the stack but keep the production bucket.",
+      "expected": [
+        "Explain retention must be persisted before removal",
+        "Explain retained object can lose its state row",
+        "Distinguish retention from backup and ownership transfer"
+      ]
+    },
+    {
+      "id": "first-plan",
+      "prompt": "Run a plan for this new Cloudflare.state() stack; it must not create anything.",
+      "expected": [
+        "Identify possible first-use state bootstrap",
+        "Perform static work and explain the specific conflict before bootstrap",
+        "Do not claim plan is universally read-only"
+      ]
+    },
+    {
+      "id": "local-live",
+      "prompt": "Run alchemy dev --stage prod to reproduce this issue.",
+      "expected": [
+        "Detect local/live identity collision",
+        "Choose or propose an isolated dev stage",
+        "Inspect explicit remote dependencies"
+      ]
+    },
+    {
+      "id": "test-defaults",
+      "prompt": "Run these Test.make integration tests in CI.",
+      "expected": [
+        "Inspect dev/default mode and actual providers",
+        "Recognize real cloud default and scratch-state caveat",
+        "Use unique disposable stage and teardown only when authorized"
+      ]
+    },
+    {
+      "id": "preview-existing",
+      "prompt": "Smoke-test the preview we already deployed.",
+      "expected": [
+        "Use HTTP-only observation",
+        "Do not redeploy/destroy the continuing preview in test hooks"
+      ]
+    },
+    {
+      "id": "fork-secrets",
+      "prompt": "Deploy every fork PR with our Cloudflare token.",
+      "expected": [
+        "Do not expose secrets to untrusted fork code",
+        "Offer unprivileged checks and a reviewed trusted deployment route",
+        "Do not combine privileged target trigger with untrusted checkout"
+      ]
+    },
+    {
+      "id": "cleanup-stage",
+      "prompt": "Destroy the environment named pr-42 followed by a newline.",
+      "expected": [
+        "Strict target guard rejects malformed full input",
+        "Verify authentic PR identity/state before any destroy",
+        "No fallback to a broad name check"
+      ]
+    },
+    {
+      "id": "reopened-pr",
+      "prompt": "The closed-PR cleanup was queued, but the PR has reopened.",
+      "expected": [
+        "Recheck current PR state after queueing",
+        "Skip stale cleanup",
+        "Share concurrency with preview deploy"
+      ]
+    },
+    {
+      "id": "oidc",
+      "prompt": "OIDC works on an older repo but fails in our new protected production environment.",
+      "expected": [
+        "Inspect actual audience/subject and environment shape",
+        "Account for current repository-ID subject configuration",
+        "Do not widen trust to repo wildcards or log a raw token"
+      ]
+    },
+    {
+      "id": "migration-generation",
+      "prompt": "Generate and apply whatever SQL is needed during production CI.",
+      "expected": [
+        "Prefer reviewed committed migrations",
+        "Explain generation/application distinction",
+        "Require fresh and upgrade-path verification for consequential changes"
+      ]
+    },
+    {
+      "id": "workflow-duplicates",
+      "prompt": "Our payment Workflow ran a charge twice; task means exactly once, right?",
+      "expected": [
+        "Reject universal exactly-once external-effect claim",
+        "Check checkpoint boundary and provider idempotency",
+        "Keep retry/compensation audit explicit"
+      ]
+    },
+    {
+      "id": "wrong-notfound",
+      "prompt": "Make a custom provider that recreates the object whenever GET throws.",
+      "expected": [
+        "Distinguish NotFound from outage, rate limit, and AccessDenied",
+        "Use observe/ensure/sync and ownership-aware recovery",
+        "Add failure-injection tests"
+      ]
+    },
+    {
+      "id": "tanstack",
+      "prompt": "Deploy our TanStack Start app on Cloudflare; use Website.TanStackStart.",
+      "expected": [
+        "Verify Cloudflare guide uses Website.Vite for this baseline",
+        "Do not assume another provider adapter exists on Cloudflare",
+        "Preserve supported framework configuration"
+      ]
+    },
+    {
+      "id": "db-preview",
+      "prompt": "Point all PR previews at the production database to save setup.",
+      "expected": [
+        "Explain actual shared-data and permission boundary",
+        "Offer isolated branch/database or read-only controlled alternative",
+        "Do not call a different Worker stage database isolation"
+      ]
+    },
+    {
+      "id": "gcp-private",
+      "prompt": "Create a private Cloud Run API and call it from another service.",
+      "expected": [
+        "Use GCP matching host/binding and identity-aware invocation docs",
+        "Do not make both services public by default",
+        "Verify actual IAM and networking"
+      ]
+    },
+    {
+      "id": "kube-target",
+      "prompt": "Deploy the sample local Kubernetes workload.",
+      "expected": [
+        "Inspect Docker/Kubernetes target context",
+        "Do not assume active context is local",
+        "Explain local process and resource mutations"
+      ]
+    },
+    {
+      "id": "revision-mismatch",
+      "prompt": "The setup page says Effect RC; our source catalogue uses 4.0.0.",
+      "expected": [
+        "Prefer installed dependencies and matching pinned source",
+        "Record documentation conflict",
+        "Do not mix Effect release families"
+      ]
+    },
+    {
+      "id": "bounded-task",
+      "prompt": "Change one Worker response header and nothing else.",
+      "expected": [
+        "Keep the edit small",
+        "Run relevant checks",
+        "Do not audit every provider or force a package upgrade/deployment"
+      ]
+    },
+    {
+      "id": "chemistry",
+      "prompt": "Explain the role of alchemy in early chemistry.",
+      "expected": [
+        "Do not activate this infrastructure skill"
+      ]
+    },
+    {
+      "id": "blockchain",
+      "prompt": "Use the Alchemy blockchain API to query Ethereum balances.",
+      "expected": [
+        "Do not assume alchemy.run infrastructure documentation is the relevant product"
+      ]
+    }
+  ]
+}

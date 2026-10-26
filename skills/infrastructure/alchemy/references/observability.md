@@ -1,89 +1,49 @@
-# Observability
+# Logs, traces, metrics, alerts, and operational evidence
 
-Use this file when Alchemy work touches logs, traces, metrics, dashboards, alarms, provider lifecycle diagnostics, or runtime telemetry.
+## Define evidence for the feature
 
-## Three Planes
+A deployment needs evidence that the application works, not merely that resources exist. Identify a small set of useful signals: request success/latency, failed authorization, queue backlog and dead letters, Workflow failures and compensation, database errors, and container readiness/restarts. Choose signals tied to user impact rather than exporting every available event.
 
-- Deployment plane: plans, provider lifecycle spans, retries, state changes, and resource annotations.
-- Runtime plane: application requests, jobs, queues, workflows, database calls, and external APIs.
-- Cloud plane: provider-native logs, metrics, alarms, and audit events.
+Alchemy's documented model combines Effect telemetry Layers with infrastructure for the receiving system. Cloudflare native tracing and Axiom integrations are examples; AWS uses its relevant native logging/monitoring services. Read the runtime-specific guide before configuring exporter Layers or assuming a Node exporter can run in a Worker.
 
-Keep them correlated by stack, stage, resource type, logical ID, deployment/run ID, and request/job correlation ID. Do not make one plane responsible for reconstructing all the others.
+## Correlate without leaking
 
-## Deployment Diagnostics
+Include service, source revision, environment/stage, and a request/job/operation identifier. Propagate trace context across HTTP and asynchronous work where supported. A queue message or Workflow instance should be traceable to the originating operation without storing unnecessary personal data in its name.
 
-- Use `alchemy logs --tail` for live resource logs and `alchemy logs` for historical batches.
-- Use state inspection to understand what a plan is diffing against.
-- Name provider and Action operations with `Effect.fn` so spans identify the resource operation.
-- Annotate lifecycle work with provider, operation, logical ID, physical ID, and retry count.
-- Preserve typed causes while redacting props and credentials.
+Never log bearer tokens, cookies, complete database URLs, presigned URLs, raw state, or secret-bearing request bodies. Use structured fields and deliberate redaction. Treat stack traces and provider error payloads as potentially sensitive. Do not return the internal error message to a public caller just because it is useful in logs.
 
-Provider tests should assert semantic lifecycle spans/annotations where sequencing and retry behavior matter. Avoid assertions tied to terminal colors or prose.
+## Native Cloudflare and Axiom
 
-## Runtime Effect Instrumentation
+The current Cloudflare guide exposes `Cloudflare.Telemetry()` for native Workers observability. The Axiom guides combine datasets, an ingest token, telemetry, and monitors. Choose one intentional export path rather than duplicating every event through two pipelines and doubling cost/noise.
 
-- Create shared telemetry Layers at the application boundary.
-- Add spans around request, job, workflow, database, and external-service operations.
-- Use structured log fields rather than interpolated strings.
-- Record latency, throughput, failures, retries, queue depth/age, and saturation where actionable.
-- Propagate correlation and trace context through HTTP, RPC, queues, and workflows.
-- Do not create exporters or SDK clients inside business logic or per request.
+Separate an ingest-only runtime token from an administrative token that creates datasets and monitors. Set retention and sampling based on privacy, diagnosis, and cost requirements. Verify an actual event reaches the expected dataset/stage; a correctly typed Layer is not proof of delivery.
 
-Never attach raw request bodies, tokens, connection strings, or full resource props to logs or spans.
+## Asynchronous and durable work
 
-## Axiom
+Record retries, attempts, dead-letter routing, terminal failure, and compensation outcomes. Distinguish accepted work from completed work: HTTP 202 or a returned instance ID does not prove the job succeeded. Monitor old or stuck instances with a bounded ownership-aware process.
 
-Register `Axiom.providers()` alongside the platform provider. Primary resources include:
+A Workflow replay can reproduce logs outside checkpointed tasks. Interpret repeated logs with attempt/replay identity rather than counting them as separate business operations. Container logs should carry the job ID and exit status without dumping the full input file.
 
-- `Axiom.Dataset` for OTel traces, logs, and metrics.
-- `Axiom.ApiToken` scoped for ingest or query use.
-- `Axiom.Notifier` for Slack and other destinations.
-- `Axiom.Monitor` for alert queries.
-- dashboard and annotation resources for operational context.
+## Alerts and runbooks
 
-```ts
-const traces = yield* Axiom.Dataset("Traces", {
-  name: "app-traces",
-  kind: "otel:traces:v1",
-});
+An alert should name the affected service/stage, the user impact, the relevant dashboard/query, and the first diagnostic steps. Avoid paging on expected validation errors or known transient readiness. Route preview/test alerts differently from production unless they indicate a shared platform failure.
 
-const ingest = yield* Axiom.ApiToken("RuntimeIngest", {
-  name: "runtime-ingest",
-  datasetCapabilities: {
-    "app-traces": { ingest: ["create"] },
-  },
-});
-```
+Provision receivers, notifiers, monitors, and access through the appropriate provider where supported. Test notification delivery using a deliberate synthetic incident, not a real customer failure. Assign ownership and a review cadence so obsolete alerts do not persist indefinitely.
 
-Use the current generated API for exact token permission and monitor props. Bind the narrow ingest token to the runtime; do not expose administrative/query credentials.
+## Deployment and incident evidence
 
-## AWS CloudWatch
+Record source SHA, target tuple, plan summary, applied resources, test results, and a safe endpoint/trace reference. During an incident, preserve logs and state before repair. Compare declared state, persisted state, and live state. Avoid changing observability and infrastructure simultaneously unless necessary to diagnose the problem.
 
-- Lambda and service logs should use intentional retention.
-- Declare dashboards and metric alarms in the same ownership stack as the resources or in a clearly owned observability stack.
-- Use stable dimensions and resource Outputs rather than copied ARNs/names.
-- Alarm on symptoms tied to an operator action: error rate, latency, throttles, queue age, DLQ depth, function concurrency, database capacity, and health checks.
+After rollback or repair, verify the actual service behaviour and the absence of continuing asynchronous failures. A green deployment command cannot prove recovery from a data or message-processing incident.
 
-## Cloudflare
+## Sources
 
-- Use Workers logs/tail for runtime diagnosis.
-- Use Analytics Engine, Logpush, Axiom integrations, or platform-native analytics based on retention and query needs.
-- Account for sampling and propagation when writing automated verification.
-- Keep state-store logs separate from application logs.
+- [testing/observability](https://alchemy.run/testing/observability/)
+- [infrastructure-as-effects/telemetry](https://alchemy.run/infrastructure-as-effects/telemetry/)
+- [cloudflare/observability/workers-tracing](https://alchemy.run/cloudflare/observability/workers-tracing/)
+- [cloudflare/observability/axiom-observability](https://alchemy.run/cloudflare/observability/axiom-observability/)
+- [cloudflare/observability/analytics-engine](https://alchemy.run/cloudflare/observability/analytics-engine/)
+- [axiom](https://alchemy.run/axiom/)
+- [cli/logs](https://alchemy.run/cli/logs/)
 
-## Alerts And Dashboards
-
-- Every alert needs an owner, severity, threshold/window, runbook/action, and testable signal.
-- Prefer a few service-level dashboards over one dashboard per resource.
-- Annotate deploys and incidents so behavior changes can be correlated.
-- Avoid alerting on metrics with no response action.
-- Test notifier routing without leaking secrets or paging production unnecessarily.
-
-## Verification
-
-- Telemetry Layers initialize once and exporters flush on runtime shutdown where supported.
-- Logs/spans include stage and resource identity.
-- Secrets and PII are redacted by construction.
-- Alerts reference existing datasets/resources and have a verified notification route.
-- Retention and cost are intentional.
-- A smoke test can correlate a deployed request or job across runtime and provider signals.
+Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.

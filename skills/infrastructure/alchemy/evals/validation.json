@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-10-07",
+  "upstream_revision": "fbe6ece368c6898234592e897d852bb47b88ebb1",
+  "alchemy_baseline": "2.0.0-beta.81",
+  "effect_catalogue": "^4.0.0",
+  "results": {
+    "node_preview_stage_tests": {
+      "passed": 26,
+      "failed": 0
+    },
+    "python_read_only_inspector_tests": {
+      "passed": 8,
+      "failed": 0
+    },
+    "typescript_asset_syntax": {
+      "parser": "TypeScript 5.8.3",
+      "files": 19,
+      "errors": 0
+    },
+    "yaml_parse": {
+      "files": 6,
+      "errors": 0
+    },
+    "workflow_bash_syntax": {
+      "run_blocks": 18,
+      "errors": 0
+    },
+    "workflow_static_invariants": {
+      "result": "passed",
+      "checks": [
+        "Full commit SHA action pins",
+        "Checkout credentials not persisted",
+        "Shared preview deployment/cleanup concurrency",
+        "Cleanup closed event only",
+        "Cleanup trusted default-branch source",
+        "Production main-only and protected-environment declarations"
+      ]
+    },
+    "skill_structure": {
+      "errors": [],
+      "local_links_checked": 99,
+      "reference_chapters": 36,
+      "entry_lines": 115,
+      "limits": "No external-link, dependency-type, semantic, or cloud validation"
+    }
+  },
+  "not_executed": [
+    "Dependency installation and peer resolution",
+    "Dependency-aware TypeScript typechecking",
+    "Alchemy/Bun/workerd emulator integration tests",
+    "Live cloud deployment or provider lifecycle tests",
+    "Actual GitHub Actions runs or environment configuration checks",
+    "Independent-agent behavioural evaluation of the 24 evaluation cases",
+    "Exhaustive external URL validation or every generated provider API page"
+  ],
+  "coverage": {
+    "reference_chapters": 36,
+    "approx_reference_words": 23030,
+    "typescript_assets": 19,
+    "workflow_templates": 5,
+    "helper_scripts": 5,
+    "source_index_records": 178,
+    "behavioural_evaluation_cases": 24
+  }
+}

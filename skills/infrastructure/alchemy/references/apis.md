@@ -1,135 +1,75 @@
-# APIs
+# API contracts, native RPC, Effect RPC, and HTTP
 
-Use this file before choosing how Alchemy runtimes communicate. The protocol decision follows the trust boundary, not personal preference for REST or RPC.
+## Choose the boundary, then the protocol
 
-## Decision Table
+Native schemaless RPC is a good default for trusted calls between typed Alchemy runtimes when the platform supports it. Use Effect RPC for schema-driven procedures across a trust boundary, and Effect HTTP for conventional HTTP consumers, URLs, status codes, and content types. Do not expose an internal admin capability just because its client is typed.
 
-| Situation                                                                                                  | Default                                   |
-| ---------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| Worker, Durable Object, Container, Lambda, or MicroVM calls another resource in the same controlled system | Schemaless RPC                            |
-| Browser or external Effect/TypeScript client crosses a trust boundary                                      | Effect RPC                                |
-| Browser, partner, webhook, or non-Effect consumer needs ordinary HTTP semantics                            | Effect HTTP                               |
-| Public API needs API keys, stages, usage plans, or AWS-native gateway controls                             | AWS API Gateway, often in front of Lambda |
+A schema is not authorization. Decode input, authenticate the caller, enforce tenant/resource access, execute the operation, and encode a deliberate response. Persisted or external data may need decoding even inside an otherwise trusted call chain.
 
-One host can expose schemaless methods and a `fetch` handler. Keep the platform host thin; domain services and API contracts should remain host-agnostic where possible.
-
-## Schemaless RPC
-
-Schemaless RPC is the default for trusted internal communication. A Function or Server returns ordinary functions whose arguments and results are inferred end to end:
-
-```ts
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Effect from "effect/Effect";
-import * as HttpServerResponse from "effect/unstable/http/HttpServerResponse";
-
-export default class Accounts extends Cloudflare.Worker<Accounts>()(
-  "Accounts",
-  { main: import.meta.url },
-  Effect.gen(function* () {
-    return {
-      getDisplayName: (accountId: string) => Effect.succeed(`account:${accountId}`),
-      fetch: Effect.succeed(HttpServerResponse.text("ok")),
-    };
-  }),
-) {}
-```
-
-When another resource binds `Accounts`, the bound class is the typed client. Keep that native transport; domain schemas still own reconstruction of values crossing runtime boundaries.
-
-Rules:
-
-- Use it only when both caller and callee are deployed and versioned together or otherwise mutually trusted.
-- Return Effect or Stream values so failures, interruption, and streaming remain typed.
-- Prefer branded domain identifiers internally when raw strings could be mixed up.
-- Static types do not preserve class instances or prove values across serialization. Apply the owning domain schema at runtime ingress where reconstruction or validation is required, including trusted internal RPC.
-- Reuse the canonical contract; do not replace native RPC with an unnecessary transport or duplicate schema layer.
-
-## Effect RPC
-
-Use Effect RPC when data crosses a trust boundary and consumers are Effect/TypeScript programs.
-
-Own the contract in a platform-neutral module:
+## Shared HTTP schema
 
 ```ts
 import * as Schema from "effect/Schema";
-import { Rpc, RpcGroup } from "effect/unstable/rpc";
+import * as HttpApi from "effect/http-api/HttpApi";
+import * as HttpApiEndpoint from "effect/http-api/HttpApiEndpoint";
+import * as HttpApiGroup from "effect/http-api/HttpApiGroup";
 
-export const AccountId = Schema.String.pipe(Schema.brand("AccountId"));
-
-export class Account extends Schema.Class<Account>("Account")({
-  id: AccountId,
-  displayName: Schema.NonEmptyString,
+export class Note extends Schema.Class<Note>("Note")({
+  id: Schema.String, title: Schema.String,
 }) {}
-
-export class AccountNotFound extends Schema.TaggedClass<AccountNotFound>()("AccountNotFound", {
-  id: AccountId,
-}) {}
-
-const getAccount = Rpc.make("getAccount", {
-  payload: { id: AccountId },
-  success: Account,
-  error: AccountNotFound,
+export class NoteNotFound extends Schema.TaggedErrorClass<NoteNotFound>()(
+  "NoteNotFound", { id: Schema.String }, { httpApiStatus: 404 },
+) {}
+const getNote = HttpApiEndpoint.get("getNote", "/:id", {
+  params: Schema.Struct({ id: Schema.String }),
+  success: Note, error: NoteNotFound,
 });
-
-export class AccountRpcs extends RpcGroup.make(getAccount) {}
+export class Notes extends HttpApiGroup.make("Notes").add(getNote) {}
+export class NotesApi extends HttpApi.make("NotesApi").add(Notes) {}
 ```
 
-Then:
+This contract module is safe to share with clients because it contains no provider credentials or deployment implementation. Refine strings, identifiers, and payload sizes for the actual domain. Use the installed Effect release's schema APIs; older beta examples can have incompatible constructors.
 
-- Implement handlers with `AccountRpcs.toLayer(...)`.
-- Convert the group to an HTTP effect with `RpcServer.toHttpEffect`.
-- Provide the same serialization on client and server.
-- Run clients inside `Effect.scoped`.
-- Use JSON for ordinary request/response and NDJSON when the API streams.
+## Implement and host
 
-Keep schemas focused on values that cross the boundary. Do not make cloud resources, Worker classes, database clients, or provider services part of the wire contract.
+`HttpApiBuilder.group` supplies typed handlers. `HttpApiBuilder.layer` assembles the API, and `HttpRouter.toHttpEffect` yields the fetch handler. Supply the platform-specific Layers from the Worker or Lambda guide; do not copy a placeholder `platform` variable into a supposedly complete application.
 
-## Effect HTTP
-
-Use Effect HTTP when the boundary needs real methods, URLs, path/query parameters, headers, content types, and clients that do not run Effect.
-
-Organize it as:
-
-```text
-src/
-  domain/Account.ts       # Schema classes, branded IDs, typed API errors
-  api/AccountApi.ts       # HttpApiEndpoint, group, and HttpApi declarations
-  api/AccountHandlers.ts  # handler Layers
-  platform/Api.ts         # Worker or Lambda host and platform Layers
-  client/AccountClient.ts # optional typed Effect client
+```ts
+const notes = HttpApiBuilder.group(NotesApi, "Notes", (handlers) =>
+  handlers.handle("getNote", ({ params }) =>
+    Effect.fail(new NoteNotFound({ id: params.id })),
+  ),
+);
 ```
 
-Rules:
+This deliberately non-persistent handler illustrates a typed 404. A real implementation delegates to a domain service and applies authorization before querying sensitive data. Do not call a demo's generated UUID response a completed create operation unless the item is actually persisted.
 
-- Use `HttpApiEndpoint` schemas for path/query/header/payload input and success/error output.
-- Map domain errors to explicit HTTP statuses through schema annotations rather than string matching.
-- Build handler Layers once during runtime initialization.
-- Convert the assembled API Layer to the host's `fetch` effect.
-- Generate typed Effect clients from the same `HttpApi`; keep plain HTTP usable without generated code.
-- Add CORS only at the public HTTP boundary that needs it.
+## Effect RPC
 
-## Trust Boundary Rules
+Use a shared procedure/schema module, handler Layers on the server, and a derived client. Choose the documented transport and serialization for the target runtime. Validate streaming cancellation, typed error mapping, and client/server version compatibility. Do not assume native Worker RPC and Effect RPC share the same transport or security model.
 
-- Validate external input once at ingress, then use decoded domain values internally.
-- Prefer `Schema.Class`, `TaggedErrorClass`/`TaggedClass`, branded IDs, unions, and structured records over raw strings and `unknown` objects.
-- Do not serialize `Redacted` values, provider credentials, connection strings, or cloud resource objects.
-- Keep transport errors distinct from domain errors.
-- Define idempotency and authentication at mutation boundaries.
-- Use platform-native bindings for internal calls where possible; use URL transports only when the topology requires them.
+## Native service calls
 
-## Platform Routing
+Return narrow methods from an Alchemy Function/Server and obtain its typed client through the platform binding. Avoid routing internal calls over public URLs when a private capability is available. Check which values can cross the wire: closures, class identity, and process-local handles are not portable just because TypeScript accepts a structural type.
 
-- Cloudflare-specific hosting and Durable Object bridges: `/cloudflare/apis/*`.
-- AWS Lambda hosting, Function URLs, DynamoDB/S3 bindings, and API Gateway: `/aws/apis/*`.
-- Generic schemas and modality comparison: `/apis/*`.
+## Public API operations
 
-Always check the current platform guide because the exact host Layers and binding transports differ between Workers and Lambda.
+For browser callers, define CORS, cookie attributes, CSRF policy where relevant, and session/token validation. For partners, define authentication, versioning, rate limits, idempotency keys, and error formats. For webhooks, verify signatures over the raw body and deduplicate deliveries before side effects.
+
+Do not log entire payloads by default. Validate input before invoking a model, writing a file, or provisioning per-user resources. Keep errors useful without leaking stack traces, SQL, secrets, or internal resource identifiers.
 
 ## Verification
 
-- Contract types compile in both server and client packages.
-- Boundary schemas reject malformed payloads and preserve branded values.
-- Typed errors survive a round trip.
-- Client and server serialization agree.
-- Internal calls use a native binding when available.
-- Public HTTP tests prove method, path, status, headers, success body, and declared failures.
+Test malformed payloads, missing/invalid authentication, cross-tenant access, not-found responses, unknown routes/methods, expected business failures, cancellation, and a client built from the shared schema. Typecheck the contract and host separately to detect server-only imports escaping into the client bundle.
+
+## Sources
+
+- [apis](https://alchemy.run/apis/)
+- [apis/schemaless](https://alchemy.run/apis/schemaless/)
+- [apis/effect-rpc](https://alchemy.run/apis/effect-rpc/)
+- [apis/effect-http](https://alchemy.run/apis/effect-http/)
+- [cloudflare/apis/effect-http-api](https://alchemy.run/cloudflare/apis/effect-http-api/)
+- [cloudflare/apis/effect-rpc](https://alchemy.run/cloudflare/apis/effect-rpc/)
+- [aws/apis/effect-http-api](https://alchemy.run/aws/apis/effect-http-api/)
+
+Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.

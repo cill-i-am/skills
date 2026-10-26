@@ -1,0 +1,22 @@
+{
+  "name": "effect-v4-skill-examples",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Source-reviewed Effect 4.0.2 examples; see ../VERIFICATION.md for executed versus pending checks.",
+  "scripts": {
+    "check": "tsc --noEmit",
+    "build": "tsc",
+    "test": "npm run build && node --test test/*.test.mjs",
+    "validate:bundle": "python3 ../scripts/verify-package.py"
+  },
+  "dependencies": {
+    "effect": "4.0.2"
+  },
+  "devDependencies": {
+    "typescript": "7.0.2"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

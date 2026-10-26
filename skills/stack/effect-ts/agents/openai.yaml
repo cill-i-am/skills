@@ -1,4 +1,0 @@
-interface:
-  display_name: "Effect TS"
-  short_description: "Implement against the installed Effect version"
-  default_prompt: "Use $effect-ts for the requested change, using the installed version and relevant contract, failure, and lifecycle guidance."

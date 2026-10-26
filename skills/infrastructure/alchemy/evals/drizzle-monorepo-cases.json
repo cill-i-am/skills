@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "status": "authored_not_executed_by_independent_agents",
+  "comparison": [
+    "no-skill",
+    "old-skill",
+    "new-skill"
+  ],
+  "fixture_source": "assets/examples/drizzle-monorepo",
+  "warning": "Fixture variants and hidden acceptance tests still need implementing. Do not expose this answer key to the tested agent.",
+  "cases": [
+    {
+      "id": "drizzle-release-track",
+      "prompt": "Add Drizzle to this Effect 4 Alchemy workspace; use the newest stable ORM.",
+      "expected": [
+        "Explain stable 0.45 versus the inspected v1 Effect-compatible tuple without claiming npm dist-tags were checked",
+        "Implement a compatible explicitly selected path, or report the concrete incompatibility; do not force peers",
+        "Typecheck the resulting application when dependencies are available"
+      ]
+    },
+    {
+      "id": "drizzle-d1-roundtrip",
+      "prompt": "Extend the D1 monorepo example with a delete-note endpoint and tests.",
+      "expected": [
+        "Implement a scoped mutation through the Notes service and D1 Layer",
+        "Keep input validation, authorization, missing-record behavior and public schema boundaries",
+        "Run independent endpoint and persistence tests; an explanation alone is not a pass"
+      ]
+    },
+    {
+      "id": "drizzle-postgres-scope",
+      "prompt": "Two features need the same Postgres database in this Worker.",
+      "expected": [
+        "Provide one shared database Layer/client construction instead of one pool per query",
+        "Keep runtime I/O inside the request scope and satisfy Hyperdrive binding dependencies",
+        "Verify query execution and cleanup without using a global live Worker socket"
+      ]
+    },
+    {
+      "id": "monorepo-shared-change",
+      "prompt": "Only packages/contracts changed; the deployed web application still contains the old contract.",
+      "expected": [
+        "Inspect both workspace build caching and Alchemy Website memo inputs",
+        "Include actual sibling build inputs and preserve lockfile hashing",
+        "Demonstrate a changed emitted build/hash; do not merely add a comment"
+      ]
+    },
+    {
+      "id": "colocate-preserve-identity",
+      "prompt": "Move this existing database and binding into the feature implementation Layer without changing resources.",
+      "expected": [
+        "Preserve stack, stage, namespace, logical IDs, resource types and migration ownership",
+        "Keep pure rules/public contracts free of provider imports",
+        "Show unchanged resource identities and equivalent behavior; do not bundle an upgrade or stack split"
+      ]
+    },
+    {
+      "id": "drizzle-public-input",
+      "prompt": "Use createInsertSchema to let clients create users, including the tenantId and admin columns.",
+      "expected": [
+        "Build a public allowlist rather than accepting all insertable columns",
+        "Derive ownership and privilege from trusted authorization",
+        "Add negative tests for cross-tenant and privileged-field writes"
+      ]
+    },
+    {
+      "id": "multi-stack-missing-stage",
+      "prompt": "Deploy a PR frontend; its Backend handle has no outputs for this stage.",
+      "expected": [
+        "Use explicit producer-before-consumer orchestration within actual authorization",
+        "Never silently use prod or redeclare the shared database",
+        "Verify same-stage resolution and reverse teardown in fixtures"
+      ]
+    },
+    {
+      "id": "preserve-non-drizzle",
+      "prompt": "This Alchemy app intentionally uses Effect SQL. Add one parameterized query.",
+      "expected": [
+        "Preserve the selected client and migration owner",
+        "Implement and test the bounded query rather than forcing Drizzle adoption",
+        "Use the non-Drizzle reference route"
+      ]
+    }
+  ]
+}
