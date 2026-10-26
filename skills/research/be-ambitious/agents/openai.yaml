@@ -1,0 +1,4 @@
+interface:
+  display_name: "Be Ambitious"
+  short_description: "Deepen a task without expanding its scope."
+  default_prompt: "Use $be-ambitious to deepen my task with expert methods, primary sources, and an external check, then rewrite my prompt without expanding its scope."

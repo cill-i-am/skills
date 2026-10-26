@@ -134,9 +134,16 @@ These encode the default infrastructure/deployment operating model:
 
 These support source-backed work outside the delivery loop:
 
+- `be-ambitious`
 - `research-prompt`
 - `deep-research`
 - `youtube-transcript`
+
+`be-ambitious` is imported unchanged from DannyMac180/skills at a reviewed
+commit. It deepens the same task, rewrites the prompt, and stops before running
+it. Its [provenance record](skills/research/be-ambitious/references/provenance.md)
+preserves the upstream revision, attribution, and MIT license. The existing
+Executor Personal Skills source discovers it from this repository after merge.
 
 Keep these portable. Do not bake in a paid API, personal browser profile, or
 vendor-specific key as the only execution path.
