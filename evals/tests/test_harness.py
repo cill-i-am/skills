@@ -143,7 +143,7 @@ class HarnessTests(unittest.TestCase):
         self.case.update(prompt="TIMEOUT", serve=True)
         self.assertEqual(self.run_cli("--timeout", "0.15").returncode, 1)
         result = self.result()
-        self.assertEqual(result["execution"], "timeout")
+        self.assertEqual(result["execution"], "timeout", result.get("error"))
         # The outer CLI budget includes cold Python startup and fixture setup.
         # Keep the measured subject timeout/cleanup bounded independently.
         self.assertLess(result["seconds"], 10)
