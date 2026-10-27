@@ -71,7 +71,7 @@ class HarnessTests(unittest.TestCase):
     def run_cli(self, *extra, out="run"):
         return subprocess.run([sys.executable, str(HERE / "harness.py"), "run",
             "--suite", str(self.suite()), "--out", str(self.root / out), "--codex", str(self.fake),
-            "--executor-app", "test-skills", *extra], capture_output=True, text=True, timeout=15)
+            "--executor-app", "test-skills", *extra], capture_output=True, text=True, timeout=60)
 
     def result(self, out="run"):
         return h.read_json(self.root / out / "cases" / self.case["id"] / "result.json")
@@ -144,6 +144,9 @@ class HarnessTests(unittest.TestCase):
         self.assertEqual(self.run_cli("--timeout", "0.15").returncode, 1)
         result = self.result()
         self.assertEqual(result["execution"], "timeout")
+        # The outer CLI budget includes cold Python startup and fixture setup.
+        # Keep the measured subject timeout/cleanup bounded independently.
+        self.assertLess(result["seconds"], 10)
         time.sleep(1.1)
         self.assertFalse((Path(result["workspace"]) / "leaked").exists())
         with self.assertRaises(urllib.error.URLError):
@@ -155,10 +158,12 @@ class HarnessTests(unittest.TestCase):
         (fixture / "escape").symlink_to(self.root / "private.txt")
         with h.serve(fixture, True) as first, h.serve(fixture, True) as second:
             self.assertNotEqual(first, second)
-            self.assertEqual(urllib.request.urlopen(first + "source.txt").read(), b"original")
+            with urllib.request.urlopen(first + "source.txt") as response:
+                self.assertEqual(response.read(), b"original")
             with self.assertRaises(urllib.error.HTTPError) as error:
                 urllib.request.urlopen(first + "escape")
             self.assertEqual(error.exception.code, 403)
+            error.exception.close()
 
     def test_paths_and_symlinks_rejected(self):
         self.case["fixture"] = "../outside"
