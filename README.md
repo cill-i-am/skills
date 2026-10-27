@@ -37,10 +37,17 @@ The bundle is portable, but opinionated.
 - Explicit ownership and review, using the delegation the environment and user authorize.
 
 Provider and product-specific skills such as Better Auth, shadcn, Drizzle,
-database providers, email, and design guidance are intentionally installed per
-project when needed.
+database providers and email are installed per project when needed. The curated
+design suite below is shared through Executor.
 
-## Install
+## Executor delivery
+
+The Personal Skills app in Executor reads this repository's `skills/` tree on
+`main`. List its catalogue, read the selected skill, and load supporting files
+using the returned revision. A local installation is optional. Natural-language
+requests can select these skills; a command prefix is not required.
+
+## Install locally (optional)
 
 This repo stores skills under category directories, so `--full-depth` is
 required.
@@ -116,7 +123,21 @@ calls for them:
   learning, continuation context, manual setup, read-only security audits, and
   long-running local work.
 
+## Design skills
+
+- Jakub Krehel's seven `better-*` skills, `build-design` and `interface-review`.
+- Emil Kowalski's `mobile-native`, `break-ui`, `animation-performance`, `animate`
+  and `find-animation-opportunities`.
+- `design-exploration-swarm-paper`: lightweight alternatives and state previews
+  in Paper, with a separate runtime-verification stage when needed.
+
+Project tokens take precedence over recipe defaults. Reviews retain evidence
+and accessibility requirements. See the [migration record](docs/design-skills-migration.md)
+for pinned sources, adaptations and validation limits.
+
 ## Skill Groups
+
+- `skills/design/`: interface quality, mobile web, motion and Paper exploration.
 
 - `skills/core-standards/`: engineering standards, architecture scans, TDD,
   tech specs, and code review.
@@ -174,7 +195,7 @@ rg --files --hidden .agents/skills -g SKILL.md | wc -l
 rg --files --hidden .agents/skills -g openai.yaml | wc -l
 ```
 
-Expected result today: 39 skills and 39 metadata files.
+Expected result for this revision: 55 skills and 55 metadata files.
 
 ## Guidance Audit
 

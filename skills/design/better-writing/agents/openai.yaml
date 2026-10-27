@@ -1,0 +1,4 @@
+interface:
+  default_prompt: "Use $better-writing for the requested design task."
+  display_name: "Better Writing"
+  short_description: "UX writing, interface copy and microcopy"

@@ -23,6 +23,8 @@ useful without becoming part of the delivery loop.
 - `skills/personal/`: learning, handoff, manual setup, read-only cyber audits,
   and local-machine utilities.
 
+- `skills/design/`: curated interface, motion, mobile-web and Paper workflows.
+
 ## Install
 
 This repo stores skills under category directories, so use `--full-depth`:
@@ -177,6 +179,16 @@ Do not make delivery-loop skills depend on personal utility skills. Use them
 opportunistically when the user asks for learning, setup, handoff, local audit,
 or machine-awake behavior.
 
+### Design skills
+
+The shared design set comprises seven `better-*` skills, `build-design`,
+`interface-review`, `mobile-native`, `break-ui`, `animation-performance`,
+`animate`, `find-animation-opportunities`, and `design-exploration-swarm-paper`.
+Executor serves these from the repository; they need not remain locally installed.
+All imported supporting resources and license notices travel with each skill.
+See [the migration record](docs/design-skills-migration.md) for exact upstream
+commits, adaptations, dependency routing and verification evidence.
+
 ### External Skills To Install Per Project
 
 These are intentionally not vendored in this bundle. Install them in projects
@@ -186,7 +198,7 @@ them when present:
 - Better Auth skill family from the Better Auth team / skills registry
 - `writing-great-skills` from Matt Pocock's skills repo for skill-authoring
   review and pruning
-- shadcn/UI, UI composition, and web design skills for frontend-heavy projects
+- shadcn/UI and additional UI composition or design skills outside the curated suite
 - Drizzle ORM, PlanetScale Postgres, Postgres/database, email delivery, Resend,
   and React Email skills from the registry when a project needs those operations
 - Provider-specific platform skills that are not part of the default Alchemy

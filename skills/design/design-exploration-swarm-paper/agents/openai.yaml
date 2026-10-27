@@ -1,0 +1,4 @@
+interface:
+  display_name: "Paper Design Exploration"
+  short_description: "Compare design directions and component states in Paper"
+  default_prompt: "Use $design-exploration-swarm-paper to explore this component in Paper."

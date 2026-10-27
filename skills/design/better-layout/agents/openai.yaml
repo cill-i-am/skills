@@ -1,0 +1,4 @@
+interface:
+  default_prompt: "Use $better-layout for the requested design task."
+  display_name: "Better Layout"
+  short_description: "Structure, grouping, alignment and adaptive layout"

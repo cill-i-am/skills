@@ -1,0 +1,4 @@
+interface:
+  default_prompt: "Use $build-design for the requested design task."
+  display_name: "Build Design"
+  short_description: "Build UI from a design file so it matches"

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Animation Performance"
+  short_description: "Focused animation performance guidance for web UI"
+  default_prompt: "Use $animation-performance for the requested design task."

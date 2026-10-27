@@ -1,0 +1,4 @@
+interface:
+  display_name: "Break Ui"
+  short_description: "Focused break ui guidance for web UI"
+  default_prompt: "Use $break-ui for the requested design task."
