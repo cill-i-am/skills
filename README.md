@@ -47,6 +47,14 @@ The Personal Skills app in Executor reads this repository's `skills/` tree on
 using the returned revision. A local installation is optional. Natural-language
 requests can select these skills; a command prefix is not required.
 
+## Behavioral evaluations
+
+[The reusable eval harness](evals/README.md) runs frozen task, boundary, negative-control
+and routing cases against Executor skills in fresh Codex sessions. It records actual
+skill reads and keeps automated assertions separate from evidence-based quality review.
+Run `pnpm test:evals` for offline harness tests; live agent and Paper runs are explicit
+commands and are never part of CI.
+
 ## Install locally (optional)
 
 This repo stores skills under category directories, so `--full-depth` is

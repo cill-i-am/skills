@@ -1,0 +1,1 @@
+Existing member management view. Full-size component container 640px. System font. Content: Alex Ng, alex@example.com; Aleksandra Wiśniewska-Kowalczyk, aleksandra@example.com. No app implementation requested.

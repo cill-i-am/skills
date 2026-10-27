@@ -1,0 +1,1 @@
+ .row{display:flex;gap:12px}.text{min-width:0;overflow-wrap:anywhere}.action{flex-shrink:0;margin-inline-start:auto}

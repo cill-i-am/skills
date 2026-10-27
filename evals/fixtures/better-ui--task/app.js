@@ -1,0 +1,1 @@
+document.querySelector('#ready').onchange=e=>document.querySelector('#save').disabled=!e.target.checked;document.querySelector('#save').onclick=()=>document.querySelector('#result').textContent='Preferences saved';

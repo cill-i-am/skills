@@ -1,0 +1,12 @@
+{
+  "inviteButton": "Proceed",
+  "emptyOwner": "Nothing here.",
+  "emptyViewer": "Invite teammates to get started.",
+  "inviteError": "Oops! Something went wrong.",
+  "expiredInvite": "Invalid token",
+  "deleteTitle": "Are you sure?",
+  "deleteBody": "This action will delete the workspace.",
+  "deleteButton": "OK",
+  "success": "We instantly emailed everyone and your data is totally secure.",
+  "countOne": "1 members"
+}

@@ -1,2 +1,5 @@
 inbox/
 node_modules/
+.eval-runs/
+__pycache__/
+*.pyc

@@ -1,0 +1,1 @@
+button{border-radius:8px;transition:transform 90ms cubic-bezier(.2,0,0,1)}button:active{transform:scale(.98)}button:focus-visible{outline:3px solid #135fc2;outline-offset:3px}@media(prefers-reduced-motion:reduce){button{transition:none;transform:none}}

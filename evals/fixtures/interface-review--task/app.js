@@ -1,0 +1,1 @@
+document.querySelector("#submit").onclick=()=>document.querySelector("#status").textContent="Invite accepted";

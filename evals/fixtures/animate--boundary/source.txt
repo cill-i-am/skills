@@ -1,0 +1,1 @@
+<button id="welcome">Welcome</button><dialog id="panel" aria-labelledby="title"><h2 id="title">Welcome</h2><button id="close">Close</button></dialog>

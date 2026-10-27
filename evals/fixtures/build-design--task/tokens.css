@@ -1,0 +1,7 @@
+/* Established product tokens; preserve their values. */
+:root { --ink:#17232b; --muted:#465660; --surface:#ffffff; --canvas:#f3f5f6;
+ --accent:#135fc2; --on-accent:#ffffff; --danger:#b42318; --line:#b6c1c9;
+ --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-6:24px; --space-8:32px;
+ --radius:8px; --body-size:16px; --small-size:14px; --title-size:24px;
+ --motion-fast:90ms; --motion-panel:180ms; --ease-standard:cubic-bezier(.2,0,0,1);
+ --press-scale:.98; --shadow:0 2px 8px #17232b1a; }

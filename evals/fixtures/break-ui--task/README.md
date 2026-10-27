@@ -1,0 +1,1 @@
+This is an isolated development prototype, not a production route. Existing data boundary: data.js -> window.members -> renderMembers(). Controls belong in controls.js. All visible member strings are textContent.
