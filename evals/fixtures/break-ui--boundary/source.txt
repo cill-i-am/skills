@@ -1,0 +1,1 @@
+Schema: name 2..80 code points; email <=254; role optional <=40; rows<=100. Existing component not supplied.

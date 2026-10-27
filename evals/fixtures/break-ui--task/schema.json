@@ -1,0 +1,1 @@
+{"name": {"maxLength": 128, "required": true}, "email": {"maxLength": 254, "required": true}, "role": {"maxLength": 80, "required": false}, "avatar": {"nullable": true}, "collectionMax": 1000, "rtl": true, "darkMode": false}

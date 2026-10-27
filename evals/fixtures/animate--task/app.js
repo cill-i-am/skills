@@ -1,0 +1,1 @@
+const dialog=document.querySelector('#details');document.querySelector('#open').onclick=()=>dialog.showModal();document.querySelector('#close').onclick=()=>dialog.close();

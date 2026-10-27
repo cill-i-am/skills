@@ -1,0 +1,1 @@
+body{font:16px/1.5 system-ui}p{max-width:60ch;overflow-wrap:anywhere}h1{font-size:24px;line-height:1.25}td.amount{font-variant-numeric:tabular-nums;text-align:end}

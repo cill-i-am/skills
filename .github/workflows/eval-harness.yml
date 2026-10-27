@@ -1,0 +1,30 @@
+name: Eval harness
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  offline:
+    strategy:
+      fail-fast: false
+      matrix:
+        # Keep the minimum Python version available when "latest" images move.
+        os: [ubuntu-24.04, macos-15-intel]
+        python: ['3.9', '3.13']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: '22'
+          package-manager-cache: false
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: ${{ matrix.python }}
+      - run: node scripts/validate-skills.mjs
+      - run: python3 -m unittest discover -s evals/tests -v

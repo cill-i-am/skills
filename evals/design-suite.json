@@ -1,0 +1,1061 @@
+{
+  "schema_version": 1,
+  "name": "design-skills",
+  "cases": [
+    {
+      "id": "better-accessibility--task",
+      "kind": "task",
+      "skill": "better-accessibility",
+      "prompt": "Make this invite dialog accessible for keyboard users and screen readers. Fix the fixture, preserve its working invite flow and our tokens, and verify what you can in the browser.",
+      "rubric": [
+        "Keyboard opens/closes and focus returns",
+        "Input has persistent accessible label",
+        "Validation and success announcements",
+        "Existing valid submit works",
+        "No global focus suppression"
+      ],
+      "fixture": "better-accessibility--task",
+      "serve": true,
+      "unchanged": false,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": [
+        "better-accessibility"
+      ]
+    },
+    {
+      "id": "better-colors--task",
+      "kind": "task",
+      "skill": "better-colors",
+      "prompt": "Fix the contrast problems in this settings screen. Keep the established product palette, use semantic tokens and measure the important foreground/background pairs. Do not rewrite copy or rearrange the page.",
+      "rubric": [
+        "Normal text pairs >=4.5 measured",
+        "Token reuse",
+        "No irrelevant copy/layout edits",
+        "Explicit light scope no dark claims"
+      ],
+      "fixture": "better-colors--task",
+      "serve": true,
+      "unchanged": false,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": [
+        "better-colors"
+      ]
+    },
+    {
+      "id": "better-layout--task",
+      "kind": "task",
+      "skill": "better-layout",
+      "prompt": "Make this member list hold up from 320px through 1280px, including long translated text, RTL and enlarged text. Fix layout only, preserve the content and our tokens, then verify in the browser.",
+      "rubric": [
+        "No page overflow at 320, 640 and 1280px",
+        "Action remains reachable",
+        "Long content is retained",
+        "Avatar geometry remains stable",
+        "RTL and 200% text-resizing evidence"
+      ],
+      "fixture": "better-layout--task",
+      "serve": true,
+      "unchanged": false,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": [
+        "better-layout"
+      ]
+    },
+    {
+      "id": "better-typography--task",
+      "kind": "task",
+      "skill": "better-typography",
+      "prompt": "Improve text rendering on this multilingual invoice screen: hierarchy, readability, wrapping and number alignment. Keep the system font, our existing type-size tokens and all invoice values. Check narrow widths and enlarged text.",
+      "rubric": [
+        "No multilingual clipping",
+        "Long identifier stays available",
+        "Numeric tabular alignment",
+        "Preserve numeric values and type tokens",
+        "Browser narrow/enlarged checks"
+      ],
+      "fixture": "better-typography--task",
+      "serve": true,
+      "unchanged": false,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": [
+        "better-typography"
+      ]
+    },
+    {
+      "id": "better-ui--task",
+      "kind": "task",
+      "skill": "better-ui",
+      "prompt": "Polish this small save control: its pressed, hover, focus and disabled states feel rough. Follow the established radius, shadow and motion tokens. Change only this control and verify the interaction states.",
+      "rubric": [
+        "Uses established radius (8px), motion (90ms) and press scale (.98)",
+        "Focus remains visible",
+        "Hover is gated to suitable pointers",
+        "Reduced motion is respected",
+        "Disabled and click behavior are preserved"
+      ],
+      "fixture": "better-ui--task",
+      "serve": true,
+      "unchanged": false,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": [
+        "better-ui"
+      ]
+    },
+    {
+      "id": "better-writing--task",
+      "kind": "task",
+      "skill": "better-writing",
+      "prompt": "Rewrite copy.json for this workspace app. Voice: calm, plain, concise. Owners may invite; viewers cannot. Failed invitations can be retried. Expired links require the owner to send a new one. Workspace deletion is permanent and deletes shared projects; members lose access. A successful invite means the server accepted the request, not that email was delivered. Keep every key and return usable strings in the file.",
+      "rubric": [
+        "All keys preserved",
+        "Viewer has achievable next step",
+        "Errors actionable",
+        "Permanent delete consequences and explicit CTA",
+        "No unverified delivery/security claims",
+        "Singular count correct"
+      ],
+      "fixture": "better-writing--task",
+      "serve": false,
+      "unchanged": false,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": [
+        "better-writing"
+      ],
+      "json_keys": "copy.json"
+    },
+    {
+      "id": "better-interface--task",
+      "kind": "task",
+      "skill": "better-interface",
+      "prompt": "Review this members screen across accessibility, layout, writing, typography, colour and polish. Use the running fixture for evidence and give one prioritized, deduplicated report with actionable locations. Review only; leave source files unchanged.",
+      "rubric": [
+        "Find inaccessible Manage/input",
+        "Find narrow overflow",
+        "Find low contrast",
+        "Find impossible empty state CTA",
+        "Severity and deduplication",
+        "Source unchanged"
+      ],
+      "fixture": "better-interface--task",
+      "serve": true,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": [
+        "better-interface"
+      ]
+    },
+    {
+      "id": "interface-review--task",
+      "kind": "task",
+      "skill": "interface-review",
+      "prompt": "Review the UI regressions from eval-base to eval-head in this repository. There are also uncommitted notes: keep them intact. Report introduced issues separately from existing ones, inspect the affected consumer, and leave the repository unchanged.",
+      "rubric": [
+        "Compares the named refs without guessing a base",
+        "Finds the removed label and disabled submit button",
+        "Does not call the legacy contrast issue a new regression",
+        "Inspects the affected consumer",
+        "Preserves dirty notes, refs and source"
+      ],
+      "fixture": "interface-review--task",
+      "serve": true,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": [
+        "interface-review"
+      ],
+      "git_history": true
+    },
+    {
+      "id": "mobile-native--task",
+      "kind": "task",
+      "skill": "mobile-native",
+      "prompt": "Make this web app usable on a phone. Fix keyboard zoom risk, full-height sizing, bottom safe areas and touch/hover behavior. Preserve text selection and normal content scrolling. Verify in the available browser and be precise about device testing.",
+      "rubric": [
+        "Phone zoom, safe-area, scrolling and touch changes verified in browser; real-device limitations disclosed."
+      ],
+      "fixture": "mobile-native--task",
+      "serve": true,
+      "unchanged": false,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": [
+        "mobile-native"
+      ]
+    },
+    {
+      "id": "animate--task",
+      "kind": "task",
+      "skill": "animate",
+      "prompt": "Animate opening and closing the occasional details dialog. Keep its native keyboard/focus behavior, use the project motion tokens, support reduced motion, and handle opening again while a close is in progress. Implement and browser-check it without adding dependencies.",
+      "rubric": [
+        "Implements both entry and exit",
+        "Uses the established 180ms duration and easing curve",
+        "Reduced-motion mode removes translation",
+        "Rapid interruption and reopening are safe",
+        "Native Escape handling and focus return are preserved"
+      ],
+      "fixture": "animate--task",
+      "serve": true,
+      "unchanged": false,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": [
+        "animate"
+      ]
+    },
+    {
+      "id": "animation-performance--task",
+      "kind": "task",
+      "skill": "animation-performance",
+      "prompt": "This drawer stutters badly when background work runs. Diagnose and fix the animation bottleneck using the fixture, preserve the final layout and controls, and compare before/after evidence. Do not install a library or claim hardware proof the browser cannot supply.",
+      "rubric": [
+        "Identifies requestAnimationFrame, left-property animation and blocking work",
+        "Removes the costly animation path while preserving geometry",
+        "Compares measured evidence without inventing frame rates",
+        "Reuses tokens and respects reduced motion",
+        "Avoids blanket layer promotion or will-change"
+      ],
+      "fixture": "animation-performance--task",
+      "serve": true,
+      "unchanged": false,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": [
+        "animation-performance"
+      ]
+    },
+    {
+      "id": "break-ui--task",
+      "kind": "task",
+      "skill": "break-ui",
+      "prompt": "Try to break this member list with the worst realistic data our schema allows. Add a development fixture switch for demo, worst case, empty, one and the largest supported list. Render the cases at relevant widths and enlarged text, report the breaks and proposed fixes, and stop before fixing the component or its styles.",
+      "rubric": [
+        "Data is realistic and schema-valid",
+        "Controls cover demo, worst case, empty, one and maximum-size states",
+        "render.js and style.css are unchanged",
+        "Provides width, enlarged-text and RTL evidence",
+        "Finds singular-count and overflow defects",
+        "Makes no unmeasured performance claims"
+      ],
+      "fixture": "break-ui--task",
+      "serve": true,
+      "unchanged": false,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css",
+        "render.js",
+        "style.css",
+        "schema.json"
+      ],
+      "expected_skills": [
+        "break-ui"
+      ]
+    },
+    {
+      "id": "find-animation-opportunities--task",
+      "kind": "task",
+      "skill": "find-animation-opportunities",
+      "prompt": "What could be animated here to make the interface clearer? Inspect dashboard.md and make specific recommendations only. Respect frequency and purpose and our existing motion language. Leave files unchanged.",
+      "rubric": [
+        "Explains drawer purpose and duration using existing tokens",
+        "Rejects frequent palette and balance animation",
+        "Does not bounce the error message",
+        "Leaves files unchanged",
+        "Does not claim a rendered inspection without evidence"
+      ],
+      "fixture": "find-animation-opportunities--task",
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": [
+        "find-animation-opportunities"
+      ]
+    },
+    {
+      "id": "design-exploration-swarm-paper--task",
+      "kind": "task",
+      "skill": "design-exploration-swarm-paper",
+      "prompt": "Create two meaningfully different layout options for this Members component in a NEW Paper file named \"{{run_name}}\". Use our tokens and realistic content at 640px. Compare and inspect both options. Inventory reachable states from the source, but wait for my choice before expanding them. Keep unrelated Paper files unchanged. Do not implement application code. A documented Arial fallback is allowed if the system font cannot be resolved. Save paper-result.json with {\"file_id\":\"actual returned ID\", \"artboard_ids\":[\"first option ID\",\"second option ID\"]}; never invent identifiers.",
+      "rubric": [
+        "Creates only the authorized new file",
+        "Options differ structurally, not merely cosmetically",
+        "Uses guide/font inspection, screenshots and finish checkpoint",
+        "Inventories source-reachable states without premature expansion",
+        "Distinguishes static design evidence from runtime proof",
+        "Does not implement application code"
+      ],
+      "fixture": "design-exploration-swarm-paper--task",
+      "serve": false,
+      "unchanged": false,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css",
+        "Members.tsx",
+        "brief.md"
+      ],
+      "expected_skills": [
+        "design-exploration-swarm-paper"
+      ],
+      "paper": true,
+      "export": "paper-result.json"
+    },
+    {
+      "id": "build-design--task",
+      "kind": "task",
+      "skill": "build-design",
+      "prompt": "Implement the supplied target-wide.png and target-narrow.png as this fixture UI. Treat the images as estimated design measurements, use our tokens and existing .card and button styles, and preserve the supplied content. Compare the result at 640px and 320px. Do not invent other states or a backend.",
+      "rubric": [
+        "Reads both supplied reference images",
+        "Matches supplied content at both widths",
+        "Reuses tokens and existing components",
+        "Provides actual browser screenshot comparisons",
+        "Discloses unwired behavior and unspecified states"
+      ],
+      "fixture": "build-design--task",
+      "serve": true,
+      "unchanged": false,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css",
+        "target-wide.png",
+        "target-narrow.png"
+      ],
+      "expected_skills": [
+        "build-design"
+      ]
+    },
+    {
+      "id": "better-accessibility--boundary",
+      "kind": "boundary",
+      "skill": "better-accessibility",
+      "prompt": "Read source.txt in this workspace for the supplied material. Review this native dialog source for accessibility. There is no live preview or assistive technology here. Report only what the source supports, leave it unchanged, and separate browser or screen-reader checks that remain.",
+      "rubric": [
+        "Respects task limits",
+        "No fabricated evidence",
+        "Correct domain judgment",
+        "No fixture edits"
+      ],
+      "fixture": "better-accessibility--boundary",
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "better-colors--boundary",
+      "kind": "boundary",
+      "skill": "better-colors",
+      "prompt": "Read source.txt in this workspace for the supplied material. Can you certify this text meets AA contrast? I only know it is white at 60% opacity over a changing photograph. No image or background samples are available. Give a defensible answer without guessing a ratio.",
+      "rubric": [
+        "Respects task limits",
+        "No fabricated evidence",
+        "Correct domain judgment",
+        "No fixture edits"
+      ],
+      "fixture": "better-colors--boundary",
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "better-layout--boundary",
+      "kind": "boundary",
+      "skill": "better-layout",
+      "prompt": "Read source.txt in this workspace for the supplied material. Review whether this layout holds up at 200% text and RTL. Only the CSS below is available; no markup or renderer. Do not change files or claim a visual test.",
+      "rubric": [
+        "Respects task limits",
+        "No fabricated evidence",
+        "Correct domain judgment",
+        "No fixture edits"
+      ],
+      "fixture": "better-layout--boundary",
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "better-typography--boundary",
+      "kind": "boundary",
+      "skill": "better-typography",
+      "prompt": "Read source.txt in this workspace for the supplied material. Review this existing invoice type treatment for defects only. Do not redesign it or replace project values just because a generic type recipe differs. Source-only; preserve all files.",
+      "rubric": [
+        "Respects task limits",
+        "No fabricated evidence",
+        "Correct domain judgment",
+        "No fixture edits"
+      ],
+      "fixture": "better-typography--boundary",
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "better-ui--boundary",
+      "kind": "boundary",
+      "skill": "better-ui",
+      "prompt": "Read source.txt in this workspace for the supplied material. Review this established control polish for actionable defects only. The project intentionally uses 8px corners, .98 press scale and 90ms feedback. Leave it unchanged unless you can demonstrate a functional defect; source-only evidence.",
+      "rubric": [
+        "Respects task limits",
+        "No fabricated evidence",
+        "Correct domain judgment",
+        "No fixture edits"
+      ],
+      "fixture": "better-ui--boundary",
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "better-writing--boundary",
+      "kind": "boundary",
+      "skill": "better-writing",
+      "prompt": "Read source.txt in this workspace for the supplied material. Rewrite only this error: \"Payment failed\". The cause is unknown, whether a charge occurred is unknown, and retrying could charge twice. The app has a transaction-status link and support link. Give one usable message without inventing an outcome.",
+      "rubric": [
+        "Respects task limits",
+        "No fabricated evidence",
+        "Correct domain judgment",
+        "No fixture edits"
+      ],
+      "fixture": "better-writing--boundary",
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "better-interface--boundary",
+      "kind": "boundary",
+      "skill": "better-interface",
+      "prompt": "Read source.txt in this workspace for the supplied material. Review this screen across all interface domains from the supplied description only: one labelled button, \"Save\", then a status message after activation. There is no screenshot, source, viewport or interaction evidence. Give what can be assessed and what remains unreviewed. Do not invent findings.",
+      "rubric": [
+        "Respects task limits",
+        "No fabricated evidence",
+        "Correct domain judgment",
+        "No fixture edits"
+      ],
+      "fixture": "better-interface--boundary",
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "interface-review--boundary",
+      "kind": "boundary",
+      "skill": "interface-review",
+      "prompt": "Read source.txt in this workspace for the supplied material. Review the UI regressions in this change. I have supplied only the current snapshot and no base revision, diff, repository history or PR. Do not assume a base or turn existing problems into newly introduced findings.",
+      "rubric": [
+        "Respects task limits",
+        "No fabricated evidence",
+        "Correct domain judgment",
+        "No fixture edits"
+      ],
+      "fixture": "interface-review--boundary",
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "mobile-native--boundary",
+      "kind": "boundary",
+      "skill": "mobile-native",
+      "prompt": "Read source.txt in this workspace for the supplied material. Our React Native app keyboard covers the composer. Suggest the right investigation for this native iOS app. It is not a website or WebView. Do not apply web CSS or viewport-meta fixes.",
+      "rubric": [
+        "Respects task limits",
+        "No fabricated evidence",
+        "Correct domain judgment",
+        "No fixture edits"
+      ],
+      "fixture": "mobile-native--boundary",
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "animate--boundary",
+      "kind": "boundary",
+      "skill": "animate",
+      "prompt": "Read source.txt in this workspace for the supplied material. Animate the rare welcome dialog opening even when it is triggered from a keyboard button. This is a once-per-account onboarding dialog, not a keyboard shortcut used all day. Use our 180ms token, preserve accessible native behavior and respect reduced motion. Provide the implementation proposal only, no edits.",
+      "rubric": [
+        "Respects task limits",
+        "No fabricated evidence",
+        "Correct domain judgment",
+        "No fixture edits"
+      ],
+      "fixture": "animate--boundary",
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "animation-performance--boundary",
+      "kind": "boundary",
+      "skill": "animation-performance",
+      "prompt": "Read source.txt in this workspace for the supplied material. A team suggests replacing an animated card padding increase from 16px to 24px with transform:scale(1.5), claiming this is visually and functionally equivalent and guaranteed GPU accelerated. Evaluate that suggestion. Do not edit or invent profiling results.",
+      "rubric": [
+        "Respects task limits",
+        "No fabricated evidence",
+        "Correct domain judgment",
+        "No fixture edits"
+      ],
+      "fixture": "animation-performance--boundary",
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "break-ui--boundary",
+      "kind": "boundary",
+      "skill": "break-ui",
+      "prompt": "Read source.txt in this workspace for the supplied material. Stress-test this component using fixture data only. The backend permits name length 2–80 and a collection of at most 100. Do not use impossible values, add UI controls or change production code. Return data cases and what they test, without claiming they rendered.",
+      "rubric": [
+        "Respects task limits",
+        "No fabricated evidence",
+        "Correct domain judgment",
+        "No fixture edits"
+      ],
+      "fixture": "break-ui--boundary",
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "find-animation-opportunities--boundary",
+      "kind": "boundary",
+      "skill": "find-animation-opportunities",
+      "prompt": "Read source.txt in this workspace for the supplied material. What could be animated here? This keyboard palette opens 200 times/day, price values update continuously during decisions, and a search result count changes on every keystroke. There are no occasional flows or decorative surfaces. Recommendations only; no quota.",
+      "rubric": [
+        "Respects task limits",
+        "No fabricated evidence",
+        "Correct domain judgment",
+        "No fixture edits"
+      ],
+      "fixture": "find-animation-opportunities--boundary",
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "build-design--boundary",
+      "kind": "boundary",
+      "skill": "build-design",
+      "prompt": "Read source.txt in this workspace for the supplied material. Build the selected Figma frame. I have not supplied a frame URL, screenshot or export, and no selection context is available. Identify what source you need and inspect relevant tool availability, but do not fabricate a design or modify files meanwhile.",
+      "rubric": [
+        "Respects task limits",
+        "No fabricated evidence",
+        "Correct domain judgment",
+        "No fixture edits"
+      ],
+      "fixture": "build-design--boundary",
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "design-exploration-swarm-paper--boundary",
+      "kind": "boundary",
+      "skill": "design-exploration-swarm-paper",
+      "prompt": "Read source.txt in this workspace for the supplied material. For the supplied Members source, prepare a state inventory only. Do not access or change any Paper file or implement code. I want reachable states, not all Boolean combinations, and the boundary between static Paper evidence and runtime verification.",
+      "rubric": [
+        "Respects task limits",
+        "No fabricated evidence",
+        "Correct domain judgment",
+        "No fixture edits"
+      ],
+      "fixture": "design-exploration-swarm-paper--boundary",
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "better-accessibility--negative",
+      "kind": "negative",
+      "skill": "better-accessibility",
+      "prompt": "Translate only this quoted sentence into French, with no explanation: \"The document mentions better-accessibility as a label.\"",
+      "rubric": [
+        "Translate only",
+        "No skill or service invocation",
+        "No edits"
+      ],
+      "fixture": null,
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "better-colors--negative",
+      "kind": "negative",
+      "skill": "better-colors",
+      "prompt": "Translate only this quoted sentence into French, with no explanation: \"The document mentions better-colors as a label.\"",
+      "rubric": [
+        "Translate only",
+        "No skill or service invocation",
+        "No edits"
+      ],
+      "fixture": null,
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "better-layout--negative",
+      "kind": "negative",
+      "skill": "better-layout",
+      "prompt": "Translate only this quoted sentence into French, with no explanation: \"The document mentions better-layout as a label.\"",
+      "rubric": [
+        "Translate only",
+        "No skill or service invocation",
+        "No edits"
+      ],
+      "fixture": null,
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "better-typography--negative",
+      "kind": "negative",
+      "skill": "better-typography",
+      "prompt": "Translate only this quoted sentence into French, with no explanation: \"The document mentions better-typography as a label.\"",
+      "rubric": [
+        "Translate only",
+        "No skill or service invocation",
+        "No edits"
+      ],
+      "fixture": null,
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "better-ui--negative",
+      "kind": "negative",
+      "skill": "better-ui",
+      "prompt": "Translate only this quoted sentence into French, with no explanation: \"The document mentions better-ui as a label.\"",
+      "rubric": [
+        "Translate only",
+        "No skill or service invocation",
+        "No edits"
+      ],
+      "fixture": null,
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "better-writing--negative",
+      "kind": "negative",
+      "skill": "better-writing",
+      "prompt": "Translate only this quoted sentence into French, with no explanation: \"The document mentions better-writing as a label.\"",
+      "rubric": [
+        "Translate only",
+        "No skill or service invocation",
+        "No edits"
+      ],
+      "fixture": null,
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "better-interface--negative",
+      "kind": "negative",
+      "skill": "better-interface",
+      "prompt": "Translate only this quoted sentence into French, with no explanation: \"The document mentions better-interface as a label.\"",
+      "rubric": [
+        "Translate only",
+        "No skill or service invocation",
+        "No edits"
+      ],
+      "fixture": null,
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "interface-review--negative",
+      "kind": "negative",
+      "skill": "interface-review",
+      "prompt": "Translate only this quoted sentence into French, with no explanation: \"The document mentions interface-review as a label.\"",
+      "rubric": [
+        "Translate only",
+        "No skill or service invocation",
+        "No edits"
+      ],
+      "fixture": null,
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "mobile-native--negative",
+      "kind": "negative",
+      "skill": "mobile-native",
+      "prompt": "Translate only this quoted sentence into French, with no explanation: \"The document mentions mobile-native as a label.\"",
+      "rubric": [
+        "Translate only",
+        "No skill or service invocation",
+        "No edits"
+      ],
+      "fixture": null,
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "animate--negative",
+      "kind": "negative",
+      "skill": "animate",
+      "prompt": "Translate only this quoted sentence into French, with no explanation: \"The document mentions animate as a label.\"",
+      "rubric": [
+        "Translate only",
+        "No skill or service invocation",
+        "No edits"
+      ],
+      "fixture": null,
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "animation-performance--negative",
+      "kind": "negative",
+      "skill": "animation-performance",
+      "prompt": "Translate only this quoted sentence into French, with no explanation: \"The document mentions animation-performance as a label.\"",
+      "rubric": [
+        "Translate only",
+        "No skill or service invocation",
+        "No edits"
+      ],
+      "fixture": null,
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "break-ui--negative",
+      "kind": "negative",
+      "skill": "break-ui",
+      "prompt": "Translate only this quoted sentence into French, with no explanation: \"The document mentions break-ui as a label.\"",
+      "rubric": [
+        "Translate only",
+        "No skill or service invocation",
+        "No edits"
+      ],
+      "fixture": null,
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "find-animation-opportunities--negative",
+      "kind": "negative",
+      "skill": "find-animation-opportunities",
+      "prompt": "Translate only this quoted sentence into French, with no explanation: \"The document mentions find-animation-opportunities as a label.\"",
+      "rubric": [
+        "Translate only",
+        "No skill or service invocation",
+        "No edits"
+      ],
+      "fixture": null,
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "design-exploration-swarm-paper--negative",
+      "kind": "negative",
+      "skill": "design-exploration-swarm-paper",
+      "prompt": "Translate only this quoted sentence into French, with no explanation: \"The document mentions design-exploration-swarm-paper as a label.\"",
+      "rubric": [
+        "Translate only",
+        "No skill or service invocation",
+        "No edits"
+      ],
+      "fixture": null,
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "build-design--negative",
+      "kind": "negative",
+      "skill": "build-design",
+      "prompt": "Translate only this quoted sentence into French, with no explanation: \"The document mentions build-design as a label.\"",
+      "rubric": [
+        "Translate only",
+        "No skill or service invocation",
+        "No edits"
+      ],
+      "fixture": null,
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": []
+    },
+    {
+      "id": "better-writing--boundary-explicit",
+      "kind": "boundary-explicit",
+      "skill": "better-writing",
+      "prompt": "Read source.txt in this workspace for the supplied material. Use the shared better-writing skill through Executor for this request. Rewrite only this error: \"Payment failed\". The cause is unknown, whether a charge occurred is unknown, and retrying could charge twice. The app has a transaction-status link and support link. Give one usable message without inventing an outcome.",
+      "rubric": [
+        "Respects task limits",
+        "No fabricated evidence",
+        "Correct domain judgment",
+        "No fixture edits"
+      ],
+      "fixture": "better-writing--boundary",
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": [
+        "better-writing"
+      ]
+    },
+    {
+      "id": "design-exploration-swarm-paper--states",
+      "kind": "task-integration",
+      "skill": "design-exploration-swarm-paper",
+      "prompt": "Read input.json for the newly created Paper file ID and its two original artboard IDs. For this test I select its first artboard. Show the reachable states in Members.tsx as new clearly named 640px artboards for that direction only. Preserve both original options, tokens, font and unrelated Paper files. Arial fallback is allowed. Inspect the rendered states and disclose runtime-only verification. Do not implement application code. Save paper-states-result.json with {\"file_id\":\"same returned ID\",\"artboard_ids\":[\"new state IDs\"]}.",
+      "rubric": [
+        "Only selected direction expanded",
+        "Exactly source-reachable states",
+        "Original options preserved",
+        "Tokens and supported font reused",
+        "Screenshots and finish checkpoint",
+        "Runtime boundaries honest"
+      ],
+      "fixture": "design-exploration-swarm-paper--task",
+      "serve": false,
+      "unchanged": false,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css",
+        "Members.tsx",
+        "brief.md",
+        "input.json"
+      ],
+      "expected_skills": [
+        "design-exploration-swarm-paper"
+      ],
+      "paper": true,
+      "depends_on": "design-exploration-swarm-paper--task",
+      "export": "paper-states-result.json"
+    },
+    {
+      "id": "build-design--paper",
+      "kind": "task-integration",
+      "skill": "build-design",
+      "prompt": "Read input.json for the newly created Paper file ID and original artboard IDs. Implement only its first artboard in this isolated HTML fixture. Read Paper source, exact values and tokens, use native markup and our existing tokens, then compare the browser result at 640px. A documented Arial font fallback is allowed. Keep all Paper content unchanged. Do not invent a backend or other states. Disclose visual differences and unwired behavior.",
+      "rubric": [
+        "Read Paper JSX/computed styles/tokens before coding",
+        "Only selected artboard implemented",
+        "Existing token/component mapping",
+        "Actual640px screenshot comparison",
+        "No Paper mutations",
+        "Unwired behavior and visual differences disclosed"
+      ],
+      "fixture": "paper-build",
+      "serve": true,
+      "unchanged": false,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css",
+        "input.json"
+      ],
+      "expected_skills": [
+        "build-design"
+      ],
+      "paper": true,
+      "depends_on": "design-exploration-swarm-paper--task"
+    },
+    {
+      "id": "intent-matrix",
+      "kind": "routing-matrix",
+      "skill": "routing",
+      "prompt": "For each independent request below, discover the most appropriate shared skill through Executor and read its entrypoint before naming it and the first evidence needed. This is selection only: do not perform the tasks, inspect live service data, open design documents or edit files. Use the minimum relevant skill(s); requests can share a skill if that is the right fit. Requests: (1) Add an entrance and exit transition to an occasional details dialog. (2) Make the member-list layout work at narrow widths, with long translations and RTL. (3) Review only the interface regressions introduced by this pull request. (4) Rewrite the app’s labels, errors and empty messages in a calm voice. (5) Show two different component layouts in Paper and then compare the selected layout’s loading and error states. (6) Diagnose why an animation stutters while the page is busy. (7) Adjust our semantic colour palette and measure text contrast. (8) Feed the component realistic worst-case data, including zero, one and a thousand rows, then show what breaks. (9) Check the form’s keyboard navigation, accessible labels and announcements. (10) Implement the selected Paper design with the project’s existing components and tokens. (11) The web app has iPhone input zoom, content under the notch and sticky hover; fix those phone issues. (12) Where would motion make this dashboard clearer? Recommendations only. (13) Review the whole interface across accessibility, layout, writing, typography, colour and polish in one report. (14) Improve font hierarchy, multilingual text wrapping and invoice-number alignment. (15) Refine the control’s shadows, corners, optical icon alignment and existing pressed-state polish.",
+      "rubric": [
+        "Maps each of the 15 ordinary-language requests to a relevant published entrypoint",
+        "Reads selected entrypoints through Executor",
+        "Does not access live service data or perform the requested tasks",
+        "Runs in a neutral workspace without skill-name path cues"
+      ],
+      "fixture": null,
+      "serve": false,
+      "unchanged": true,
+      "protected": [
+        "AGENTS.md",
+        "tokens.css"
+      ],
+      "expected_skills": [
+        "better-accessibility",
+        "better-colors",
+        "better-layout",
+        "better-typography",
+        "better-ui",
+        "better-writing",
+        "better-interface",
+        "interface-review",
+        "mobile-native",
+        "animate",
+        "animation-performance",
+        "break-ui",
+        "find-animation-opportunities",
+        "design-exploration-swarm-paper",
+        "build-design"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+<button id="trigger">Details</button><dialog id="panel" aria-labelledby="title"><h2 id="title">Details</h2><button autofocus id="close">Close</button></dialog><script>trigger.onclick=()=>panel.showModal();close.onclick=()=>panel.close();</script>
