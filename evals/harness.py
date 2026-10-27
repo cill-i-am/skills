@@ -52,6 +52,15 @@ def hashes(root):
     return result
 
 
+def matches_snapshot(root, expected):
+    if not isinstance(expected, dict) or root.is_symlink() or not root.is_dir():
+        return False
+    try:
+        return hashes(root) == expected
+    except OSError:
+        return False
+
+
 def load_suite(path):
     suite = read_json(path)
     if suite.get("schema_version") != 1 or not suite.get("cases"):
@@ -280,7 +289,24 @@ def assertions(case, before, after, trace, revision):
     return changed, failures
 
 
-def check_export(root, name, calls, dependency=None):
+def result_objects(result):
+    """Read structured MCP data and all JSON text blocks without mining arbitrary strings."""
+    objects = []
+    for key in ["structured_content", "structuredContent"]:
+        if isinstance(result.get(key), dict):
+            objects.append(result[key])
+    for block in result.get("content", []):
+        if block.get("type") == "text":
+            try:
+                value = json.loads(block["text"])
+                if isinstance(value, dict):
+                    objects.append(value)
+            except (ValueError, KeyError):
+                pass
+    return objects
+
+
+def check_export(root, name, calls, dependency=None, paper_server="-aper"):
     path = root / name
     if path.is_symlink():
         raise ValueError("Paper export cannot be a symlink")
@@ -288,33 +314,34 @@ def check_export(root, name, calls, dependency=None):
     ids = value.get("artboard_ids")
     if not isinstance(value.get("file_id"), str) or not value["file_id"] or not isinstance(ids, list) or not ids or any(not isinstance(i, str) or not i for i in ids) or len(set(ids)) != len(ids):
         raise ValueError("Paper export requires file_id and unique artboard_ids")
-    # IDs must occur as exact scalar values in successful Paper tool results,
-    # not only in the agent's assertions or input arguments.
-    observed = set()
-    def visit(obj):
-        if isinstance(obj, str):
-            observed.add(obj)
-            try:
-                parsed = json.loads(obj)
-                if not isinstance(parsed, str):
-                    visit(parsed)
-            except ValueError:
-                pass
-        elif isinstance(obj, dict):
-            for v in obj.values():
-                visit(v)
-        elif isinstance(obj, list):
-            for v in obj:
-                visit(v)
-    for call in calls:
-        if call.get("tool") in ["create_file", "create_artboard", "duplicate_nodes", "get_basic_info"]:
-            visit(call.get("result"))
     if dependency:
         if value["file_id"] != dependency["file_id"]:
             raise ValueError("State preview changed the dependency file ID")
-        observed.add(dependency["file_id"])
-    if any(i not in observed for i in [value["file_id"], *ids]):
-        raise ValueError("Paper IDs not corroborated by successful tool results")
+    file_created = bool(dependency)  # The earlier case already proved this file's creation.
+    known_boards = set(dependency.get("artboard_ids", [])) if dependency else set()
+    created_boards = set()
+    for call in calls:
+        if call.get("server") != paper_server or call.get("status") != "completed":
+            continue
+        result = call.get("result") or {}
+        if call.get("error") or result.get("isError") or result.get("is_error"):
+            continue
+        objects = result_objects(result)
+        tool = call.get("tool")
+        if tool == "create_file" and any(o.get("fileId") == value["file_id"] for o in objects):
+            file_created = True
+        returned_files = {o["file"].get("id") for o in objects if isinstance(o.get("file"), dict)}
+        if not file_created or returned_files != {value["file_id"]}:
+            continue
+        if tool == "create_artboard":
+            created_boards.update(o["id"] for o in objects if isinstance(o.get("id"), str))
+        elif tool == "duplicate_nodes":
+            for obj in objects:
+                for node in obj.get("duplicatedNodes", []):
+                    if node.get("sourceId") in known_boards | created_boards and isinstance(node.get("newId"), str):
+                        created_boards.add(node["newId"])
+    if not file_created or not set(ids).issubset(created_boards):
+        raise ValueError("Paper export must identify artboards created in this run's validated file")
     return value
 
 
@@ -375,7 +402,7 @@ def run_case(case, suite_path, run_dir, args, dependency=None):
             failures.append("JSON copy keys changed")
         result.update(trace=trace, after=after, changed=changed, failures=failures)
         if case.get("export"):
-            result["export"] = check_export(root, case["export"], calls, dependency)
+            result["export"] = check_export(root, case["export"], calls, dependency, args.paper_server)
     except (OSError, ValueError, subprocess.SubprocessError) as error:
         result.update(execution="error", error=str(error))
     result["status"] = "unreviewed" if result.get("execution") == "completed" and not result["failures"] else "failed"
@@ -394,6 +421,8 @@ def report(run_dir):
         if review.exists() and status == "unreviewed":
             decision = read_json(review)
             status = decision["verdict"] if decision["result_sha256"] == digest(path.read_bytes()) else "stale-review"
+        if result["status"] == "unreviewed" and not matches_snapshot(Path(result["workspace"]), result.get("after")):
+            status = "stale-artifacts"
         rows.append({"id": case["id"], "status": status, "failures": result.get("failures", [])})
     write_json(run_dir / "summary.json", rows)
     (run_dir / "summary.md").write_text("# Skill evaluation\n\nExecution and assertions do not substitute for rubric review.\n\n| Case | Status |\n| --- | --- |\n" + "".join("| %s | %s |\n" % (r["id"], r["status"]) for r in rows))
@@ -418,6 +447,7 @@ def main(argv=None):
     run.add_argument("--timeout", type=float, default=900)
     run.add_argument("--auto-review", action="store_true", help="Use Codex automatic approval review for non-negative cases")
     run.add_argument("--paper", action="store_true", help="Allow new Paper artifacts and follow-up mutations in those artifacts")
+    run.add_argument("--paper-server", default="-aper", help="Exact native Paper server name in Codex traces")
     review = sub.add_parser("review")
     review.add_argument("run_dir", type=Path)
     review.add_argument("--case", required=True)
@@ -433,6 +463,8 @@ def main(argv=None):
             result = read_json(path)
             if result["status"] != "unreviewed":
                 raise ValueError("Cannot override execution/assertion failures or skipped cases")
+            if not matches_snapshot(Path(result["workspace"]), result.get("after")):
+                raise ValueError("Workspace no longer matches the recorded outcome; rerun the case")
             if not args.evidence.strip() or not args.reviewer.strip():
                 raise ValueError("Reviewer and evidence are required")
             write_json(path.with_name("review.json"), {"reviewer": args.reviewer, "verdict": args.verdict,

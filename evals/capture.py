@@ -8,7 +8,7 @@ import subprocess
 import sys
 import uuid
 
-from harness import read_json, relative_path, serve, write_json
+from harness import matches_snapshot, read_json, relative_path, serve, write_json
 
 METRICS = """(()=>{const visible=e=>e.getBoundingClientRect().width&&e.getBoundingClientRect().height&&getComputedStyle(e).visibility!=='hidden';
 return {viewport:{width:innerWidth,height:innerHeight},scrollWidth:document.documentElement.scrollWidth,
@@ -23,7 +23,9 @@ const sizes=[...document.querySelectorAll('body,body *')].map(e=>[e,parseFloat(g
 sizes.forEach(([e,n])=>e.style.fontSize=(n*2)+'px')"""
 
 
-def capture(root, output, browser="agent-browser", enlarged=False):
+def capture(root, output, browser="agent-browser", enlarged=False, expected_hashes=None):
+    if expected_hashes is not None and not matches_snapshot(root, expected_hashes):
+        raise ValueError("Fixture no longer matches the recorded outcome; rerun the case")
     session = "eval-" + uuid.uuid4().hex[:12]
     report = {"session": session, "evidence": [], "status": "incomplete"}
     output.mkdir(parents=True, exist_ok=False)
@@ -62,6 +64,8 @@ def capture(root, output, browser="agent-browser", enlarged=False):
             call("set", "viewport", "640", "800")
             call("open", url)
             report["a11y"] = call("a11y")
+            if expected_hashes is not None and not matches_snapshot(root, expected_hashes):
+                raise ValueError("Fixture changed during capture")
             report["status"] = "captured"
     except Exception as error:
         report.update(status="error", error=str(error))
@@ -87,10 +91,11 @@ def main():
     args = parser.parse_args()
     relative_path(args.case)
     logs = args.run_dir.resolve() / "cases" / args.case
-    root = logs / "before" if args.phase == "before" else Path(read_json(logs / "result.json")["workspace"])
+    result = read_json(logs / "result.json")
+    root = logs / "before" if args.phase == "before" else Path(result["workspace"])
     if not (root / "index.html").is_file():
         raise ValueError("Case has no HTML fixture to capture")
-    capture(root, logs / ("browser-" + args.phase), args.browser, args.rtl_enlarged)
+    capture(root, logs / ("browser-" + args.phase), args.browser, args.rtl_enlarged, result[args.phase])
 
 
 if __name__ == "__main__":

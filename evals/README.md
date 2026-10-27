@@ -108,9 +108,12 @@ python3 evals/harness.py report .eval-runs/smoke-01
 
 Review notes must describe what was checked and point to evidence. They are
 human/agent judgments, not automatic quality scores. A review is bound to the
-result file's hash; altered results invalidate it. Execution/assertion failures
+result file's hash; altered results invalidate it. Reviews and browser captures
+also verify the workspace against its recorded file hashes. Changed or missing
+outputs become `stale-artifacts`, including after a review passed; rerun the case
+instead of grading an edited outcome. Execution/assertion failures
 cannot be overridden to pass. `skipped`, `blocked`, `not-run`, `failed`,
-`unreviewed`, `stale-review` and reviewed `passed` remain distinct. A run exit
+`unreviewed`, `stale-review`, `stale-artifacts` and reviewed `passed` remain distinct. A run exit
 code of zero means no execution/assertion failures among executed cases, **not**
 that all cases ran or quality review passed. Exit 1 means a failed/blocked case,
 2 a setup error, and 130 an interrupted run. `report` is informational.
@@ -150,7 +153,11 @@ python3 evals/harness.py run --paper \
 This explicitly authorizes a new Paper file, its two alternatives and subsequent
 state artboards. Each run creates its own file; no personal file ID is embedded
 in the suite. The first case exports `file_id` and ordered `artboard_ids`; the
-runner corroborates those IDs against successful tool results and writes only
+runner requires a successful `create_file` result and verifies that exported
+artboards were created in that file by the configured native Paper server.
+State copies must derive from known artboards in the dependency file. Merely
+reading an existing file, matching a string, or seeing an ID in another provider's
+response does not authorize a handoff. The runner writes only
 that handoff as `input.json` for dependent cases. A missing/invalid export blocks
 consumers. The first option is the declared test selection, not an inferred user
 choice. The build case reads that same original option and must not mutate Paper.
@@ -161,6 +168,11 @@ If a provider's result format cannot corroborate IDs, the case fails explicitly;
 update the adapter and its tests before claiming success. Paper files are retained
 for review, never automatically deleted. Close/clean up those artifacts yourself
 after deciding they are no longer needed.
+
+The native Paper server defaults to `-aper`, as observed in Codex traces. If your
+connection uses another name, pass its exact trace name as `--paper-server NAME`.
+This adapter reads Paper's structured file/artboard creation results; it does
+not infer creation from generic Executor wrapper calls.
 
 ## Add or compare cases
 

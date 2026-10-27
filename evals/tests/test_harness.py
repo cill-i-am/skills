@@ -239,11 +239,53 @@ class HarnessTests(unittest.TestCase):
         h.write_json(self.root / "export.json", value)
         with self.assertRaises(ValueError):
             h.check_export(self.root, "export.json", [])
-        calls = [{"tool": "create_file", "result": {"id": "new-file"}},
-                 {"tool": "create_artboard", "result": {"content": [{"type": "text", "text": json.dumps({"ids": ["a", "b"]})}]}}]
+        calls = [self.paper_call("create_file", {"fileId": "new-file"}),
+                 self.paper_call("create_artboard", {"file": {"id": "new-file"}}, {"id": "a"}),
+                 self.paper_call("create_artboard", {"file": {"id": "new-file"}}, {"id": "b"})]
         self.assertEqual(h.check_export(self.root, "export.json", calls), value)
         with self.assertRaises(ValueError):
             h.check_export(self.root, "export.json", calls, {"file_id": "different"})
+
+    @staticmethod
+    def paper_call(tool, *objects, server="-aper"):
+        return {"server": server, "tool": tool, "status": "completed", "result": {
+            "content": [{"type": "text", "text": json.dumps(obj)} for obj in objects]}}
+
+    def test_paper_export_rejects_existing_files_wrong_file_and_wrong_provider(self):
+        value = {"file_id": "target", "artboard_ids": ["a"]}
+        h.write_json(self.root / "export.json", value)
+        create = self.paper_call("create_file", {"fileId": "target"})
+        board = self.paper_call("create_artboard", {"file": {"id": "target"}}, {"id": "a"})
+        invalid = [
+            [self.paper_call("get_basic_info", {"file": {"id": "target"}, "artboards": [{"id": "a"}]})],
+            [create, self.paper_call("create_artboard", {"file": {"id": "another-file"}}, {"id": "a"})],
+            [dict(create, server="unrelated"), dict(board, server="unrelated")],
+            [create, self.paper_call("get_basic_info", {"file": {"id": "target"}, "artboards": [{"id": "a"}]})],
+        ]
+        for calls in invalid:
+            with self.subTest(calls=calls), self.assertRaises(ValueError):
+                h.check_export(self.root, "export.json", calls)
+
+    def test_state_export_accepts_only_new_copies_of_known_artboards(self):
+        value = {"file_id": "target", "artboard_ids": ["new-state"]}
+        h.write_json(self.root / "export.json", value)
+        dependency = {"file_id": "target", "artboard_ids": ["chosen"]}
+        call = self.paper_call("duplicate_nodes", {"file": {"id": "target"}},
+                               {"duplicatedNodes": [{"sourceId": "chosen", "newId": "new-state"}]})
+        self.assertEqual(h.check_export(self.root, "export.json", [call], dependency), value)
+        with self.assertRaises(ValueError):
+            h.check_export(self.root, "export.json", [call], dict(dependency, artboard_ids=["different"]))
+
+    def test_modified_artifact_cannot_receive_or_retain_a_passing_review(self):
+        self.assertEqual(self.run_cli().returncode, 0)
+        run = self.root / "run"
+        command = ["review", str(run), "--case", "test", "--reviewer", "tester",
+                   "--verdict", "passed", "--evidence", "Reviewed the resulting source"]
+        h.main(command)
+        (Path(self.result()["workspace"]) / "source.txt").write_text("modified after run")
+        self.assertEqual(h.report(run)[0]["status"], "stale-artifacts")
+        with self.assertRaises(ValueError):
+            h.main(command)
 
     def test_history_has_two_regressions_and_untracked_note(self):
         root = self.root / "history"
