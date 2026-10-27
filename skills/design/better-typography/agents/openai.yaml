@@ -1,0 +1,4 @@
+interface:
+  default_prompt: "Use $better-typography for the requested design task."
+  display_name: "Better Typography"
+  short_description: "Fonts, type scales, spacing and wrapping"

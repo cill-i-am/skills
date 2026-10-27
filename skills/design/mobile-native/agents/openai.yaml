@@ -1,0 +1,4 @@
+interface:
+  display_name: "Mobile Native"
+  short_description: "Focused mobile native guidance for web UI"
+  default_prompt: "Use $mobile-native for the requested design task."

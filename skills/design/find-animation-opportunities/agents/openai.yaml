@@ -1,0 +1,4 @@
+interface:
+  display_name: "Find Animation Opportunities"
+  short_description: "Focused find animation opportunities guidance for web UI"
+  default_prompt: "Use $find-animation-opportunities for the requested design task."

@@ -1,0 +1,4 @@
+interface:
+  default_prompt: "Use $better-ui for the requested design task."
+  display_name: "Better UI"
+  short_description: "Design engineering details for polished interfaces"

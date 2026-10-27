@@ -1,0 +1,4 @@
+interface:
+  default_prompt: "Use $better-colors for the requested design task."
+  display_name: "Better Colors"
+  short_description: "Building, naming and applying color systems"

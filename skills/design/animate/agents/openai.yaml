@@ -1,0 +1,4 @@
+interface:
+  display_name: "Animate"
+  short_description: "Focused animate guidance for web UI"
+  default_prompt: "Use $animate for the requested design task."
