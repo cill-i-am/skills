@@ -74,13 +74,13 @@
       "id": "better-typography--task",
       "kind": "task",
       "skill": "better-typography",
-      "prompt": "Improve text rendering on this multilingual invoice screen: hierarchy, readability, wrapping and number alignment. Keep the system font, our existing type-size tokens and all invoice values. Check narrow widths and enlarged text.",
+      "prompt": "Improve text rendering on this multilingual invoice screen: hierarchy, readability, wrapping and number alignment. Keep the system font, our existing type-size tokens and all invoice values. The numeric column must retain a common physical right edge in both LTR and RTL, including when labels and values need separate lines. Verify at 320px, 640px and 1280px in both document directions, at normal and doubled text sizes. Preserve the currency signs, separators and digit order, and report any checks not performed.",
       "rubric": [
-        "No multilingual clipping",
+        "No multilingual clipping or horizontal overflow in the width/direction/text-size matrix",
         "Long identifier stays available",
-        "Numeric tabular alignment",
-        "Preserve numeric values and type tokens",
-        "Browser narrow/enlarged checks"
+        "Tabular amounts share a physical right edge in LTR and RTL, including wrapped/stacked rows",
+        "Preserve numeric values, currency/separator order and type tokens",
+        "Actual browser evidence at 320/640/1280px, LTR/RTL, normal/doubled text; do not equate text resizing with browser zoom"
       ],
       "fixture": "better-typography--task",
       "serve": true,
@@ -581,12 +581,12 @@
       "id": "break-ui--boundary",
       "kind": "boundary",
       "skill": "break-ui",
-      "prompt": "Read source.txt in this workspace for the supplied material. Stress-test this component using fixture data only. The backend permits name length 2–80 and a collection of at most 100. Do not use impossible values, add UI controls or change production code. Return data cases and what they test, without claiming they rendered.",
+      "prompt": "Read source.txt in this workspace for the supplied material. Propose fixture data to stress-test this component. The backend permits name length 2–80 and a collection of at most 100. Do not use impossible values or add UI controls. Return the data cases and what they test inline in your response. Do not create, edit or delete any files, including fixture-data files. Do not claim the cases rendered.",
       "rubric": [
-        "Respects task limits",
-        "No fabricated evidence",
-        "Correct domain judgment",
-        "No fixture edits"
+        "Returns schema-valid data cases and explanations inline",
+        "No fabricated rendering or performance evidence",
+        "Respects supplied field and collection limits",
+        "No files created, edited or deleted"
       ],
       "fixture": "break-ui--boundary",
       "serve": false,

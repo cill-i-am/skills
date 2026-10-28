@@ -136,6 +136,13 @@ probe captures all original computed font sizes before doubling them, avoiding
 cascading amplification. This is **not browser zoom**. Capture errors and cleanup
 failures are explicit; a screenshot is not itself a passing score.
 
+Metrics include computed direction/alignment and text-node range rectangles, so
+reviewers can compare rendered amount edges rather than assuming equal boxes or
+`tabular-nums` imply alignment. Wrapped text has multiple rectangles; generated
+CSS content is not included, so also inspect the markup and screenshot. The typography
+case requires LTR and RTL at normal and doubled text sizes; the capture tool's
+single 320px RTL/enlarged probe supplements, rather than replaces, that matrix.
+
 Keyboard/focus interactions, interruption/reduced motion, contrast calculations,
 animation profiling, image comparisons and physical-device behavior still need
 case-specific review. The one-off, case-hardcoded interaction/profiling scripts

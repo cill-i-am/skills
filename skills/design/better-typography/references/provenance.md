@@ -8,6 +8,9 @@
 - Adaptations: shared Executor loading, project-token precedence, required UI metadata;
   task-specific routing and corrections are documented in the repository migration record.
   Supporting upstream references remain intact unless recorded there.
+- 2026-10-28: clarified numeric-column alignment versus bidi isolation in
+  `SKILL.md` and `wrapping-and-punctuation.md`, following an RTL/enlarged-text
+  evaluation failure. The original upstream hashes below remain unchanged.
 
 ## Original file SHA-256
 

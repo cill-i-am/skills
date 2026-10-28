@@ -26,6 +26,11 @@ This migration adds 15 skills to the shared catalogue: Jakub Krehel's seven
   prototype and library-picker skills are replaced with shared capabilities or
   the project's existing accessible components. React Native remains out of scope.
 - `break-ui` can reuse established Storybook fixtures before adding a harness.
+- `better-typography` distinguishes digit direction from the numeric column's
+  intended alignment edge. Its numeric/bidi reference adds shared-column
+  guidance after an RTL/enlarged-text evaluation exposed unequal value edges.
+  This is a local adaptation of the pinned upstream files; original hashes and
+  the MIT notice are preserved.
 - `find-animation-opportunities` remains an on-demand, read-only filter, permits
   zero recommendations, records actual rejected candidates and hands accepted
   implementation work to `animate`.

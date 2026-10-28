@@ -83,6 +83,13 @@ Keep interface text at `text-align: start`. `justify` belongs only in specific e
 
 Apply `font-variant-numeric: tabular-nums` to timers, counters, prices and numeric table columns, so every digit keeps one width and nothing shifts. Leave figures in prose proportional.
 
+Equal-width digits do not align amounts of different lengths. Keep values in a
+shared column or equally wide alignment containers, including when rows wrap.
+Preserve the product's intended edge: physical right alignment and logical
+`end` alignment are different contracts in RTL. Isolate mixed-direction content
+without changing its column's alignment. See [numeric columns and bidi](wrapping-and-punctuation.md#numeric-columns-and-bidi)
+and compare rendered value edges in each supported direction and text size.
+
 ## Truncate with a way back
 
 For one line, `overflow: hidden`, `text-overflow: ellipsis` and `white-space: nowrap`, which Tailwind's `truncate` sets together. For several, `display: -webkit-box`, `-webkit-box-orient: vertical`, `-webkit-line-clamp: 3` and `overflow: hidden`, which Tailwind's `line-clamp-3` emits.
