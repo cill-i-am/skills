@@ -89,3 +89,12 @@ Packaging and harness checks also passed: 25 offline tests, validation of all
 55 skills, the skill-creator validator, and an isolated installation containing
 55 skills and 55 metadata files. Offline tests required permission to bind their
 temporary loopback servers; they did not contact external services.
+
+The first PR CI run exposed a pre-existing race in the interruption test on
+macOS/Python 3.9: log-file creation was treated as proof that the fake subject
+had started, allowing termination during process startup. The test now waits
+for an explicit ready event from the fake subject and also verifies that its
+descendant cannot write after interruption. This changes only the offline test;
+the runtime harness and the five evaluated skill cases remain unchanged.
+All 25 offline tests passed again, and the corrected interruption test passed
+20 consecutive runs, including its descendant-cleanup assertion.
