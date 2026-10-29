@@ -37,6 +37,7 @@ prompt=sys.argv[-1]
 if 'MUTATE' in prompt: (root/'source.txt').write_text('changed')
 if 'TIMEOUT' in prompt:
     subprocess.Popen([sys.executable,'-c',"import time,pathlib; time.sleep(1); pathlib.Path('leaked').write_text('child survived')"],cwd=root)
+    print(json.dumps({'type':'test.ready'}), flush=True)
     time.sleep(60)
 if 'BROKEN' in prompt: print('{bad json')
 if 'CALL' in prompt:
@@ -221,14 +222,22 @@ class HarnessTests(unittest.TestCase):
             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         try:
             deadline = time.monotonic() + 5
-            while not list(out.glob("cases/*/trace.jsonl")) and time.monotonic() < deadline:
+            trace = out / "cases/test/trace.jsonl"
+            ready = '"type": "test.ready"'
+            # The log opens before Popen; its existence does not mean the
+            # subject is running. Interrupt only after the fake starts its child.
+            while time.monotonic() < deadline and process.poll() is None:
+                if trace.exists() and ready in trace.read_text():
+                    break
                 time.sleep(.02)
-            self.assertTrue(list(out.glob("cases/*/trace.jsonl")))
+            self.assertTrue(trace.exists() and ready in trace.read_text())
             process.terminate()
-            process.communicate(timeout=5)
-            self.assertEqual(process.returncode, 130)
+            _, stderr = process.communicate(timeout=5)
+            self.assertEqual(process.returncode, 130, stderr)
             result = h.read_json(out / "cases/test/result.json")
             self.assertEqual(result["execution"], "interrupted")
+            time.sleep(1.1)
+            self.assertFalse((Path(result["workspace"]) / "leaked").exists())
         finally:
             if process.poll() is None:
                 process.kill()

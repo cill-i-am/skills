@@ -17,6 +17,9 @@ items:[...document.querySelectorAll('main,section,h1,h2,p,button,input,label,.me
 const r=e.getBoundingClientRect(),s=getComputedStyle(e);return {tag:e.tagName,id:e.id,cls:e.className,text:e.textContent.slice(0,160),
 x:r.x,y:r.y,width:r.width,height:r.height,scrollWidth:e.scrollWidth,clientWidth:e.clientWidth,color:s.color,
 background:s.backgroundColor,fontSize:s.fontSize,lineHeight:s.lineHeight,fontVariantNumeric:s.fontVariantNumeric,
+direction:s.direction,textAlign:s.textAlign,
+textRects:(()=>{const range=document.createRange(),walker=document.createTreeWalker(e,NodeFilter.SHOW_TEXT),rects=[];let node;
+while(node=walker.nextNode()){if(!node.textContent.trim())continue;range.selectNodeContents(node);rects.push(...Array.from(range.getClientRects()).map(r=>({left:r.left,right:r.right,top:r.top,bottom:r.bottom})))}return rects})(),
 overflow:s.overflow,outline:s.outline,transform:s.transform,transition:s.transition,borderRadius:s.borderRadius}})}})()"""
 ENLARGE_RTL = """document.documentElement.dir='rtl';
 const sizes=[...document.querySelectorAll('body,body *')].map(e=>[e,parseFloat(getComputedStyle(e).fontSize)]);
