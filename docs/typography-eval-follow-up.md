@@ -98,3 +98,11 @@ descendant cannot write after interruption. This changes only the offline test;
 the runtime harness and the five evaluated skill cases remain unchanged.
 All 25 offline tests passed again, and the corrected interruption test passed
 20 consecutive runs, including its descendant-cleanup assertion.
+
+Before merge on 2026-10-29, review identified a portability assumption in the
+rectangle probe. Chromium exposes an iterable `DOMRectList`, so the earlier
+captures were valid; the probe now uses `Array.from` to support array-like lists
+without requiring an iterator. A fresh browser comparison with the iterator
+temporarily disabled produced identical metrics. Independent captures at
+320/640/1280px and 320px RTL/doubled text again showed 0px amount-edge spread and
+no horizontal overflow. All 25 offline tests and validation of 55 skills passed.
