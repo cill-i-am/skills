@@ -1,10 +1,10 @@
-{"title": "@alchemy.run/drizzle", "kind": "release symbols", "url": "https://github.com/alchemy-run/alchemy/blob/33c10dd55f5559beee2ec96b155c3a6429e44a93/packages/drizzle/src/index.ts", "terms": "D1 Dialect EffectDrizzleError EffectDrizzleQueryError EffectTransactionRollbackError MigratorInitError ProviderRequirements Providers Schema SchemaGenerateOptions SchemaProps SchemaProvider drizzle providers"}
-{"title": "@alchemy.run/drizzle/Cloudflare", "kind": "release symbols", "url": "https://github.com/alchemy-run/alchemy/blob/33c10dd55f5559beee2ec96b155c3a6429e44a93/packages/drizzle/src/Cloudflare.ts", "terms": "Cloudflare DurableObject DurableObjectConfig DurableObjectMigrations"}
-{"title": "@alchemy.run/drizzle/D1", "kind": "release symbols", "url": "https://github.com/alchemy-run/alchemy/blob/33c10dd55f5559beee2ec96b155c3a6429e44a93/packages/drizzle/src/D1.ts", "terms": "D1"}
-{"title": "@alchemy.run/drizzle/LibSQL", "kind": "release symbols", "url": "https://github.com/alchemy-run/alchemy/blob/33c10dd55f5559beee2ec96b155c3a6429e44a93/packages/drizzle/src/LibSQL.ts", "terms": "LibSQL"}
-{"title": "@alchemy.run/drizzle/MySQL", "kind": "release symbols", "url": "https://github.com/alchemy-run/alchemy/blob/33c10dd55f5559beee2ec96b155c3a6429e44a93/packages/drizzle/src/MySQL.ts", "terms": "MySQL"}
-{"title": "@alchemy.run/drizzle/Postgres", "kind": "release symbols", "url": "https://github.com/alchemy-run/alchemy/blob/33c10dd55f5559beee2ec96b155c3a6429e44a93/packages/drizzle/src/Postgres.ts", "terms": "Postgres"}
-{"title": "@alchemy.run/drizzle/Providers", "kind": "release symbols", "url": "https://github.com/alchemy-run/alchemy/blob/33c10dd55f5559beee2ec96b155c3a6429e44a93/packages/drizzle/src/Providers.ts", "terms": "ProviderRequirements Providers providers"}
-{"title": "@alchemy.run/drizzle/Schema", "kind": "release symbols", "url": "https://github.com/alchemy-run/alchemy/blob/33c10dd55f5559beee2ec96b155c3a6429e44a93/packages/drizzle/src/Schema.ts", "terms": "Dialect Schema SchemaGenerateOptions SchemaProps SchemaProvider"}
-{"title": "@alchemy.run/drizzle/index", "kind": "release symbols", "url": "https://github.com/alchemy-run/alchemy/blob/33c10dd55f5559beee2ec96b155c3a6429e44a93/packages/drizzle/src/index.ts", "terms": "D1 Dialect EffectDrizzleError EffectDrizzleQueryError EffectTransactionRollbackError MigratorInitError ProviderRequirements Providers Schema SchemaGenerateOptions SchemaProps SchemaProvider index providers"}
-{"title": "@alchemy.run/drizzle/package.json", "kind": "release symbols", "url": "https://github.com/alchemy-run/alchemy/blob/33c10dd55f5559beee2ec96b155c3a6429e44a93/packages/drizzle/package.json", "terms": "package.json"}
+[4,"@alchemy.run/drizzle","blob/packages/drizzle/src/index.ts","D1 Dialect EffectDrizzleError 13:QueryError 6:TransactionRollbackError MigratorInitError ProviderRequirements 8:s Schema 6:GenerateOptions 6:Props 9:vider drizzle providers"]
+[4,"@alchemy.run/drizzle/Cloudflare","blob/packages/drizzle/src/Cloudflare.ts","Cloudflare DurableObject 13:Config 13:Migrations"]
+[4,"@alchemy.run/drizzle/D1","blob/packages/drizzle/src/D1.ts","D1"]
+[4,"@alchemy.run/drizzle/LibSQL","blob/packages/drizzle/src/LibSQL.ts","LibSQL"]
+[4,"@alchemy.run/drizzle/MySQL","blob/packages/drizzle/src/MySQL.ts","MySQL"]
+[4,"@alchemy.run/drizzle/Postgres","blob/packages/drizzle/src/Postgres.ts","Postgres"]
+[4,"@alchemy.run/drizzle/Providers","blob/packages/drizzle/src/Providers.ts","ProviderRequirements 8:s providers"]
+[4,"@alchemy.run/drizzle/Schema","blob/packages/drizzle/src/Schema.ts","Dialect Schema 6:GenerateOptions 6:Props 9:vider"]
+[4,"@alchemy.run/drizzle/index","blob/packages/drizzle/src/index.ts","D1 Dialect EffectDrizzleError 13:QueryError 6:TransactionRollbackError MigratorInitError ProviderRequirements 8:s Schema 6:GenerateOptions 6:Props 9:vider index providers"]
+[4,"@alchemy.run/drizzle/package.json","blob/packages/drizzle/package.json","package.json"]

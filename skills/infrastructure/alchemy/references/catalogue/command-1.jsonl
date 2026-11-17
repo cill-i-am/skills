@@ -1,7 +1,7 @@
-{"title": "Dev servers", "url": "https://github.com/alchemy-run/alchemy/blob/33c10dd55f5559beee2ec96b155c3a6429e44a93/website/src/content/docs/command/dev-servers.mdx", "kind": "release guide", "terms": "command/dev-servers  Declare a dev server Where the process lives The url attribute Lifecycle With StaticSite Where next"}
-{"title": "Command", "url": "https://github.com/alchemy-run/alchemy/blob/33c10dd55f5559beee2ec96b155c3a6429e44a93/website/src/content/docs/command/index.mdx", "kind": "release guide", "terms": "command  Resources Compose with your cloud Reference"}
-{"title": "Memoization: builds & one-off commands", "url": "https://github.com/alchemy-run/alchemy/blob/33c10dd55f5559beee2ec96b155c3a6429e44a93/website/src/content/docs/command/memoization.mdx", "kind": "release guide", "terms": "command/memoization  A memoized build What gets hashed When it re-runs The outdir contract One-off commands Where next"}
-{"title": "How commands work", "url": "https://github.com/alchemy-run/alchemy/blob/33c10dd55f5559beee2ec96b155c3a6429e44a93/website/src/content/docs/command/what-is-command.mdx", "kind": "release guide", "terms": "command/what-is-command  Builds produce an asset Execs run for their effects Dev servers run while you develop Memoization: running only when needed How Command fits in a Stack"}
-{"title": "Command.Build reference", "url": "https://alchemy.run/providers/command/build", "kind": "website service reference", "terms": ""}
-{"title": "Command.Dev reference", "url": "https://alchemy.run/providers/command/dev", "kind": "website service reference", "terms": ""}
-{"title": "Command.Exec reference", "url": "https://alchemy.run/providers/command/exec", "kind": "website service reference", "terms": ""}
+[0,"Dev servers","blob/website/src/content/docs/command/dev-servers.mdx","command/dev-servers  Declare a dev server Where the process lives The url attribute Lifecycle With StaticSite Where next"]
+[0,"Command","blob/website/src/content/docs/command/index.mdx","command  Resources Compose with your cloud Reference"]
+[0,"Memoization: builds & one-off commands","blob/website/src/content/docs/command/memoization.mdx","command/memoization  A memoized build What gets hashed When it re-runs The outdir contract One-off commands Where next"]
+[0,"How commands work","blob/website/src/content/docs/command/what-is-command.mdx","command/what-is-command  Builds produce an asset Execs run for their effects Dev servers run while you develop Memoization: running only when needed How Command fits in a Stack"]
+[5,"Command.Build reference","https://alchemy.run/providers/command/build",""]
+[5,"Command.Dev reference","https://alchemy.run/providers/command/dev",""]
+[5,"Command.Exec reference","https://alchemy.run/providers/command/exec",""]

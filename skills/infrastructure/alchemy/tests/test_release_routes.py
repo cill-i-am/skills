@@ -7,15 +7,23 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
+sys.path.insert(0, str(ROOT / "scripts"))
+from catalogue import pack, unpack
+
 class ReleaseRoutes(unittest.TestCase):
     def test_every_shard_is_available_and_every_record_unique(self):
         index = json.loads((ROOT/"references/source-index.json").read_text())
-        records = [json.loads(line) for shard in index["shards"]
+        records = [unpack(line, index["revision"]) for shard in index["shards"]
                    for line in (ROOT/"references"/shard).read_text().splitlines()]
         self.assertEqual(len({(r["url"], r["title"], r["terms"]) for r in records}), index["record_count"])
         for r in records:
             if r["kind"].startswith("release"):
                 self.assertIn(index["revision"], r["url"])
+
+    def test_symbol_round_trip(self):
+        row = {"url": "https://example.org/api", "kind": "release symbols", "title": "Example",
+               "terms": "Widget WidgetName WidgetProvider :name 12:test"}
+        self.assertEqual(unpack(pack(row, "version"), "version"), row)
 
     def test_workload_queries_route_to_upstream(self):
         cases = {"Alchemist": "cli/api", "Resource.lookup": "infrastructure-as-code/references",
