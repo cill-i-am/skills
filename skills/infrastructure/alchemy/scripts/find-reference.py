@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Find a version-matched guide, example, package export map or service reference."""
+from catalogue import unpack
 import argparse
 import json
 import re
@@ -16,7 +17,7 @@ def search(query, limit):
     ranked = []
     for shard in manifest["shards"]:
         for line in (BASE/shard).read_text().splitlines():
-            row = json.loads(line)
+            row = unpack(line, manifest["revision"])
             title = row["title"].lower()
             subject = (row["terms"]+" "+title+" "+row["url"].rsplit("/", 2)[-2]).lower()
             if not terms or any(t not in subject for t in terms): continue

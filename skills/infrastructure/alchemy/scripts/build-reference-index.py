@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Build the offline guide and API catalogue from an Alchemy tag and its public index."""
+from catalogue import pack
 import argparse
 import json
 import re
@@ -98,7 +99,7 @@ if __name__ == "__main__":
         chunks = [[]]
         length = 0
         for row in items:
-            line = json.dumps(row, ensure_ascii=False) + "\n"
+            line = pack(row, REVISION) + "\n"
             if chunks[-1] and length + len(line.encode()) > 14000:
                 chunks.append([])
                 length = 0

@@ -1,6 +1,6 @@
 # Find an Alchemy API or pattern
 
-Start with the importing package's lockfile and exports. For beta.87, the [catalogue manifest](source-index.json) lists small shards named by topic. When reading the skill through Executor, open the relevant shard with the skill file reader. In a local checkout run:
+Start with the importing package's lockfile and exports. For beta.87, the [catalogue manifest](source-index.json) lists small shards named by topic. When reading the skill through Executor, open the relevant shard with the skill file reader. Each JSON line holds the kind number (guide, blog, example, export map, symbols, or service page, numbered from zero), title, source path and search terms. Resolve `blob/` and `tree/` paths against the manifest's Alchemy commit on GitHub. In symbol lists, `6:Provider` copies the first six characters of the previous name and appends `Provider`. The lookup script expands names and prints full links. In a local checkout run:
 
 ```sh
 python3 scripts/find-reference.py Resource.lookup

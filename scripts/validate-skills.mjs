@@ -34,6 +34,16 @@ async function validate(skillsRoot) {
     if (!name || name !== path.basename(directory) || !/^[a-z0-9-]+$/.test(name)) {
       errors.push(`${label}: skill name missing or inconsistent with its directory`);
     }
+    // githubSkills caches the complete skill as one JSON entry and also in a page.
+    const payloadFiles = await Promise.all(files.filter((entry) => entry.startsWith(directory + path.sep))
+      .map(async (entry) => ({
+        path: path.relative(directory, entry).split(path.sep).join("/"),
+        content: await readFile(entry, "utf8"),
+      })));
+    const pageBytes = Buffer.byteLength(JSON.stringify([{ name, description, files: payloadFiles }]));
+    if (pageBytes > 2_000_000) {
+      errors.push(`${label}: skill occupies at least ${pageBytes} bytes in Executor's 2,000,000-byte cache entry`);
+    }
     if (!description) errors.push(`${label}: missing description`);
     if (skills.has(name)) errors.push(`${label}: duplicate skill name ${name}`);
     if (name) skills.set(name, directory);
