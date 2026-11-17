@@ -72,5 +72,3 @@ Check image architecture, startup/readiness probes, port reachability, graceful 
 - [kubernetes/workloads/object-lifecycle](https://alchemy.run/kubernetes/workloads/object-lifecycle/)
 - [kubernetes/objects/helm-charts](https://alchemy.run/kubernetes/objects/helm-charts/)
 - [command](https://alchemy.run/command/)
-
-Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.

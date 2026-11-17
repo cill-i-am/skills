@@ -2,10 +2,20 @@ packages:
   - "apps/*"
   - "packages/*"
 catalog:
-  alchemy: "2.0.0-beta.81"
-  effect: "4.0.0"
-  "@effect/platform-node": "4.0.0"
-  "@effect/sql-d1": "4.0.0"
-  "@effect/sql-pg": "4.0.0"
-  drizzle-orm: "1.0.0-rc.5-ab785fc"
-  drizzle-kit: "1.0.0-rc.5-ab785fc"
+  alchemy: "2.0.0-beta.87"
+  effect: "4.1.4"
+  "@effect/platform-node": "4.1.4"
+  "@effect/sql-d1": "4.1.4"
+  "@effect/sql-pg": "4.1.4"
+  drizzle-orm: "1.0.0-rc.5"
+  drizzle-kit: "1.0.0-rc.5"
+  "@alchemy.run/cloudflare": "2.0.0-beta.87"
+  "@alchemy.run/drizzle": "2.0.0-beta.87"
+  "@alchemy.run/neon": "2.0.0-beta.87"
+  "@alchemy.run/frontend-frameworks": "2.0.0-beta.87"
+allowBuilds:
+  esbuild: true
+  workerd: true
+# Match the exact peer used by the Cloudflare runtime's unenv preset.
+overrides:
+  unenv: "2.0.0-rc.24"

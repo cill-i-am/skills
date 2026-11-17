@@ -17,7 +17,7 @@ import * as HttpApiGroup from "effect/http-api/HttpApiGroup";
 export class Note extends Schema.Class<Note>("Note")({
   id: Schema.String, title: Schema.String,
 }) {}
-export class NoteNotFound extends Schema.TaggedErrorClass<NoteNotFound>()(
+export class NoteNotFound extends Schema.TaggedError<NoteNotFound>()(
   "NoteNotFound", { id: Schema.String }, { httpApiStatus: 404 },
 ) {}
 const getNote = HttpApiEndpoint.get("getNote", "/:id", {
@@ -71,5 +71,3 @@ Test malformed payloads, missing/invalid authentication, cross-tenant access, no
 - [cloudflare/apis/effect-http-api](https://alchemy.run/cloudflare/apis/effect-http-api/)
 - [cloudflare/apis/effect-rpc](https://alchemy.run/cloudflare/apis/effect-rpc/)
 - [aws/apis/effect-http-api](https://alchemy.run/aws/apis/effect-http-api/)
-
-Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.

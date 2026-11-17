@@ -1,5 +1,7 @@
 # AWS compute, data, events, and IAM
 
+For Cloud Run to SQS, see the [compiled federation fragment](../assets/examples/cloud-run-sqs/Service.ts). For an S3-backed state store, inspect the [migration rehearsal](../scripts/test-state-migration.py) before changing AWS.state().
+
 ## Select the runtime by workload
 
 Use Lambda for request/event functions when its runtime and execution model fit. Use ECS/Fargate for container services and run-to-completion tasks. Use EC2 for a VM-level requirement. Use EKS when Kubernetes is an explicit operational choice, not merely because the app uses containers. MicroVM support is a distinct isolated-execution capability; use the current guide rather than inferring its image or lifecycle API from EC2.
@@ -9,8 +11,8 @@ Before designing, establish account, region, credentials, state backend, network
 ## Lambda with a typed S3 capability
 
 ```ts
-import * as AWS from "alchemy/AWS";
-import * as S3 from "alchemy/AWS/S3";
+import * as AWS from "@alchemy.run/aws";
+import * as S3 from "@alchemy.run/aws/S3";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 
@@ -67,5 +69,3 @@ Local emulation is useful but not proof of AWS IAM propagation, service quotas, 
 - [aws/data/dynamodb](https://alchemy.run/aws/data/dynamodb/)
 - [aws/local-development](https://alchemy.run/aws/local-development/)
 - [aws/tutorial/part-5](https://alchemy.run/aws/tutorial/part-5/)
-
-Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.

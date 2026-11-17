@@ -31,7 +31,7 @@ The [Notes D1 implementation](../assets/examples/drizzle-monorepo/packages/notes
 The host wiring is short and explicit:
 
 ```ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import { NotesD1Live } from "@example/notes/d1";
 import * as Effect from "effect/Effect";
 import { makeHttp } from "./Http.ts";
@@ -62,8 +62,8 @@ The sample gives Notes its own small database to show the complete mechanism. **
 Put the shared client behind an `AppDatabase` service. For example, within a server-only database package:
 
 ```ts
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Drizzle from "alchemy/Drizzle/D1";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Drizzle from "@alchemy.run/drizzle/D1";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -120,5 +120,3 @@ The benefit is less duplicated binding/configuration wiring and clearer capabili
 - [File layout](https://alchemy.run/project-structure/file-layout/)
 - [References](https://alchemy.run/infrastructure-as-code/references/)
 - [Connection lifecycle](https://alchemy.run/sql/effect-sql/lifecycle/)
-
-Architecture recommendation researched 9 October 2026 against this skill's pinned Alchemy baseline. Defaults here are project preferences; upstream supports other layouts.

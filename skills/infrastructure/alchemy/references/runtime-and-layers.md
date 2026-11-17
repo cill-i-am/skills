@@ -66,5 +66,3 @@ For cycles between services, prefer explicit contracts and tagged handles from t
 - [infrastructure-as-effects/circular-bindings](https://alchemy.run/infrastructure-as-effects/circular-bindings/)
 - [infrastructure-as-effects/event-sources](https://alchemy.run/infrastructure-as-effects/event-sources/)
 - [infrastructure-as-effects/sinks](https://alchemy.run/infrastructure-as-effects/sinks/)
-
-Documentation snapshot: 7 October 2026. Resolve exact APIs against the target project’s installed version; see [version policy](version-policy.md).

@@ -1,5 +1,7 @@
 # Frontend frameworks, SSR, assets, and monorepo builds
 
+For a move between hosts, locate a tagged example for the exact host/framework combination in the [release catalogue](source-map.md). Check a parameterized route and a static asset, plus deep-link refresh and server-only environment handling.
+
 ## Start from the application's actual framework
 
 Read the package manifest, Vite/Nitro/Next configuration, build scripts, server entrypoint, and deployment adapter. Choose the Alchemy integration for that framework and provider, not the closest-looking name. A Vite SPA, a TanStack Start SSR app, an Astro static site, and Next.js do not share the same runtime output.
@@ -9,7 +11,7 @@ The current Cloudflare TanStack Start guide uses `Cloudflare.Website.Vite`. Do n
 ## A root-level Vite deployment
 
 ```ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 
 export const Website = Cloudflare.Website.Vite("Website", {
   env: { DEPLOYMENT_LABEL: "example" },
@@ -53,5 +55,3 @@ For release rollback, identify whether the frontend was rebuilt against a newer 
 - [cloudflare/frontend/static-site](https://alchemy.run/cloudflare/frontend/static-site/)
 - [prisma/frontend/websites](https://alchemy.run/prisma/frontend/websites/)
 - [project-structure/monorepo](https://alchemy.run/project-structure/monorepo/)
-
-Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.

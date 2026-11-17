@@ -35,7 +35,7 @@ Durable Object migrations are bundled during construction and applied on each ob
 The documented low-level D1 integration is:
 
 ```ts
-import * as SQL from "alchemy/SQL/D1";
+import * as SQL from "@alchemy.run/sql/D1";
 
 const d1 = yield* Cloudflare.D1.QueryDatabase(Database);
 const sql = yield* SQL.D1(d1);
@@ -77,5 +77,3 @@ Observe duration, lock waits, connection counts, and errors without logging sens
 - [neon](https://alchemy.run/neon/)
 - [planetscale](https://alchemy.run/planetscale/)
 - [prisma](https://alchemy.run/prisma/)
-
-Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.

@@ -1,5 +1,7 @@
 # CI/CD, previews, production, and cleanup
 
+The upstream composite uses staging-N; these templates and guards use pr-N. Pair creator and cleanup from the same workflow family. See [worktree and CI targeting](deployment-decisions.md).
+
 ## Design the trust boundaries first
 
 Use independent lanes for untrusted checks, approved preview deployment, production deployment, and preview cleanup. Validation needs no provider secrets. A fork pull request does not become trusted because tests passed. Same-repository branches still contain executable code, so use a protected preview environment with reviewer approval when contributors can modify deployment scripts or dependencies.
@@ -64,6 +66,5 @@ Use a trusted stack config capable of resolving the old deployment's resource ty
 - [https://docs.github.com/en/actions/reference/security/secure-use](https://docs.github.com/en/actions/reference/security/secure-use)
 - [https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-aws](https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-aws)
 
-Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.
 
 Workflow setup: [template guide](workflow-templates.md). Current external references: [pnpm/setup](https://github.com/pnpm/setup), [AWS credential action](https://github.com/aws-actions/configure-aws-credentials), [checkout](https://github.com/actions/checkout).

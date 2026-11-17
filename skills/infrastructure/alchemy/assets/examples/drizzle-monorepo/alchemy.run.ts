@@ -1,5 +1,6 @@
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Output from "alchemy/Output";
 import * as Effect from "effect/Effect";
 import { Path } from "effect/Path";
 
@@ -14,7 +15,10 @@ export default Alchemy.Stack("NotesExample", {
   const path = yield* Path;
   const web = yield* Cloudflare.Website.Vite("Web", {
     rootDir: path.resolve(import.meta.dirname, "apps/web"),
-    env: { VITE_API_URL: api.url },
+    env: { VITE_API_URL: api.url.pipe(Output.map((url) => {
+      if (!url) throw new Error("Notes API requires a public URL for the frontend");
+      return url;
+    })) },
     memo: {
       include: ["**/*", "../../packages/contracts/src/**", "../../packages/contracts/package.json"],
       lockfile: true,

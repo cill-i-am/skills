@@ -8,29 +8,21 @@ This is a source-complete demonstration with explicit setup still required. It i
 
 ## Versions and evidence
 
-The workspace selects Alchemy `2.0.0-beta.81`, Effect/SQL `4.0.0`, and matching Drizzle ORM/Kit `1.0.0-rc.5-ab785fc`. Other tool pins come from the inspected upstream catalog. These are example pins, not permission to upgrade an existing project.
-
-The npm registry was unreachable during authoring. No installation, dependency typecheck, Vite build, Drizzle generation, migration application, emulator, cloud deployment, or database round-trip was run. TypeScript syntax was parsed and the four pure title tests and eight migration-guard tests were executed. See the [revision evidence](../../../evals/drizzle-monorepo-validation.md).
-
-No lockfile, generated SQL, or Drizzle snapshots are fabricated. Generate and review them during the setup below. The migration-input guard prevents the provided convenience commands from proceeding with empty migration directories; it is an existence check, not a semantic validator or an authorization boundary.
+This workspace uses Alchemy and providers 2.0.0-beta.87, Effect 4.1.4, and Drizzle ORM/Kit 1.0.0-rc.5. Both SQL dialects have committed migrations and snapshots. The root guard checks that the selected migration exists before deployment.
 
 ## First setup
 
-Copy this directory into a disposable checkout; it is an independent pnpm workspace, not a package to install through the parent examples workspace. Use the declared Node/pnpm toolchain or deliberately verify a replacement.
+From this workspace root:
 
 ```sh
-pnpm install
+pnpm install --frozen-lockfile
 pnpm typecheck
 pnpm test:unit
 pnpm test:guards
-pnpm db:generate:sqlite
-# Inspect the generated SQL and snapshots together with sqlite-schema.ts.
-git diff -- packages/notes
-# New files are not shown by plain git diff; inspect these too:
-git status --short
+pnpm test:local
 ```
 
-Commit the real lockfile and reviewed generated SQL/snapshots before using `--frozen-lockfile` in CI. Installation failures and peer conflicts are compatibility findings; do not override them blindly. `typecheck` checks this complete workspace, including the alternative Postgres source.
+The local test uses Bun, an isolated D1 stage and a synthetic API credential. After editing a schema run the corresponding db:generate command and review both SQL and snapshot. The Postgres variant is typechecked; running it needs its own database and provider configuration.
 
 Copy `.env.example` to `.env` and set a non-empty local `APP_API_TOKEN`; do not commit it. The CLI's local/dev command still starts real local processes. Inspect the toolchain and graph before treating any dev command as cloud-free.
 

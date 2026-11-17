@@ -1,5 +1,7 @@
 # Local development, emulation, and debugging
 
+When running from parallel checkouts, verify the effective stage for each runner and clean up its remote exceptions. See [concurrent runs](deployment-decisions.md).
+
 ## Keep local and live identities separate
 
 Use a dedicated development stage and inspect its provider configuration. Do not use a production stage with `alchemy dev`; local/live resource transitions can be replacements. A locally executing Worker may still reference a real database, queue, API, or secret. Make every live dependency explicit in a short environment inventory.
@@ -39,5 +41,3 @@ Local tests may miss IAM propagation, provider account settings, DNS/TLS, cold s
 - [aws/local-development](https://alchemy.run/aws/local-development/)
 - [testing/test-harness](https://alchemy.run/testing/test-harness/)
 - [cloudflare/tutorial/part-4](https://alchemy.run/cloudflare/tutorial/part-4/)
-
-Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.

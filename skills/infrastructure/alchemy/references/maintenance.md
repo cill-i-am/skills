@@ -50,4 +50,16 @@ Sources: [OpenAI Skill Creator](https://github.com/openai/skills/blob/main/skill
 
 ## Drizzle/monorepo follow-up
 
-See the [iteration checklist](iteration-checklist.md) and [additional authored cases](../evals/drizzle-monorepo-cases.json). Compare old/new/no-skill on identical fixtures; with/without alone cannot demonstrate that replacing the old skill is better. Keep eval expectations outside the installed skill available to a tested agent. The fixture-backed runner and hidden acceptance suite are still outstanding.
+See the [iteration checklist](iteration-checklist.md) and [additional authored cases](../evals/drizzle-monorepo-cases.json). Compare old/new/no-skill on identical fixtures; with/without alone cannot demonstrate that replacing the old skill is better. Keep eval expectations outside the installed skill available to a tested agent. For the current candidate exercise and runtime results see the release validation report.
+
+## Refresh the release catalogue
+
+With a clean checkout of the tagged upstream commit, capture the official site's `llms-full.txt`. Update the revision and version in the generator and test runner. Install the parent example workspace (its TypeScript API reads exports), then run:
+
+```sh
+python3 scripts/build-reference-index.py /path/to/tagged-alchemy /path/to/llms-full.txt
+python3 -m unittest discover -s tests
+python3 scripts/test-release.py /path/to/tagged-alchemy
+```
+
+The generator rejects a different commit. The catalogue distinguishes tagged source from the moving generated web reference. Review newly published or source-only providers and run the lookup acceptance queries before releasing.

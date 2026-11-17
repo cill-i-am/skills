@@ -1,5 +1,7 @@
 # Lifecycle, retention, adoption, and renames
 
+For an external resource, lookup can preserve its current owner. For a database or key whose replacement is unacceptable, use the [ownership and protection decision table](deployment-decisions.md) before choosing adopt, retain or protect.
+
 
 ## Understand the proposed change
 
@@ -49,5 +51,3 @@ Removal, adoption, repair, and state editing are separate operations. Authorizat
 - [infrastructure-as-code/renaming](https://alchemy.run/infrastructure-as-code/renaming/)
 - [cli/adopting-resources](https://alchemy.run/cli/adopting-resources/)
 - [cli/inspecting-state](https://alchemy.run/cli/inspecting-state/)
-
-Documentation snapshot: 7 October 2026. Resolve exact APIs against the target project’s installed version; see [version policy](version-policy.md).

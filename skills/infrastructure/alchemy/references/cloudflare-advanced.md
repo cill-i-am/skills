@@ -52,5 +52,3 @@ Rate Limiting and Workers Cache are specialised bindings, not a database transac
 - [cloudflare/ai/effect-ai](https://alchemy.run/cloudflare/ai/effect-ai/)
 - [cloudflare/ai/release-agent](https://alchemy.run/cloudflare/ai/release-agent/)
 - [cloudflare/compute/python-workers](https://alchemy.run/cloudflare/compute/python-workers/)
-
-Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.

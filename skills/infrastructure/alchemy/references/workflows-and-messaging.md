@@ -72,5 +72,3 @@ Test eventual completion with bounded polling, failed and duplicated messages, r
 - [cloudflare/compute/add-a-workflow](https://alchemy.run/cloudflare/compute/add-a-workflow/)
 - [infrastructure-as-effects/event-sources](https://alchemy.run/infrastructure-as-effects/event-sources/)
 - [infrastructure-as-effects/sinks](https://alchemy.run/infrastructure-as-effects/sinks/)
-
-Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.

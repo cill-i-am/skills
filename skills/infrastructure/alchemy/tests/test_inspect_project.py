@@ -13,7 +13,7 @@ class InventoryTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / "package.json").write_text(json.dumps({
-                "packageManager": "pnpm@12.9.1", "dependencies": {"alchemy": "2.0.0-beta.81", "effect": "4.0.0"},
+                "packageManager": "pnpm@12.9.1", "dependencies": {"alchemy": "2.0.0-beta.87", "effect": "4.0.0"},
                 "scripts": {"deploy": "echo NEVER_PRINT_THIS"}}))
             (root / ".env").write_text("TOKEN=NEVER_PRINT_THIS")
             (root / "alchemy.run.ts").write_text("// no execution")
@@ -56,6 +56,23 @@ class InventoryTests(unittest.TestCase):
             result = module.inspect(root)
             self.assertNotIn("SECRET", json.dumps(result))
             self.assertIn("non-version spec omitted", json.dumps(result))
+
+    def test_consuming_workspace_resolves_local_pnpm_link(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            workspace = root / "apps/api"
+            modules = workspace / "node_modules/@alchemy.run"
+            modules.mkdir(parents=True)
+            installed = root / "node_modules/.pnpm/cloudflare/node_modules/@alchemy.run/cloudflare"
+            installed.mkdir(parents=True)
+            (installed / "package.json").write_text('{"version":"2.0.0-beta.87"}')
+            (modules / "cloudflare").symlink_to(installed, target_is_directory=True)
+            (workspace / "package.json").write_text('{"dependencies":{"@alchemy.run/cloudflare":"catalog:"}}')
+            (root / "pnpm-lock.yaml").write_text("importers:\n  apps/api:\n    dependencies:\n"
+                "      '@alchemy.run/cloudflare':\n        specifier: catalog:\n        version: 2.0.0-beta.87(effect@4.1.4)\n")
+            manifest = module.inspect(root)["manifests"][0]
+            self.assertEqual(manifest["pnpm_locked_versions"]["@alchemy.run/cloudflare"], "2.0.0-beta.87")
+            self.assertEqual(manifest["resolved_versions"]["@alchemy.run/cloudflare"], "2.0.0-beta.87")
 
     def test_node_modules_symlink_is_not_followed(self):
         with tempfile.TemporaryDirectory() as directory:

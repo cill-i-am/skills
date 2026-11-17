@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "authored_not_executed_by_independent_agents",
-  "baseline": "2.0.0-beta.81",
+  "baseline": "2.0.0-beta.87",
   "cases": [
     {
       "id": "new-r2-api",
@@ -184,7 +184,7 @@
     },
     {
       "id": "revision-mismatch",
-      "prompt": "The setup page says Effect RC; our source catalogue uses 4.0.0.",
+      "prompt": "The setup page says Effect RC; our source catalogue uses 4.1.4.",
       "expected": [
         "Prefer installed dependencies and matching pinned source",
         "Record documentation conflict",

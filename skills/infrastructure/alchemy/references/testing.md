@@ -8,11 +8,11 @@ Use ordinary pure unit tests for parsing, authorization decisions, stage policy,
 
 ## End-to-end test shape
 
-The full example at [the example catalogue](examples.md) uses this source-reviewed pattern:
+The local R2 fixture in the [example catalogue](examples.md) exercises this pattern:
 
 ```ts
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Test from "alchemy/Test/Bun";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Test from "@alchemy.run/test/Bun";
 import * as Effect from "effect/Effect";
 import * as HttpClient from "effect/http/HttpClient";
 import { expect } from "bun:test";
@@ -35,7 +35,7 @@ test("health endpoint", Effect.gen(function* () {
 
 This local example's fixed stage is for one isolated developer execution. Parallel CI requires a unique, sanitized stage including run/job/suite identity. `beforeAll` returns an Effect accessor: yield it inside a test. Do not await it as a Promise at module initialization. Hook timeouts can be configured with a second argument such as `{ timeout: 300_000 }`.
 
-For Vitest, use `alchemy/Test/Vitest` and the documented `@effect/vitest` adapter. Preserve the repository's runner; do not install a second runner merely to use a sample. Hooks and deploy/destroy follow the same model.
+For Vitest, use `@alchemy.run/test/Vitest` and the documented `@effect/vitest` adapter. Preserve the repository's runner; do not install a second runner merely to use a sample. Hooks and deploy/destroy follow the same model.
 
 ## Useful harness controls
 
@@ -69,5 +69,3 @@ When testing an already-deployed environment, do not use deploy/destroy hooks at
 - [testing/testing-providers](https://alchemy.run/testing/testing-providers/)
 - [cloudflare/tutorial/part-3](https://alchemy.run/cloudflare/tutorial/part-3/)
 - [cloudflare/tutorial/part-4](https://alchemy.run/cloudflare/tutorial/part-4/)
-
-Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.

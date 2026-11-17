@@ -9,7 +9,7 @@ The documented hosts include `GCP.Function` (Cloud Run service), `GCP.Run.Job`, 
 ## Firestore service pattern
 
 ```ts
-import * as GCP from "alchemy/GCP";
+import * as GCP from "@alchemy.run/gcp";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
@@ -59,5 +59,3 @@ The provider intentionally focuses on infrastructure. Do not model personal Gmai
 - [gcp/guides/event-pipeline](https://alchemy.run/gcp/guides/event-pipeline/)
 - [gcp/guides/memorystore](https://alchemy.run/gcp/guides/memorystore/)
 - [gcp/guides/bindings](https://alchemy.run/gcp/guides/bindings/)
-
-Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.

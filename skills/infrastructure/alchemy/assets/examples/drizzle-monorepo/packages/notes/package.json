@@ -14,7 +14,10 @@
     "drizzle-orm": "catalog:",
     "@effect/sql-d1": "catalog:",
     "@effect/sql-pg": "catalog:",
-    "pg": "8.22.0"
+    "pg": "8.22.0",
+    "@alchemy.run/drizzle": "catalog:",
+    "@alchemy.run/cloudflare": "catalog:",
+    "@alchemy.run/neon": "catalog:"
   },
   "devDependencies": {
     "drizzle-kit": "catalog:",

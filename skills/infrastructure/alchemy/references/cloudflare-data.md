@@ -55,7 +55,7 @@ Provide `Cloudflare.D1.QueryDatabaseBinding`. `prepare` and `bind` build stateme
 
 The current migration integration tracks applied files in `__alchemy_migrations`. Existing Wrangler/Drizzle histories have an adoption path; inspect it before switching migration ownership. Generate migrations locally, review them, commit them, and apply that same set in CI. Do not run two migration owners against one database. Read [SQL and migrations](sql-and-migrations.md) for rollback and destructive changes.
 
-For Effect SQL, `alchemy/SQL/D1` exposes `SQL.D1(d1)` and `SQL.D1Layer(d1)` over the same binding. The documented client is lazily acquired per execution, not one pool shared across unrelated requests. Native `raw` access exists for libraries that require a D1 object; keep that escape hatch at the integration boundary.
+For Effect SQL, `@alchemy.run/sql/D1` exposes `SQL.D1(d1)` and `SQL.D1Layer(d1)` over the same binding. The documented client is lazily acquired per execution, not one pool shared across unrelated requests. Native `raw` access exists for libraries that require a D1 object; keep that escape hatch at the integration boundary.
 
 ## Hyperdrive and external databases
 
@@ -76,5 +76,3 @@ Test read/write round trips, missing data, malformed input, tenant separation, d
 - [cloudflare/data/hyperdrive](https://alchemy.run/cloudflare/data/hyperdrive/)
 - [cloudflare/data/r2-presigned-urls](https://alchemy.run/cloudflare/data/r2-presigned-urls/)
 - [cloudflare/data/shared-database](https://alchemy.run/cloudflare/data/shared-database/)
-
-Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.
