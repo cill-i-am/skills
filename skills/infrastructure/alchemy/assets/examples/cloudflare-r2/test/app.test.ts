@@ -35,3 +35,19 @@ test("health, authorization, missing key, and text round trip", Effect.gen(funct
   expect(read.status).toBe(200);
   expect(yield* Effect.tryPromise(() => read.text())).toBe("hello from the local test");
 }));
+
+test("an unauthorized PUT leaves the R2 key absent", Effect.gen(function* () {
+  const { url } = yield* deployed;
+  if (!url) throw new Error("The example stack did not return a URL");
+  const object = new URL(`/objects/denied-${crypto.randomUUID()}.txt`, url);
+  const denied = yield* Effect.tryPromise(() => fetch(object, {
+    method: "PUT",
+    body: "must never be stored",
+  }));
+  expect(denied.status).toBe(401);
+
+  const probe = yield* Effect.tryPromise(() => fetch(object, {
+    headers: { authorization: `Bearer ${token}` },
+  }));
+  expect(probe.status).toBe(404);
+}));

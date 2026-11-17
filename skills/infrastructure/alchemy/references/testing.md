@@ -6,6 +6,14 @@ Use ordinary pure unit tests for parsing, authorization decisions, stage policy,
 
 `Test.make` defaults to **real cloud deployment**. An in-memory state store does not make the provider fake. Inspect provider Layers, explicit `remote()` selections, side effects at module load, and test hooks before running unfamiliar tests.
 
+## Workload verification
+
+**Private R2 uploads.** Typecheck the locked provider imports. For an upload-only Worker use the write capability and verify bytes through a separate authorized reader. From `assets/examples` run `pnpm test:local` with a fresh `ALCHEMY_HOME`. The [Worker/R2 fixture](../assets/examples/cloudflare-r2/test/app.test.ts) uses a local Worker with `dev: true` and registers teardown. Exercise an unauthenticated PUT to a new key: expect 401, then expect an authorized GET for that key to return 404. An authorized PUT must return 204 and its bytes must round-trip. The sample covers small text objects. For a tenant-facing endpoint also test the key boundary and the ingress size limit. A disposable Cloudflare stage can verify the deployed Worker binding and denial of anonymous direct bucket access.
+
+**Domain projections and browser subscriptions.** Start with an in-memory model story. Replay historical events for two owners twice; assert identical rows and counts. Append during backfill and check that the projection reflects that event once. Exercise the API with two authorized sessions scoped to different owners: check initial snapshots, subsequent events and revocation while subscribed. The [release test runner](../scripts/test-release.py) loads the tagged backfill, story ordering, API, isolation and live-read suites. Add stories for the application's own schema and policy. On the chosen host, use real browser subscriptions to verify authorized delivery, isolation after revocation, reconnect and persistence across restart.
+
+**Disposable sandbox jobs.** From `assets/examples` run `bun test e2b-job/ScopedJob.test.ts`. The [offline fake](../assets/examples/e2b-job/ScopedJob.test.ts) fails the first attempt, checks that finalization releases guest 1, then checks that the retry uses and releases guest 2. Keep durable checkpoints outside the guest. The [E2B job](../assets/examples/e2b-job/Job.ts) composes a scoped kill finalizer with a provider timeout. A fake cannot observe provider termination. In an authorized hosted check, record real guest IDs, interrupt a job, verify termination independently, verify expiry when cleanup fails, and confirm the retry has clean guest storage and no host credential.
+
 ## End-to-end test shape
 
 The local R2 fixture in the [example catalogue](examples.md) exercises this pattern:

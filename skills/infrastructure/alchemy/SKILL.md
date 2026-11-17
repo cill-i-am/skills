@@ -15,7 +15,7 @@ owns the stack. Preserve the project's locked versions unless upgrading is in sc
 1. Which installed core, provider, Effect and test packages own the requested API?
 2. Who owns the physical object: this stack, another stack or an external owner?
 3. Which phase, host and identity execute the code?
-4. Which observable result proves the change, and who cleans up its stage?
+4. Which check runs in which environment, what should it observe, what still needs a live host, and who cleans up?
 
 For an unfamiliar workload use [workload selection](references/workload-selection.md).
 For an exact service, symbol or framework/host pair use the [release catalogue](references/source-map.md).
@@ -51,6 +51,9 @@ business rules and browser contracts separate; see [colocation](references/infra
 5. **Verify proportionately.** Run relevant static/unit checks, then local
    integration and authorized live checks where the claim requires them. Inspect
    unfamiliar tests first: the Alchemy harness is live-cloud by default.
+   For [private uploads, live projections and disposable jobs](references/testing.md#workload-verification),
+   include the fixture or test mode, expected outcome and remaining live check
+   in the initial implementation or review plan.
 6. **Report actual evidence.** State changed files, important lifecycle/security
    effects, checks run, results, and specific gaps. Never call syntax validation a
    typecheck, a template a deployed system, or a queued job completed work.
