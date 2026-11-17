@@ -57,5 +57,3 @@ Test the actual cross-provider path with the intended runtime credentials. Do no
 - [neon](https://alchemy.run/neon/)
 - [planetscale](https://alchemy.run/planetscale/)
 - [prisma](https://alchemy.run/prisma/)
-
-Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.

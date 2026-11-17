@@ -52,5 +52,3 @@ Test denied access, revoked credentials, cross-tenant identifiers, secret redact
 - [cloudflare/messaging/github-events](https://alchemy.run/cloudflare/messaging/github-events/)
 - [cloudflare/email/send-and-receive](https://alchemy.run/cloudflare/email/send-and-receive/)
 - [environments/ci](https://alchemy.run/environments/ci/)
-
-Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.

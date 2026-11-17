@@ -1,5 +1,7 @@
 # Stacks, resources, actions, outputs, and references
 
+For an externally provisioned object use a supported live lookup. For another managed stack, use its typed output or resource reference. See the [ownership table](deployment-decisions.md).
+
 
 ## The graph model
 
@@ -67,5 +69,3 @@ Does each mutable object have one owner? Can two stages select the same physical
 - [infrastructure-as-code/outputs](https://alchemy.run/infrastructure-as-code/outputs/)
 - [infrastructure-as-code/references](https://alchemy.run/infrastructure-as-code/references/)
 - [project-structure/monorepo](https://alchemy.run/project-structure/monorepo/)
-
-Documentation snapshot: 7 October 2026. Resolve exact APIs against the target project’s installed version; see [version policy](version-policy.md).

@@ -9,7 +9,7 @@ A Worker normally lives in its own module with `main: import.meta.url`; the stac
 ## Effect-style skeleton
 
 ```ts
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import * as HttpServerResponse from "effect/http/HttpServerResponse";
 
@@ -68,5 +68,3 @@ For Python Workers, Worker Loader, Workers for Platforms, Browser Rendering, and
 - [cloudflare/compute/gradual-deployments](https://alchemy.run/cloudflare/compute/gradual-deployments/)
 - [apis](https://alchemy.run/apis/)
 - [cloudflare/security/access](https://alchemy.run/cloudflare/security/access/)
-
-Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.

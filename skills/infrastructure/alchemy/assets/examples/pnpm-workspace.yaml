@@ -1,0 +1,8 @@
+packages:
+  - "."
+allowBuilds:
+  esbuild: true
+  workerd: true
+# Match the exact peer used by the Cloudflare runtime's unenv preset.
+overrides:
+  unenv: "2.0.0-rc.24"

@@ -56,5 +56,3 @@ For state repair, adoption, destructive migration, or replacement of persistent 
 - [infrastructure-as-effects/phases](https://alchemy.run/infrastructure-as-effects/phases/)
 - [docker](https://alchemy.run/docker/)
 - [environments/ci](https://alchemy.run/environments/ci/)
-
-Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.

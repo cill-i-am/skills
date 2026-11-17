@@ -9,13 +9,13 @@ Inspect package scripts before running them: `prepare`, build plugins, and stack
 
 ## New-project setup
 
-The current prerequisites are Bun or Node.js 22+. A baseline-aligned pnpm starting point is shown below. The pinned source catalogue uses Effect 4.0.0 even though some setup prose still mentions RC tags:
+The current prerequisites are Bun or Node.js 22+. A baseline-aligned pnpm starting point is shown below. The fixture pins the release family and installs the provider explicitly:
 
 ```sh
 mkdir infrastructure-demo
 cd infrastructure-demo
 pnpm init
-pnpm add --save-exact alchemy@2.0.0-beta.81 effect@4.0.0 @effect/platform-bun@4.0.0 @effect/platform-node@4.0.0
+pnpm add --save-exact alchemy@2.0.0-beta.87 @alchemy.run/cloudflare@2.0.0-beta.87 effect@4.1.4 @effect/platform-bun@4.1.4 @effect/platform-node@4.1.4
 pnpm add -D typescript @types/node
 ```
 
@@ -25,7 +25,7 @@ This is a one-time version-selection step, not a CI command. Check peer compatib
 
 ```ts
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 
 export default Alchemy.Stack(
@@ -75,5 +75,3 @@ Run the project's static checks, then appropriate local tests. For an approved d
 - [cloudflare/setup](https://alchemy.run/cloudflare/setup/)
 - [environments/profiles](https://alchemy.run/environments/profiles/)
 - [state-store](https://alchemy.run/state-store/)
-
-Documentation snapshot: 7 October 2026. Resolve exact APIs against the target project’s installed version; see [version policy](version-policy.md).

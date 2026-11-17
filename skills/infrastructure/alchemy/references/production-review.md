@@ -40,5 +40,3 @@ Report source review, syntax, typecheck, local tests, live tests, and deployed v
 - [testing](https://alchemy.run/testing/)
 - [testing/observability](https://alchemy.run/testing/observability/)
 - [sql/drizzle/migrations](https://alchemy.run/sql/drizzle/migrations/)
-
-Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.

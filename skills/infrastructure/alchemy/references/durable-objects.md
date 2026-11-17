@@ -68,5 +68,3 @@ Inspect all callers before changing an RPC method. A source-level typecheck does
 - [cloudflare/compute/cross-worker-durable-object](https://alchemy.run/cloudflare/compute/cross-worker-durable-object/)
 - [sql/effect-sql/migrations](https://alchemy.run/sql/effect-sql/migrations/)
 - [infrastructure-as-effects/phases](https://alchemy.run/infrastructure-as-effects/phases/)
-
-Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.

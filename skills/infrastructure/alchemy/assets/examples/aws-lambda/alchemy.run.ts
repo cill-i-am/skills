@@ -1,5 +1,5 @@
 import * as Alchemy from "alchemy";
-import * as AWS from "alchemy/AWS";
+import * as AWS from "@alchemy.run/aws";
 import * as Effect from "effect/Effect";
 import Api from "./src/Api.ts";
 export default Alchemy.Stack("ExampleLambdaApi", {

@@ -1,5 +1,7 @@
 # Custom providers, local implementations, auth, state, and runtimes
 
+For a distributable provider register its lazy contributions; see [deployment decisions](deployment-decisions.md) and the [provider authoring workflow](https://github.com/alchemy-run/alchemy/tree/v2.0.0-beta.87/.agents/skills/alchemy-provider).
+
 ## Extend only where a supported resource is missing
 
 First search the current provider catalogue and installed exports. Prefer a maintained provider or supported extension point over a new shell wrapper. A custom provider is justified when lifecycle ownership cannot be expressed safely through existing resources. Do not create a second provider for an API simply because one example is unfamiliar.
@@ -37,7 +39,7 @@ Diff should flag immutable changes as replacements and avoid churn from server d
 
 Use fake clients for deterministic failure injection and `test.provider` for engine lifecycle integration. Cover unchanged redeploy, mutable update, replacement, adoption, foreign ownership rejection, deletion after external removal, throttling, stale credentials, and crash recovery. Independently inspect the real service in a narrow authorized integration test.
 
-Test secret redaction and error messages. Do not claim an in-memory state store means a test does not call the cloud. The [provider test skeleton asset](examples.md) is a checklist-bearing template, not a mock service disguised as production support.
+Test secret redaction and error messages. Do not claim an in-memory state store means a test does not call the cloud. The [Widget lifecycle test](../assets/examples/custom-provider/Widget.test.ts) runs the engine against a process-local store.
 
 ## Other extension points
 
@@ -56,5 +58,3 @@ A local provider must reproduce the relevant resource/binding semantics without 
 - [state-store/custom-state-store](https://alchemy.run/state-store/custom-state-store/)
 - [infrastructure-as-effects/custom-runtime](https://alchemy.run/infrastructure-as-effects/custom-runtime/)
 - [testing/testing-providers](https://alchemy.run/testing/testing-providers/)
-
-Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.

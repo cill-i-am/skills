@@ -1,5 +1,7 @@
 # CLI workflows and operational boundaries
 
+Use [headless plan/apply and scan/execute](deployment-decisions.md) when a program needs structured results and scoped operations.
+
 ## Select the operation by its effect
 
 Run the installed CLI through the project package manager, for example `pnpm exec alchemy`. Inspect `--help` for the installed release before introducing flags. Preserve repository wrappers when they enforce target selection or approval. A wrapper named `plan` may still do setup; inspect unfamiliar scripts instead of classifying them by name.
@@ -52,5 +54,3 @@ Stop an operation when the observed target differs from the approved one. Do not
 - [cli/dev](https://alchemy.run/cli/dev/)
 - [cli/inspecting-state](https://alchemy.run/cli/inspecting-state/)
 - [cli/adopting-resources](https://alchemy.run/cli/adopting-resources/)
-
-Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.

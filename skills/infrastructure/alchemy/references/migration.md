@@ -20,7 +20,7 @@ Rehearse on a disposable copy that represents existing data and state, not only 
 
 ## Upgrade the dependency family
 
-Resolve Alchemy, Effect, platform packages, SQL integrations, framework adapters, test runners, and patches together. The reference baseline uses Alchemy `2.0.0-beta.81`; its workspace catalogue uses Effect `^4.0.0`, while some setup docs still mention RC tags. Prefer the actual installed peer/exports contract over a moving install snippet.
+Resolve Alchemy, Effect, platform packages, SQL integrations, framework adapters, test runners, and patches together. The reference baseline uses Alchemy `2.0.0-beta.87`; its workspace catalogue uses Effect `^4.1.4`, while some setup docs still mention RC tags. Prefer the actual installed peer/exports contract over a moving install snippet.
 
 Remove obsolete patches only after verifying the upstream fix and the project's regression tests. Avoid compatibility shims that hide an unexamined breaking change. Keep migration-specific code only for the stages and transition window that actually need it.
 
@@ -44,5 +44,3 @@ Finish by removing stale documentation and updating the source/version evidence.
 - [state-store](https://alchemy.run/state-store/)
 - [getting-started](https://alchemy.run/getting-started/)
 - [environments/ci](https://alchemy.run/environments/ci/)
-
-Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.

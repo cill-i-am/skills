@@ -1,5 +1,5 @@
-import * as Cloudflare from "alchemy/Cloudflare";
-import * as Drizzle from "alchemy/Drizzle/D1";
+import * as Cloudflare from "@alchemy.run/cloudflare";
+import * as Drizzle from "@alchemy.run/drizzle/D1";
 import { asc } from "drizzle-orm";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -23,7 +23,7 @@ export const NotesD1Live = Layer.effect(Notes, Effect.gen(function* () {
         .pipe(Effect.mapError(() => new NotesStorageError({ operation: "list" }))),
       create: (input: string) => Effect.gen(function* () {
         const title = normalizeTitle(input);
-        if (title === undefined) return yield* Effect.fail(new InvalidTitle({}));
+        if (title === undefined) return yield* Effect.fail(new InvalidTitle());
         const [created] = yield* db.insert(notes)
           .values({ id: crypto.randomUUID(), title })
           .returning({ id: notes.id, title: notes.title })

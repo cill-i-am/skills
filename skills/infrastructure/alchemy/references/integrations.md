@@ -48,5 +48,3 @@ Use sandbox/test accounts, a dedicated stage, deterministic fixtures, and bounde
 - [environments/doppler](https://alchemy.run/environments/doppler/)
 - [environments/infisical](https://alchemy.run/environments/infisical/)
 - [environments/secret-providers](https://alchemy.run/environments/secret-providers/)
-
-Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.

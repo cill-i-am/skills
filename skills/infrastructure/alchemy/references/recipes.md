@@ -50,5 +50,3 @@ Inventory current owners and resource identities first. Decide which objects Alc
 - [cloudflare/compute/workflows](https://alchemy.run/cloudflare/compute/workflows/)
 - [cloudflare/compute/hibernatable-websockets](https://alchemy.run/cloudflare/compute/hibernatable-websockets/)
 - [cli/adopting-resources](https://alchemy.run/cli/adopting-resources/)
-
-Reference baseline: Alchemy `2.0.0-beta.81`, upstream `fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026. Check installed APIs before applying examples.

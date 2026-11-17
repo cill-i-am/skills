@@ -6,10 +6,21 @@ description: Build, change, debug, test, review, or operate Alchemy TypeScript i
 # Alchemy infrastructure
 
 Use the smallest task-specific reference below. Do not load every chapter at once.
-The reference baseline is Alchemy `2.0.0-beta.81` at upstream commit
-`fbe6ece368c6898234592e897d852bb47b88ebb1`, researched 7 October 2026.
-The pinned workspace catalogue uses Effect `^4.0.0`; some setup prose still
-mentions RC tags. The project's installed version wins over this snapshot.
+The current release is **2.0.0-beta.87**. The fixtures use Effect 4.1.4 and separate
+`@alchemy.run/*` provider packages. Resolve dependencies from the package that
+owns the stack. Preserve the project's locked versions unless upgrading is in scope.
+
+## Start with four decisions
+
+1. Which installed core, provider, Effect and test packages own the requested API?
+2. Who owns the physical object: this stack, another stack or an external owner?
+3. Which phase, host and identity execute the code?
+4. Which observable result proves the change, and who cleans up its stage?
+
+For an unfamiliar workload use [workload selection](references/workload-selection.md).
+For an exact service, symbol or framework/host pair use the [release catalogue](references/source-map.md).
+For state, protection, cross-cloud access and concurrent agents use
+[deployment decisions](references/deployment-decisions.md).
 
 ## Defaults for new projects
 
@@ -107,7 +118,7 @@ business rules and browser contracts separate; see [colocation](references/infra
 
 `python3 scripts/inspect-project.py /path/to/project` inventories relevant
 manifests, lockfiles, script names, and stack files without executing them.
-It is not a full dependency resolver. `python3 scripts/find-reference.py <terms>`
+It reports declared ranges, recognized pnpm importer versions and workspace-local installed versions separately. Other lock formats need their package manager. `python3 scripts/find-reference.py <terms>`
 searches the local source index without a network request.
 
 The [examples catalogue](references/examples.md) distinguishes complete small

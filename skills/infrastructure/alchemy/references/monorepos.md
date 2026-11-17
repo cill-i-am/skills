@@ -1,5 +1,7 @@
 # Alchemy in pnpm monorepos
 
+The inspector reports declared ranges, pnpm importer lock versions and installed workspace resolutions separately. Git worktree isolation and cleanup are covered in [deployment decisions](deployment-decisions.md).
+
 ## Default and scope
 
 Treat a monorepo as the default for Cillian's new projects. Preserve the repository's existing package boundaries and package manager. A monorepo is a packaging choice, not a requirement to have one stack per package. Start with one root stack unless independent ownership, permissions, deployment cadence, or data lifecycle justifies a split.
@@ -30,10 +32,10 @@ packages:
   - "apps/*"
   - "packages/*"
 catalog:
-  alchemy: "2.0.0-beta.81"
-  effect: "4.0.0"
-  drizzle-orm: "1.0.0-rc.5-ab785fc"
-  drizzle-kit: "1.0.0-rc.5-ab785fc"
+  alchemy: "2.0.0-beta.87"
+  effect: "4.1.4"
+  drizzle-orm: "1.0.0-rc.5"
+  drizzle-kit: "1.0.0-rc.5"
 ```
 
 Each package declares what it imports; do not rely on root hoisting or undeclared transitive dependencies. Internal packages use `workspace:*`; external dependencies use the catalog or a compatible reviewed pin, **not** `workspace:*` unless that external project really is part of the workspace. Keep ORM, Kit, Effect, SQL drivers, and Alchemy compatible as a tuple. Commit one real lockfile once installation has resolved it; do not fabricate one from package declarations.
@@ -88,7 +90,7 @@ This is the core of the complete fixture's [root stack](../assets/examples/drizz
 
 ```ts
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { Path } from "effect/Path";
 import Api from "./apps/api/src/Api.ts";
@@ -156,7 +158,7 @@ Backend stack:
 ```ts
 // apps/api/alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import Api from "./src/Api.ts";
 import { Backend } from "./src/Stack.ts";
@@ -175,7 +177,7 @@ Frontend stack:
 ```ts
 // apps/web/alchemy.run.ts
 import * as Alchemy from "alchemy";
-import * as Cloudflare from "alchemy/Cloudflare";
+import * as Cloudflare from "@alchemy.run/cloudflare";
 import * as Effect from "effect/Effect";
 import { Path } from "effect/Path";
 import { Backend } from "@example/api/stack";
@@ -226,9 +228,9 @@ Verify package exports in both typechecking and the actual browser/server build.
 
 - [Single-stack guide](https://alchemy.run/project-structure/monorepo-single-stack/)
 - [Multi-stack guide](https://alchemy.run/project-structure/monorepo-multi-stack/)
-- [Pinned Vite implementation](https://github.com/alchemy-run/alchemy/blob/fbe6ece368c6898234592e897d852bb47b88ebb1/packages/alchemy/src/Cloudflare/Website/Vite.ts)
-- [Pinned workspace catalog](https://github.com/alchemy-run/alchemy/blob/fbe6ece368c6898234592e897d852bb47b88ebb1/pnpm-workspace.yaml)
+- [Pinned Vite implementation](https://github.com/alchemy-run/alchemy/blob/33c10dd55f5559beee2ec96b155c3a6429e44a93/packages/cloudflare/src/Website/Vite.ts)
+- [Pinned workspace catalog](https://github.com/alchemy-run/alchemy/blob/33c10dd55f5559beee2ec96b155c3a6429e44a93/pnpm-workspace.yaml)
 - [References](https://alchemy.run/infrastructure-as-code/references/)
 - [Drizzle migration ownership](https://alchemy.run/sql/drizzle/migrations/)
 
-Expanded 9 October 2026 against Alchemy `2.0.0-beta.81`. The single-stack fixture and the multi-stack excerpts have different validation status; see the [iteration checklist](iteration-checklist.md).
+See the example validation report for the checks exercised on this release.

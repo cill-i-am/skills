@@ -1,5 +1,7 @@
 # State stores, concurrency, and recovery
 
+For AWS S3-to-DynamoDB migration, rollback, GCP bucket state and protected changes, use [the release decision guide](deployment-decisions.md). Rehearse with the bundled [loopback migration test](../scripts/test-state-migration.py) before inspecting a live target.
+
 
 ## Choose the backend deliberately
 
@@ -10,7 +12,7 @@ The current `Cloudflare.state()` guide describes a Worker with a Durable Object 
 Postgres state is imported through a dedicated subpath:
 
 ```ts
-import { postgresState } from "alchemy/State/PostgresState";
+import { postgresState } from "@alchemy.run/sql/PostgresState";
 import * as Config from "effect/Config";
 
 const state = postgresState({ url: Config.Redacted("STATE_DATABASE_URL") });
@@ -55,5 +57,3 @@ Record who owns backups, where keys are held, a restore runbook, the expected in
 - [cli/inspecting-state](https://alchemy.run/cli/inspecting-state/)
 - [cli/drift](https://alchemy.run/cli/drift/)
 - [environments/ci](https://alchemy.run/environments/ci/)
-
-Documentation snapshot: 7 October 2026. Resolve exact APIs against the target project’s installed version; see [version policy](version-policy.md).

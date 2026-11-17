@@ -5,7 +5,7 @@
 
 Record the provider account/project, region, stack, stage, state backend, credential profile/resolver, and source revision. A stage name alone is not a secure deployment boundary. Generated names and state are stage-scoped, but manually fixed names, shared databases, cross-stack references, and broad credentials can still reach shared or production resources.
 
-Current dedicated docs resolve stage from `--stage`, then `ALCHEMY_STAGE`, then `live_$USER` for live commands and `dev_$USER` for local development. Tests default to `test_$USER`. Specify stages explicitly in CI and any destructive command. Do not run `alchemy dev --stage prod`: selecting the same stage can turn a live-to-local transition into resource replacement.
+Current dedicated docs resolve stage from `--stage`, then `ALCHEMY_STAGE`, then `live_$USER` for live commands and `dev_$USER` for local development. The standalone runner derives a distinct stage for a linked worktree; inspect adapter defaults and pass an explicit stage elsewhere. Specify stages explicitly in CI and any destructive command. Do not run `alchemy dev --stage prod`: selecting the same stage can turn a live-to-local transition into resource replacement.
 
 Profiles choose credentials, not infrastructure isolation. Local commands typically use `--profile sandbox` or `--profile prod`. CI uses its explicit environment-credential contract; do not assume a profile stored on a laptop exists on an ephemeral runner.
 
@@ -57,5 +57,3 @@ When adopting a secret, establish its owner and rotation procedure. Treat writin
 - [environments/ci](https://alchemy.run/environments/ci/)
 - [environments/secret-providers](https://alchemy.run/environments/secret-providers/)
 - [cloudflare/security/secrets-store](https://alchemy.run/cloudflare/security/secrets-store/)
-
-Documentation snapshot: 7 October 2026. Resolve exact APIs against the target project’s installed version; see [version policy](version-policy.md).

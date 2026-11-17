@@ -6,6 +6,7 @@
     "@example/contracts": "workspace:*",
     "@example/notes": "workspace:*",
     "alchemy": "catalog:",
-    "effect": "catalog:"
+    "effect": "catalog:",
+    "@alchemy.run/cloudflare": "catalog:"
   }
 }

@@ -2,9 +2,7 @@
 
 ## Evidence and scope
 
-The code assets were authored against the cited Alchemy documentation and pinned source baseline. They have been syntax-checked, not dependency-typechecked, emulated, or deployed in this build environment. Some are complete small applications; others are clearly labelled composition fragments or scaffolds. Do not call all of them production-ready applications.
-
-The illustrative dependency manifest selects Alchemy `2.0.0-beta.81` and Effect/platform `4.0.0`. No lockfile is fabricated or shipped. The selected versions still need registry resolution, peer checking, and a real lockfile in the target environment. The TypeScript parser used to validate syntax is recorded in the validation report; it does not prove compatibility with these dependencies.
+Both example workspaces ship frozen pnpm lockfiles. Run the typecheck in each workspace. The R2 and D1 fixtures have explicit local-mode HTTP tests. The AWS example compiles against beta.87; a live invocation needs its own target and credentials. See [release evidence](../evals/validation.md).
 
 ## Complete small application examples
 
@@ -25,7 +23,7 @@ The illustrative dependency manifest selects Alchemy `2.0.0-beta.81` and Effect/
 | HTTP contract | [NotesApi.ts](../assets/examples/http-contract/NotesApi.ts) | Domain persistence, authorization, host-specific platform Layers, client. |
 | Vite Website | [Website.ts](../assets/examples/vite/Website.ts) | Existing framework project, build root, runtime/public config, stack. |
 | GitHub preview comment | [PreviewComment.ts](../assets/examples/github/PreviewComment.ts) | GitHub provider/permissions and the actual non-secret preview URL. |
-| Custom provider | [Widget.ts](../assets/examples/custom-provider/Widget.ts) | Real API client, credentials, lifecycle, ownership, pagination, and tests. Its methods deliberately fail until implemented. |
+| Custom provider | [Widget.ts](../assets/examples/custom-provider/Widget.ts) | In-memory lifecycle with a [provider test](../assets/examples/custom-provider/Widget.test.ts). Supply durable storage or a real API client, credentials, ownership checks and pagination for a hosted implementation. |
 
 Additional GCP, Kubernetes, Docker, SQL, Outputs, and API snippets are embedded in their task references. They are explanatory composition examples unless stated otherwise.
 
@@ -48,7 +46,7 @@ For interactive development, change into the chosen app directory before running
 
 ## Limits to preserve when adapting
 
-The text APIs buffer a small body before their example size check; enforce a pre-buffering/ingress limit for arbitrary production input. The static bearer token is a narrow demo mechanism, not a full multi-user identity or tenant system. D1 fixture data is intentionally non-sensitive. The Workflow and queue fragments do not expose an unauthenticated general-purpose job runner. The provider scaffold does not fake successful lifecycle operations.
+The text APIs buffer a small body before their example size check; enforce a pre-buffering/ingress limit for arbitrary production input. The static bearer token is a narrow demo mechanism, not a full multi-user identity or tenant system. D1 fixture data is intentionally non-sensitive. The Workflow and queue fragments do not expose an unauthenticated general-purpose job runner.
 
 Do not copy `--yes` or live-test defaults into an unreviewed script. Read [testing](testing.md), [CI/CD](ci-cd.md), and [production review](production-review.md) for the actual deployment requirements.
 
@@ -58,7 +56,6 @@ The [independent Drizzle workspace](../assets/examples/drizzle-monorepo/README.m
 adds D1 and Neon/Postgres implementation Layers, shared contracts, a small HTTP
 service and Vite health client, package exports, generation configs, and a
 root-command migration-input guard. Install/typecheck inside that workspace,
-not the parent example package. It deliberately requires first-time SQL/snapshot
-generation and a real lockfile. Only syntax, pure title tests, and guard behavior
-have been checked here; no dependency compilation or database execution is claimed.
-See [revision evidence](../evals/drizzle-monorepo-validation.md).
+not the parent example package. It includes reviewed SQLite and Postgres migration inputs and Drizzle snapshots. See [revision evidence](../evals/drizzle-monorepo-validation.md).
+
+[Cloud Run to SQS](../assets/examples/cloud-run-sqs/Service.ts) compiles the workload-identity binding. [E2B job](../assets/examples/e2b-job/Job.ts) creates a scoped guest with cleanup and a bounded provider timeout. Both are composition fragments. [State migration rehearsal](../scripts/test-state-migration.py) drives the actual tagged AWS state stores against a fresh local emulator.

@@ -3,7 +3,7 @@ import * as HttpApi from "effect/http-api/HttpApi";
 import * as HttpApiEndpoint from "effect/http-api/HttpApiEndpoint";
 import * as HttpApiGroup from "effect/http-api/HttpApiGroup";
 export class Note extends Schema.Class<Note>("Note")({ id: Schema.String, title: Schema.String }) {}
-export class NoteNotFound extends Schema.TaggedErrorClass<NoteNotFound>()(
+export class NoteNotFound extends Schema.TaggedError<NoteNotFound>()(
   "NoteNotFound", { id: Schema.String }, { httpApiStatus: 404 },
 ) {}
 const getNote = HttpApiEndpoint.get("getNote", "/:id", {

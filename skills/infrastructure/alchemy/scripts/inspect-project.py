@@ -28,6 +28,68 @@ def package_manager_summary(value: object) -> str | None:
         return value
     return "[non-version spec omitted]"
 
+def installed_version(root, directory, package):
+    """Follow normal workspace/hoisted pnpm links only within this project."""
+    parts = package.split("/")
+    if any(not re.fullmatch(r"@?[a-zA-Z0-9_.-]+", part) or part in (".", "..") for part in parts):
+        return None
+    for parent in (directory, *directory.parents):
+        if not parent.is_relative_to(root):
+            break
+        manifest = parent.joinpath("node_modules", *parts, "package.json")
+        if not manifest.exists():
+            continue
+        resolved = manifest.resolve(strict=True)
+        if not resolved.is_relative_to(root) or resolved.stat().st_size > 1_000_000:
+            return None
+        data = json.loads(resolved.read_text(encoding="utf-8"))
+        if not isinstance(data, dict):
+            raise ValueError("expected package manifest")
+        return version_summary(data.get("version"))
+    return None
+
+
+def locked_versions(root, directory, packages, cache):
+    """Read the scalar version entries in pnpm v9 importer blocks, including multi-document locks."""
+    for parent in (directory, *directory.parents):
+        if not parent.is_relative_to(root):
+            break
+        lock = parent / "pnpm-lock.yaml"
+        if not lock.is_file() or lock.is_symlink():
+            continue
+        if lock not in cache:
+            versions = {}
+            cache[lock] = versions
+            if lock.stat().st_size > 16_000_000:
+                return {}
+            importer = dep = group = None
+            active = False
+            for line in lock.read_text(encoding="utf-8").splitlines():
+                if not line.strip():
+                    continue
+                if not line.startswith(" "):
+                    active = line == "importers:"
+                    importer = dep = group = None
+                elif active:
+                    indent = len(line) - len(line.lstrip(" "))
+                    key = line.strip().removesuffix(":").strip("'\"")
+                    if indent == 2:
+                        importer, dep, group = key, None, None
+                    elif indent == 4:
+                        group, dep = key, None
+                    elif indent == 6:
+                        dep = key
+                    elif indent == 8 and line.strip().startswith("version: ") and group in {
+                        "dependencies", "devDependencies", "optionalDependencies"
+                    }:
+                        value = line.strip()[9:].strip("'\"").split("(")[0]
+                        versions[(importer, dep)] = version_summary(value)
+        importer = directory.relative_to(parent).as_posix()
+        return {pkg: cache[lock][(importer, pkg)] for pkg in sorted(packages)
+                if (importer, pkg) in cache[lock]}
+    return {}
+
+
 def inspect(root: Path, max_files: int = 1000) -> dict:
     root = root.resolve(strict=True)
     if not root.is_dir():
@@ -36,6 +98,7 @@ def inspect(root: Path, max_files: int = 1000) -> dict:
         raise ValueError("max_files must be between 1 and 10000")
     out = {"manifests": [], "lockfiles": [], "stack_files": [], "installed_alchemy": None,
            "warnings": [], "files_examined": 0, "truncated": False}
+    lock_cache = {}
     for directory, dirs, names in os.walk(root, followlinks=False):
         dirs[:] = sorted(d for d in dirs if d not in SKIP and not d.startswith(".")
                          and not (Path(directory) / d).is_symlink())
@@ -64,18 +127,21 @@ def inspect(root: Path, max_files: int = 1000) -> dict:
                             selected[group] = {k: version_summary(v) for k, v in values.items()
                                 if isinstance(k, str) and (k == "alchemy" or k == "effect"
                                   or k.startswith("@effect/") or k.startswith("@alchemy.run/"))}
+                    packages = {k for deps in selected.values() for k in deps}
                     scripts = data.get("scripts", {})
                     out["manifests"].append({"path": relative, "packageManager": package_manager_summary(data.get("packageManager")),
                         "dependencies": selected,
+                        "pnpm_locked_versions": locked_versions(root, path.parent, packages, lock_cache),
+                        "resolved_versions": {pkg: installed_version(root, path.parent, pkg)
+                                              for pkg in sorted(packages)},
                         "script_names": sorted(scripts) if isinstance(scripts, dict) else []})
                 except (OSError, ValueError, UnicodeError) as error:
                     out["warnings"].append({"path": relative, "problem": type(error).__name__})
             elif name in {"alchemy.run.ts", "alchemy.run.mts", "alchemy.run.js"}:
                 out["stack_files"].append(relative)
-    # Read only a direct, non-symlink installed package manifest. pnpm commonly
-    # uses symlinks; report that limit rather than following arbitrary targets.
+    # Keep the root summary for existing callers and allow project-local pnpm links.
     installed = root / "node_modules" / "alchemy" / "package.json"
-    if (root / "node_modules").is_symlink() or installed.parent.is_symlink():
+    if (root / "node_modules").is_symlink() or (installed.parent.is_symlink() and not installed.parent.resolve().is_relative_to(root)):
         out["warnings"].append({"path": "node_modules/alchemy", "problem": "symlink_not_followed"})
     elif installed.is_file() and not installed.is_symlink():
         try:
